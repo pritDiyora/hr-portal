@@ -7,7 +7,7 @@ import {
 import { CContainer, CFade } from '@coreui/react'
 
 // routes config
-import routes from '../../startup/client/commmon/routes';
+import routes from '../../../imports/startup/client/commmon/routes';
   
 const loading = (
   <div className="pt-3 text-center">
