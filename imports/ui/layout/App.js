@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
-// import './../../client/scss/style.scss';
-
+import './scss/style.scss';
 const loading = (
   <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
+    <div className="sk-spinner sk-spinner-pulse">hello</div>
   </div>
 )
 
