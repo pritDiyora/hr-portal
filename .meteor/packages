@@ -22,3 +22,9 @@ kadira:flow-router
 fortawesome:fontawesome
 underscore@1.0.10
 jquery
+accounts-base
+accounts-password
+alanning:roles
+aldeed:simple-schema
+momentjs:moment
+msavin:mongol
