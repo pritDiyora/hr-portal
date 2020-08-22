@@ -1,5 +1,22 @@
 import { Meteor } from 'meteor/meteor';
+import '../imports/api/methods/methods';
 
 Meteor.startup(() => {
-  // code to run on server at startup
+    if (Meteor.users.find().count() === 0) {
+        var options = {
+            username: "Admin",
+            emails: "superadmin@admin.com",
+            password: '123456',
+            profile: {
+                userType: 'superadmin',
+                firstName: 'Super',
+                lastName: 'Admin',
+                phone: '1234567890',
+                designation: 'owner'
+            }
+        };
+        let resultuser = Accounts.createUser(options);
+        console.log('reresultuser :: ', resultuser);        
+    }
 });
+

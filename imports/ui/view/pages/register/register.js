@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Meteor from 'meteor/meteor';
 
 
-export default class register extends Component {
+export default class Register extends Component {
 
     constructor(props) {
         super(props);
@@ -16,9 +16,8 @@ export default class register extends Component {
     registerSubmit(e){ 
         e.preventDefault();
         let {name, email, password} = this.state;
-        console.log('{name , mail, password , phoneNumber :: ',name, email, password, phoneNumber);
         Accounts.createUser({
-            name : name ,
+            name : name,
             email: email,
             password: password,
             phoneNumber: phoneNumber

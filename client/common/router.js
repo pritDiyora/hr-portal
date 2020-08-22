@@ -7,17 +7,40 @@ import LeftSidemenu from '/imports/ui/view/layout/leftSidemenu.js';
 import RightSidebar from '/imports/ui/view/layout/rightSidebar.js';
 import Footer from '/imports/ui/view/layout/footer.js';
 import MainLayout from '/imports/ui/view/layout/mainLayout.js';
-
-
+import Login from '../../imports/ui/view/pages/login/login';
+import MainLayout1 from '/imports/ui/view/layout/mainLayout1.js';
 import Dashboard1 from '/imports/ui/view/pages/dashboards/dashboard1.js';
+import Register from '../../imports/ui/view/pages/register/register';
 
-
-FlowRouter.route('/', {
+FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
     action () {
         mount(MainLayout, {
             content() {
               return <Dashboard1 />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/', {
+    name: 'Login',
+    action () {
+        mount(MainLayout1, {
+            content() {
+              return <Login />
+            }
+        })
+    }
+})
+
+
+FlowRouter.route('/register', {
+    name: 'Register',
+    action () {
+        mount(MainLayout1, {
+            content() {
+              return <Register />
             }
         })
     }
