@@ -14,6 +14,7 @@ Schemas.UserProfile = new SimpleSchema({
     },
     fatherName: {
         type: String,
+        optional: true
     },
     motherName: {
         type: String,
@@ -21,15 +22,18 @@ Schemas.UserProfile = new SimpleSchema({
     },
     gender: {
         type: String,
+        optional: true
     },
     birthDate: {
         type: String,
     },
     officalEmailId: {
-        type: String
+        type: String,
+        optional: true
     },
     phone: {
-        type: String
+        type: String,
+        optional: true
     },
     alternatePhone: {
         type: String,
@@ -37,6 +41,7 @@ Schemas.UserProfile = new SimpleSchema({
     },
     maritalStatus: {
         type: String,
+        optional: true
     },
     designation: {
         type: String,
@@ -47,10 +52,12 @@ Schemas.UserProfile = new SimpleSchema({
         optional: true
     },
     identity: {
-        type: String
+        type: String,
+        optional: true
     },
     profilePic: {
-        type: String
+        type: String,
+        optional: true
     }
 });
 
@@ -122,8 +129,25 @@ Schemas.User = new SimpleSchema({
     username: {
         type: String,
     },
-    emails: {
-        type: Array,
+    email: {
+        label: "Email",
+        type: String,
+        regEx: SimpleSchema.RegEx.Email,
+        index: true, // This creates ascending index for this field.
+        unique: true, //This makes sure that this field has a unique index in MongoDB.
+        max: 50, //Maximum allowed length of this field.
+        custom: function () {
+            if (Meteor.isClient && this.isSet) {
+                console.log("checking unique email");
+                Meteor.call("isEmailExisting", this.value, function (error, result) {
+                    if (result) {
+                        console.log("Found duplicate email");
+                        User.simpleSchema().namedContext("userProfileForm")
+                            .addInvalidKeys([{ name: "email", type: "duplicateEmail" }]);
+                    }
+                });
+            }
+        }
     },
     "emails.$": {
         type: Object,
@@ -134,15 +158,23 @@ Schemas.User = new SimpleSchema({
     },
     "emails.$.verified": {
         type: Boolean,
-        optional: true
+        defaultValue: false
     },
     password:
     {
         type: String,
     },
+    confirmPassword: {
+        type: String,
+        custom: function () {//Another usage of the custom function.
+            if (this.value !== this.field('password').value) {
+                return "passwordMismatch";
+            }
+        }
+    },
     profile: {
         type: Schemas.UserProfile,
-        optional: false
+        blackbox: true
     },
     education: {
         type: Schemas.UserEducation,
@@ -166,7 +198,8 @@ Schemas.User = new SimpleSchema({
         blackbox: true
     },
     joiningDate: {
-        type: Date
+        type: Date,
+        optional: true
     },
     outDate: {
         type: Date,

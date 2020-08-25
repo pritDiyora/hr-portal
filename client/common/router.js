@@ -10,7 +10,7 @@ import MainLayout from '/imports/ui/view/layout/mainLayout.js';
 import Login from '../../imports/ui/view/pages/login/login';
 import MainLayout1 from '/imports/ui/view/layout/mainLayout1.js';
 import Dashboard1 from '/imports/ui/view/pages/dashboards/dashboard1.js';
-import Register from '../../imports/ui/view/pages/register/register';
+import Registration from '../../imports/ui/view/pages/register/register';
 
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
@@ -40,7 +40,7 @@ FlowRouter.route('/register', {
     action () {
         mount(MainLayout1, {
             content() {
-              return <Register />
+              return <Registration />
             }
         })
     }

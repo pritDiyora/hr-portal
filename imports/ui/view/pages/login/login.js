@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Meteor from 'meteor/meteor';
 import {FlowRouter} from 'meteor/kadira:flow-router';
+import { Accounts } from 'meteor/accounts-base'
 
 export default class Login extends Component {
 
@@ -26,36 +27,33 @@ export default class Login extends Component {
     render() {
         return (
             
-                <div class="middle-box text-center loginscreen animated fadeInDown">
+                <div className="middle-box text-center loginscreen animated fadeInDown"  onSubmit={(e) => this.LoginWithPassword(e)}>
                     <div>
-                        <div>
-                            <h1 class="logo-name">IN+</h1>
+                        {/* <div>
+                            <h1 className="logo-name">IN+</h1>
                         </div>
-                        <h3>Welcome to IN+</h3>
-                        <p>Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.</p>
-                        <p>Login in. To see it in action.</p>
-                        <form class="m-t" role="form" onSubmit={(e) => { this.loginSubmit(e) }}>
-                            <div class="form-group">
+                        <h3>Welcome to ST+</h3> */}
+                        <form className="m-t" role="form" onSubmit={(e) => { this.loginSubmit(e) }}>
+                            <div className="form-group">
                                 <input
                                     type="email"
-                                    class="form-control"
+                                    className="form-control"
                                     placeholder="Username"
                                     onChange={(email) => this.setState({ email })}
                                     required=""
                                 />
                             </div>
-                            <div class="form-group">
+                            <div className="form-group">
                                 <input type="password"
                                     onChange={(password) => this.setState({ password })}
-                                    class="form-control" placeholder="Password" required="" />
+                                    className="form-control" placeholder="Password" required="" />
                             </div>
-                            <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+                            <button type="submit" className="btn btn-primary block full-width m-b">Login</button>
 
                             <a href="#"><small>Forgot password?</small></a>
-                            <p class="text-muted text-center"><small>Do not have an account?</small></p>
-                            <a class="btn btn-sm btn-white btn-block" href="/register">Create an account</a>
+                            <p className="text-muted text-center"><small>Do not have an account?</small></p>
+                            <a className="btn btn-sm btn-white btn-block" href="/register">Create an account</a>
                         </form>
-                        <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 © 2014</small> </p>
                     </div>
                 </div>
             

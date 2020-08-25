@@ -1,7 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import '../imports/api/methods/methods';
+import '../imports/api/index';
 
 Meteor.startup(() => {
+    Accounts.config({
+        forbidClientAccountCreation: true
+      });
     if (Meteor.users.find().count() === 0) {
         var options = {
             username: "Admin",
