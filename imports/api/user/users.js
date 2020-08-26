@@ -129,25 +129,8 @@ Schemas.User = new SimpleSchema({
     username: {
         type: String,
     },
-    email: {
-        label: "Email",
-        type: String,
-        regEx: SimpleSchema.RegEx.Email,
-        index: true, // This creates ascending index for this field.
-        unique: true, //This makes sure that this field has a unique index in MongoDB.
-        max: 50, //Maximum allowed length of this field.
-        custom: function () {
-            if (Meteor.isClient && this.isSet) {
-                console.log("checking unique email");
-                Meteor.call("isEmailExisting", this.value, function (error, result) {
-                    if (result) {
-                        console.log("Found duplicate email");
-                        User.simpleSchema().namedContext("userProfileForm")
-                            .addInvalidKeys([{ name: "email", type: "duplicateEmail" }]);
-                    }
-                });
-            }
-        }
+    emails: {
+        type: Array,
     },
     "emails.$": {
         type: Object,
