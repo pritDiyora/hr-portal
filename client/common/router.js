@@ -11,7 +11,8 @@ import Login from '../../imports/ui/view/pages/login/login';
 import MainLayout1 from '/imports/ui/view/layout/mainLayout1.js';
 import Dashboard1 from '/imports/ui/view/pages/dashboards/dashboard1.js';
 import Registration from '../../imports/ui/view/pages/register/register';
-
+import ForgotPassword from '../../imports/ui/view/pages/forgotPassword/forgotPassword.js';
+import ResetPassword from '../../imports/ui/view/pages/resetPassword/resetPassword.js';
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
     action () {
@@ -44,4 +45,28 @@ FlowRouter.route('/register', {
             }
         })
     }
+})
+
+FlowRouter.route('/forgotPassword', {
+    name: 'ForgotPassword',
+    action() {
+            mount(MainLayout1, {
+                content() {
+                    return <ForgotPassword />
+                }
+            })
+    }   
+
+})
+
+FlowRouter.route('/reset-password/:token', {
+    name: 'ResetPassword',
+    action() {
+            mount(MainLayout1, {
+                content() {
+                    return <ResetPassword />
+                }
+            })
+    }
+
 })
