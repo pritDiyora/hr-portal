@@ -41,6 +41,12 @@ export default class Header extends Component{
           			<li>
           				<span className="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
           			</li>
+					<li>
+						<a href="/changePassword">
+							<i className="fa fa-key"></i>
+							ChangePassword
+						</a>
+					</li>
           			<li id="dropdownNoti" className="dropdown">
           				<a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.showMailNoti(e)}>
           					<i className="fa fa-envelope"></i>

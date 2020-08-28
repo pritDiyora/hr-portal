@@ -8,7 +8,7 @@ Meteor.startup(() => {
     if (Meteor.users.find().count() === 0) {
         var options = {
             username: "Admin",
-            emails: "superadmin@admin.com",
+            email: "superadmin@admin.com",
             password: '123456',
             profile: {
                 userType: 'superadmin',

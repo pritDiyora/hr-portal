@@ -6,11 +6,12 @@ import Header from '/imports/ui/view/layout/header.js';
 import LeftSidemenu from '/imports/ui/view/layout/leftSidemenu.js';
 import RightSidebar from '/imports/ui/view/layout/rightSidebar.js';
 import Footer from '/imports/ui/view/layout/footer.js';
-import MainLayout from '/imports/ui/view/layout/mainLayout.js';
+import MainLayout from '../../imports/ui/view/layout/mainLayout.js';
 import Login from '../../imports/ui/view/pages/login/login';
-import MainLayout1 from '/imports/ui/view/layout/mainLayout1.js';
+import MainLayout1 from '../../imports/ui/view/layout/mainLayout1.js';
 import Dashboard1 from '/imports/ui/view/pages/dashboards/dashboard1.js';
 import Registration from '../../imports/ui/view/pages/register/register';
+import ChangePassword from '../../imports/ui/view/pages/changepassword/changePassword.js';
 
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
@@ -41,6 +42,17 @@ FlowRouter.route('/register', {
         mount(MainLayout1, {
             content() {
               return <Registration />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/changePassword', {
+    name: 'ChangePassword',
+    action () {
+        mount(MainLayout, {
+            content(){
+                return <ChangePassword />
             }
         })
     }
