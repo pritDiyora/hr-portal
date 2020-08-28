@@ -4,10 +4,10 @@ import ReactDOM, {render} from 'react-dom';
 
 export default class Header extends Component{
 
-  rightsideopen(e){
-    e.preventDefault;
-    $('#right-sidebar').toggleClass('sidebar-open');
-  }
+//   rightsideopen(e){
+//     e.preventDefault;
+//     $('#right-sidebar').toggleClass('sidebar-open');
+//   }
 
   toggleNavigation(e) {
       e.preventDefault();
@@ -24,7 +24,11 @@ export default class Header extends Component{
     e.preventDefault();
     $('#dropdownMsgNoti').toggleClass('open');
   }
-
+  logout(e) {
+	  e.preventDefault();
+	  Meteor.logout();
+	  FlowRouter.go('/');
+  }
   render(){
     return(
        <div className="row border-bottom">
@@ -38,15 +42,8 @@ export default class Header extends Component{
           		</form>
           	</div>
           		<ul className="nav navbar-top-links navbar-right">
-          			<li>
-          				<span className="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
-          			</li>
-					<li>
-						<a href="/changePassword">
-							<i className="fa fa-key"></i>
-							ChangePassword
-						</a>
-					</li>
+          			
+					
           			<li id="dropdownNoti" className="dropdown">
           				<a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.showMailNoti(e)}>
           					<i className="fa fa-envelope"></i>
@@ -144,15 +141,21 @@ export default class Header extends Component{
           				</ul>
           			</li>
           			<li>
-          				<a href="login.html">
+						<a href="/changePassword">
+							<i className="fa fa-key"></i>
+							ChangePassword
+						</a>
+					</li>
+					<li>
+          				<a href="#" onClick={(e) => this.logout(e)}>
           					<i className="fa fa-sign-out"></i> Log out
           				</a>
           			</li>
-          			<li>
+          			{/* <li>
           				<a className="right-sidebar-toggle"  onClick={(e) => this.rightsideopen(e)}>
           					<i className="fa fa-tasks"></i>
           				</a>
-          			</li>
+          			</li> */}
           		</ul>
           	</nav>
           </div>

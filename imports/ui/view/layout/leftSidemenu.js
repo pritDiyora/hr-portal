@@ -11,7 +11,11 @@ export default class LeftSidemenu extends Component {
      e.preventDefault();
      $('#profile').toggleClass('open');
     }
-
+    logout(e) {
+      e.preventDefault();
+      Meteor.logout();
+      FlowRouter.go('/');
+    }
   render(){
     return(
           <nav className="navbar-default navbar-static-side" role="navigation">
@@ -25,11 +29,11 @@ export default class LeftSidemenu extends Component {
                     <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">David Williams</strong>
                      </span> <span className="text-muted text-xs block">Art Director <b className="caret"></b></span> </span> </a>
                     <ul className="dropdown-menu animated fadeInRight m-t-xs">
-                      <li><a href="profile.html">Profile</a></li>
-                      <li><a href="contacts.html">Contacts</a></li>
-                      <li><a href="mailbox.html">Mailbox</a></li>
+                      <li><a href="#">Profile</a></li>
+                      <li><a href="#">Contacts</a></li>
+                      <li><a href="#">Mailbox</a></li>
                       <li className="divider"></li>
-                      <li><a href="login.html">Logout</a></li>
+                      <li><a href="#" onClick={(e) => this.logout(e)}>Logout</a></li>
                     </ul>
                   </div>
                   <div className="logo-element">

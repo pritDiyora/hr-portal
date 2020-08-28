@@ -23,7 +23,7 @@ export default class MainLayout extends Component{
 
               <Footer />
             </div>
-          <RightSidebar />
+          {/* <RightSidebar /> */}
         <Themeconfig />
       </div>
      )
