@@ -1,16 +1,15 @@
-import React,{Component,PropTypes} from 'react'
-import ReactDOM,{render} from 'react-dom'
-
+import React,{Component,PropTypes} from 'react';
+import { moment } from 'meteor/momentjs:moment';
 export default class Footer extends Component {
 
   render(){
     return(
       <div className="footer">
         <div className="pull-right">
-          10GB of <strong>250GB</strong> Free.
+         
         </div>
         <div>
-          <strong>Copyright</strong> Example Company © 2014-2017
+          <strong>Copyright</strong> Scaleteam Techonology PVT LTD © {moment().year()}
         </div>
       </div>
     )
