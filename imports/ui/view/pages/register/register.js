@@ -110,7 +110,7 @@ export default class Registration extends Component {
         let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
         var options = {
             username: email,
-            emails: email,
+            email: email,
             password: password,
             profile: {
                 userType: 'superadmin',

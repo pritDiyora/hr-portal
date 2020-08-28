@@ -22,4 +22,3 @@ Meteor.startup(() => {
         console.log('reresultuser :: ', resultuser);        
     }
 });
-
