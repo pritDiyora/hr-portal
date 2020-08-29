@@ -33,7 +33,8 @@ Schemas.UserProfile = new SimpleSchema({
         optional: true
     },
     phone: {
-        type: String
+        type: String,
+        optional: true
     },
     alternatePhone: {
         type: String,
@@ -146,15 +147,23 @@ Schemas.User = new SimpleSchema({
     },
     "emails.$.verified": {
         type: Boolean,
-        optional: true
+        defaultValue: false
     },
     password:
     {
         type: String,
     },
+    confirmPassword: {
+        type: String,
+        custom: function () {//Another usage of the custom function.
+            if (this.value !== this.field('password').value) {
+                return "passwordMismatch";
+            }
+        }
+    },
     profile: {
         type: Schemas.UserProfile,
-        optional: false
+        blackbox: true
     },
     education: {
         type: [Schemas.UserEducation],
@@ -178,7 +187,8 @@ Schemas.User = new SimpleSchema({
         blackbox: true
     },
     joiningDate: {
-        type: Date
+        type: Date,
+        optional: true
     },
     outDate: {
         type: Date,

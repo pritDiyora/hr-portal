@@ -5,9 +5,10 @@ import LeftSidemenu from '/imports/ui/view/layout/leftSidemenu.js'
 import Footer from '/imports/ui/view/layout/footer.js'
 import RightSidebar from '/imports/ui/view/layout/rightSidebar.js'
 import Themeconfig from '/imports/ui/view/layout/themeconfig.js'
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-
+toast.configure()
 export default class MainLayout extends Component{
 
   render(){
@@ -17,12 +18,12 @@ export default class MainLayout extends Component{
 
             <div id="page-wrapper" className="gray-bg">
                <Header />
-
+                    
                   {this.props.content() }
 
               <Footer />
             </div>
-          <RightSidebar />
+          {/* <RightSidebar /> */}
         <Themeconfig />
       </div>
      )

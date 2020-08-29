@@ -1,132 +1,236 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export default class Register extends Component {
+
+
+export default class Registration extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            email: "",
-            password: "",
-            phoneNumber: ""
+            fields: {},
+            errors: {}
         }
+        
+        this.handleValidation = this.handleValidation.bind(this);
     }
-    componentWillMount() {
 
-        $(document).ready(function () {
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
-            });
-        });
+    handleChange(field, e) {
+        let fields = this.state.fields;
+        fields[field] = e.target.value;
+        this.setState({ fields });
+    }
+    handleValidation() {
+        let fields = this.state.fields;
+        let errors = {};
+        let formIsValid = true;
 
+        //Name
+        if (!fields["fname"]) {
+            formIsValid = false;
+            errors["fname"] = "Cannot be empty";
+        }
+
+        if (typeof fields["fname"] !== "undefined") {
+            if (!fields["fname"].match(/^[a-zA-Z]+$/)) {
+                formIsValid = false;
+                errors["fname"] = "Only letters";
+            }
+        }
+        if (!fields["lname"]) {
+            formIsValid = false;
+            errors["lname"] = "Cannot be empty";
+        }
+
+        if (typeof fields["lname"] !== "undefined") {
+            if (!fields["lname"].match(/^[a-zA-Z]+$/)) {
+                formIsValid = false;
+                errors["lname"] = "Only letters";
+            }
+        }
+        //password
+        if (fields["password"] !== fields["confirmPassword"]) {
+            formIsValid = false;
+            errors["password"] = "Cannot be different";
+    
+        }
+
+        //Email
+        if (!fields["email"]) {
+            formIsValid = false;
+            errors["email"] = "Cannot be empty";
+        }
+
+        if (typeof fields["email"] !== "undefined") {
+            let lastAtPos = fields["email"].lastIndexOf('@');
+            let lastDotPos = fields["email"].lastIndexOf('.');
+
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') == -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
+                formIsValid = false;
+                errors["email"] = "Email is not valid";
+            }
+        }
+
+        this.setState({ errors: errors });
+        return formIsValid;
     }
     registerSubmit(e) {
         e.preventDefault();
-        let { name, email, password, phoneNumber } = this.state;
-        Meteor.call('createregister', name, email, password, phoneNumber, function (error, result) {
+        
+        if(this.handleValidation()){
 
-            if (error) {
-                console.log(error);
-            }
-            else {
-                console.log('Method 1 result is: ' + result);
-                FlowRouter.go('/dashboard');
+            console.log("form submitted");
+            // alertify.alert("Form submitted");
+         }else{
+             console.log("errors!!");
+           // alertify.alert("Form has errors.")
+         }
+        let flag = true;
+     
+
+
+        // if (!fname && !lname && !email && !password && !confirmPassword && !phoneNumber) {
+        //     console.log("Please fill all fields.");
+        //     alertify.alert('Hello World!');
+        //     return;
+        // }
+        // if (password !== confirmPassword) {
+        //     console.log("confirm password is not same as passowrd");
+        // }
+     
+
+        let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
+        var options = {
+            username: email,
+            email: email,
+            password: password,
+            profile: {
+                userType: 'superadmin',
+                firstName: fname,
+                lastName: lname,
+                phone: phoneNumber
             }
         }
-        );
-
-
+        console.log('options :: ', options);
+        if (flag) {
+            Meteor.call('registerUser', options, function (err, res) {
+                if (!err) {
+                    console.log("Registration success!");
+                    FlowRouter.go('/')
+                } else {
+                    console.log("getting error!", err);
+                }
+            });
+        }
     }
 
 
     render() {
-        const mystyle = {
-            position: "absolute",
-            top: "0%",
-            left: "0%",
-            display: "block",
-            width: "100%",
-            height: "100%",
-            margin: "0px",
-            padding: "0px",
-            background: "rgb(255, 255, 255)",
-            border: "0px",
-            opacity: 0
-        };
         return (
-            <div className="middle-box text-center loginscreen   animated fadeInDown">
+            <div className="middle-box text-center animated fadeInDown">
                 <div>
-                    <div>
+                    {/* <div>
                         <h1 className="logo-name">IN+</h1>
-                    </div>
-                    <h3>Register to IN+</h3>
-                    <p>Create account to see it in action.</p>
-                    <form className="m-t" role="form" onSubmit={(e) => { this.registerSubmit(e) }}>
-                        <div className="form-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Name"
-                                required=""
-                                onChange={(name) => this.setState({ name })}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="email"
-                                className="form-control"
-                                placeholder="Email"
-                                required=""
-                                onChange={(email) => this.setState({ email })}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="password"
-                                class="form-control"
-                                placeholder="Password"
-                                required=""
-                                onChange={(password) => this.setState({ password })}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="tel"
-                                name="phone"
-                                className="form-control"
-                                placeholder="Phone Number"
-                                pattern="+[0-9]{2}-[0-9]{5}-[0-9]{5}"
-                                onChange={(phoneNumber) => this.setState({ phoneNumber })}
-                            />
-                        </div>
-                        {/* <div className="form-group">
-                            <div className="checkbox i-checks"><label class="">
-                                <div className="icheckbox_square-green" style="position: relative;">
-                                    <input
-                                        type="checkbox"
-                                        style="position: absolute; opacity: 0;"
-                                    />
-                                    <ins
-                                        className="iCheck-helper"
-                                        style={mystyle}>
-                                    </ins>
+                    </div> */}
+                    <form className="m-t" onSubmit={(e) => this.registerSubmit(e)}>
+                        <fieldset>
+                            <div>
+                                <div className="col-md-12 form-group no-padding">
+                                    <div className="col-md-6 ">
+                                        <input
+                                            ref="fname"
+                                            type="text"
+                                            data-required
+                                            data-onblur
+                                            className="form-control"
+                                            placeholder="first Name"
+                                            required=""
+                                            onChange={this.handleChange.bind(this, "fname")}
+                                            value={this.state.fields["fname"]}
+                                        // onChange={(e) => this.setState({ lname: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <input
+                                            ref="lname"
+                                            type="text"
+                                            data-required
+                                            data-onblur
+                                            className="col"
+                                            className="form-control"
+                                            placeholder="Last Name"
+                                            required=""
+                                            onChange={this.handleChange.bind(this, "lname")}
+                                            value={this.state.fields["lname"]}
+                                        // onChange={(e) => this.setState({ lname: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
-                                <i></i> Agree the terms and policy </label>
                             </div>
-                        </div> */}
-                        <button type="submit" className="btn btn-primary block full-width m-b">Register</button>
-                        <p className="text-muted text-center"><small>Already have an account?</small></p>
-                        <a className="btn btn-sm btn-white btn-block" href="/">Login</a>
+                            <div className="col-md-12 form-group">
+                                <input
+                                    type="email"
+                                    data-onblur
+                                    placeholder="Email"
+                                    className="form-control"
+                                    data-email
+                                    required=""
+                                    onChange={this.handleChange.bind(this, "email")}
+                                    value={this.state.fields["email"]}
+                                // onChange={(e) => this.setState({ email: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-md-12 form-group">
+                                <input
+                                    type="tel"
+                                    data-onblur
+                                    className="form-control"
+                                    placeholder="Phone Number"
+                                    onChange={this.handleChange.bind(this, "tel")}
+                                    value={this.state.fields["tel"]}
+                                // onChange={(e) => this.setState({ phoneNumber: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-md-12 form-group no-padding">
+                                <div className="col-md-6">
+                                    <input
+                                        type="password"
+                                        placeholder="Password"
+                                        className="form-control"
+                                        data-onblur
+                                        data-alphanumeric
+                                        required=""
+                                        onChange={this.handleChange.bind(this, "password")}
+                                        value={this.state.fields["password"]}
+                                    // onChange={(e) => this.setState({ password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="col-md-6">
+                                    <input
+                                        type="password"
+                                        placeholder="Confirm Password"
+                                        data-onblur
+                                        className="form-control"
+                                        data-alphanumeric
+                                        required=""
+                                        onChange={this.handleChange.bind(this, "confirmPassword")}
+                                        value={this.state.fields["confirmPassword"]}
+                                    // onChange={(e) => this.setState({ confirmPassword: e.target.value })}
+                                    />
+                                </div>
+
+                            </div>
+                            <div className="col-md-12">
+                                <button type="submit" className="btn btn-primary block full-width m-b">Register</button>
+                            </div>
+                            <p className="text-muted text-center"><small>Already have an account?</small></p>
+                            <div className="col-md-12">
+                                <p className="submit btn btn-sm btn-white btn-block m-b" href="login.js">Login</p>
+                            </div>
+                        </fieldset>
                     </form>
-                    <p className="m-t"> <small>Inspinia we app framework base on Bootstrap 3 © 2014</small> </p>
                 </div>
             </div>
-
         )
     }
 }
-
-
