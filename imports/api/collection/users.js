@@ -14,6 +14,7 @@ Schemas.UserProfile = new SimpleSchema({
     },
     fatherName: {
         type: String,
+        optional: true
     },
     motherName: {
         type: String,
@@ -21,12 +22,15 @@ Schemas.UserProfile = new SimpleSchema({
     },
     gender: {
         type: String,
+        optional: true
     },
     birthDate: {
         type: String,
+        optional: true
     },
     officalEmailId: {
-        type: String
+        type: String,
+        optional: true
     },
     phone: {
         type: String
@@ -37,6 +41,7 @@ Schemas.UserProfile = new SimpleSchema({
     },
     maritalStatus: {
         type: String,
+        optional: true
     },
     designation: {
         type: String,
@@ -47,10 +52,16 @@ Schemas.UserProfile = new SimpleSchema({
         optional: true
     },
     identity: {
-        type: String
+        type: String,
+        optional: true
     },
     profilePic: {
-        type: String
+        type: String,
+        optional: true
+    },
+    description: {
+        type: String,
+        optional: true
     }
 });
 
@@ -93,6 +104,7 @@ Schemas.UserEducation = new SimpleSchema({
         optional: true
     },
     certificate: {
+        optional: true,
         type: String
     }
 });
@@ -114,7 +126,7 @@ Schemas.UserExperiance = new SimpleSchema({
         type: Date
     },
     technology: {
-        type: String
+        type: [String]
     }
 });
 
@@ -145,15 +157,15 @@ Schemas.User = new SimpleSchema({
         optional: false
     },
     education: {
-        type: Schemas.UserEducation,
+        type: [Schemas.UserEducation],
         optional: true
     },
     experiance: {
-        type: Schemas.UserExperiance,
+        type: [Schemas.UserExperiance],
         optional: true
     },
     address: {
-        type: Schemas.UserAddress,
+        type: [Schemas.UserAddress],
         optional: true
     },
     currentAddress: {

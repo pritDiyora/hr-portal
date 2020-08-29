@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM,{render} from 'react-dom'
 
 export default class MainLayout1 extends Component {
 
@@ -6,6 +7,8 @@ export default class MainLayout1 extends Component {
     return (
       <div id="wrapper">
         {this.props.content()}
+
+     
       </div>
     )
   }
