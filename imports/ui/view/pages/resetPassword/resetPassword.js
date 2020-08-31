@@ -22,9 +22,9 @@ export default class ResetPassword extends Component {
         // var email = this.state.email;
         // Session.set('resetPassword', Accounts._resetPasswordToken);
         console.log("msdhoni");
-        const password ="bmA0hIvw6ZA3lPwMNTZ5GwgfBjPcBVJS8W2LneEScnx";
+        const password ="wLJpdux5bvS5rNn7JObXORyP5LHtSKum00dRuiatlUB";
 
-        Accounts.resetPassword(password, "prit@123", function(err) {
+        Accounts.resetPassword(password, "radhediyora@gmail.com", function(err) {
 
             if (err) {
               console.log('We are sorry but something went wrong.', err);

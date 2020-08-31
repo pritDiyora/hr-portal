@@ -28,6 +28,7 @@ export default class ForgotPassword extends Component {
                     console.log('We are sorry but something went wrong.');
                 }
             } else {
+                
             //     Meteor.call('sendEmail',
             //     'akshitaapex@gmail.com',
             //     'from@server.com',
@@ -38,7 +39,7 @@ export default class ForgotPassword extends Component {
             }
            
         });
-
+        
         // aa link che terminal ma che ae!
     }
 

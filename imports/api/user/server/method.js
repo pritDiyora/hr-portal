@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 Meteor.methods({
+   
     'registerUser': (data) => {
         check(data, Object);
         if (Meteor.isServer) {
@@ -13,13 +14,14 @@ Meteor.methods({
             }
         }
     },
+
     'checkPassword': (userId, password) => {
         check(userId, String);
         check(password, String);
-        if(Meteor.userId()){
-            var user = Meteor.users.findOne({_id: userId});
+        if (Meteor.userId()) {
+            var user = Meteor.users.findOne({ _id: userId });
             return Accounts._checkPassword(user, password);
-        }else{
+        } else {
             return false;
         }
     }
