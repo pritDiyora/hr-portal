@@ -1,24 +1,28 @@
-import React,{Component,PropTypes} from 'react';
-import ReactDOM, {render} from 'react-dom';
+import React, { Component, PropTypes } from 'react';
+import ReactDOM, { render } from 'react-dom';
+import { Meteor } from 'meteor/meteor';
 
+export default class Header extends Component {
 
-export default class Header extends Component{
+	rightsideopen(e) {
+		e.preventDefault;
+		$('#right-sidebar').toggleClass('sidebar-open');
+	}
 
 //   rightsideopen(e){
 //     e.preventDefault;
 //     $('#right-sidebar').toggleClass('sidebar-open');
 //   }
 
-  toggleNavigation(e) {
-      e.preventDefault();
-      $("body").toggleClass("mini-navbar");
-      // smoothlyMenu();
-  }
+	showMailNoti(e) {
+		e.preventDefault();
+		$('#dropdownNoti').toggleClass('open');
+	}
 
-  showMailNoti(e){
-    e.preventDefault();
-    $('#dropdownNoti').toggleClass('open');
-  }
+	MsgNoti(e) {
+		e.preventDefault();
+		$('#dropdownMsgNoti').toggleClass('open');
+	}
 
   MsgNoti(e){
     e.preventDefault();
@@ -108,23 +112,23 @@ export default class Header extends Component{
           							<div>
           								<i className="fa fa-envelope fa-fw"></i> You have 16 messages
           								<span className="pull-right text-muted small">4 minutes ago</span>
-          							</div>
-          						</a>
-          					</li>
-          					<li className="divider"></li>
-          					<li>
-          						<a href="profile.html">
-          							<div>
-          								<i className="fa fa-twitter fa-fw"></i> 3 New Followers
+										</div>
+									</a>
+								</li>
+								<li className="divider"></li>
+								<li>
+									<a href="profile.html">
+										<div>
+											<i className="fa fa-twitter fa-fw"></i> 3 New Followers
           								<span className="pull-right text-muted small">12 minutes ago</span>
-          							</div>
-          						</a>
-          					</li>
-          					<li className="divider"></li>
-          					<li>
-          						<a href="grid_options.html">
-          							<div>
-          								<i className="fa fa-upload fa-fw"></i> Server Rebooted
+										</div>
+									</a>
+								</li>
+								<li className="divider"></li>
+								<li>
+									<a href="grid_options.html">
+										<div>
+											<i className="fa fa-upload fa-fw"></i> Server Rebooted
           								<span className="pull-right text-muted small">4 minutes ago</span>
           							</div>
           						</a>
@@ -160,6 +164,6 @@ export default class Header extends Component{
           	</nav>
           </div>
 
-    )
-  }
+		)
+	}
 }

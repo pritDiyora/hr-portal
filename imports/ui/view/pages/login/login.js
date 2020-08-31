@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-// import {FlowRouter} from '../forgotPassword/node_modules/meteor/kadira:flow-router';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Accounts } from 'meteor/accounts-base'
 
 export default class Login extends Component {
 
@@ -12,8 +10,7 @@ export default class Login extends Component {
             email: "",
             password: ""
         }
-    }
-    
+    }   
 
     loginSubmit(e) {
         e.preventDefault();
@@ -21,14 +18,12 @@ export default class Login extends Component {
         Meteor.loginWithPassword(email, password, (err, res) => {
             if (!err) {
                 let user = Meteor.user();
+                console.log(user);
                 FlowRouter.go('/dashboard');
             } else {
                 alert('Incorrect password and email');
             }
         })
-    }
-    forgotPassword(e) {
-        FlowRouter.go('/')
     }
 
     render() {
@@ -57,7 +52,7 @@ export default class Login extends Component {
                         </div>
                         <button type="submit" className="btn btn-primary block full-width m-b">Login</button>
 
-                        <a href="/forgotPassword" onClick={(e) => { this.forgotPassword(e) }}><small>Forgot password?</small></a>
+                        <a href="/forgotPassword"><small>Forgot password?</small></a>
                         <p className="text-muted text-center"><small>Do not have an account?</small></p>
                         <a className="btn btn-sm btn-white btn-block" href="/register">Create an account</a>
                     </form>

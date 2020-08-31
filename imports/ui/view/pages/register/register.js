@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
 
 
@@ -14,14 +13,6 @@ export default class Registration extends Component {
         }
         
         this.handleValidation = this.handleValidation.bind(this);
-        // this.state = {
-        //     fname: null,
-        //     lname: null,
-        //     email: null,
-        //     password: null,
-        //     confirmPassword: null,
-        //     phoneNumber: null
-        // }
     }
 
     handleChange(field, e) {
@@ -133,11 +124,6 @@ export default class Registration extends Component {
         }
     }
 
-    loginSubmit(e){
-        console.log("login");
-         FlowRouter.go('/')
-    }
-
 
     render() {
         return (
@@ -146,7 +132,7 @@ export default class Registration extends Component {
                     {/* <div>
                         <h1 className="logo-name">IN+</h1>
                     </div> */}
-                    <form className="m-t"  onSubmit={(e) => this.registerSubmit(e)}>
+                    <form className="m-t" onSubmit={(e) => this.registerSubmit(e)}>
                         <fieldset>
                             <div>
                                 <div className="col-md-12 form-group no-padding">
@@ -239,7 +225,7 @@ export default class Registration extends Component {
                             </div>
                             <p className="text-muted text-center"><small>Already have an account?</small></p>
                             <div className="col-md-12">
-                                <p className="submit btn btn-sm btn-white btn-block m-b" onClick={(e) => this.loginSubmit(e)} href="login.js">Login</p>
+                                <p className="submit btn btn-sm btn-white btn-block m-b" href="login.js">Login</p>
                             </div>
                         </fieldset>
                     </form>
@@ -248,5 +234,3 @@ export default class Registration extends Component {
         )
     }
 }
-
-

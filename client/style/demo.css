@@ -1,0 +1,150 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+/* css class for the registration form generated errors */
+
+.profilepress-reg-status {
+  border-radius: 6px;
+  font-size: 17px;
+  line-height: 1.471;
+  padding: 10px 19px;
+  background-color: #e74c3c;
+  color: #ffffff;
+  font-weight: normal;
+  display: block;
+  text-align: center;
+ 
+  margin: 5px 0;
+}
+/*form styles*/
+
+#msform {
+  text-align: center;
+  position: relative;
+}
+input[type=button]{
+  text-align: center;
+}
+  
+.row{
+  text-align: left;
+}
+
+.mainheading{
+  text-align: left;
+  font-size: 20px;
+  position: relative;
+  margin: 10px 0px;
+}
+.hr-line-dashed1 {
+  border-top: 1px dashed #e7eaec;
+  color: #ffffff;
+  background-color: #443f3f88;
+  height: 1px;
+  margin: 5px 0;
+}
+
+#address{
+   margin: 0px 15px;
+}
+#msform fieldset {
+  background: white;
+  border: 0 none;
+  border-radius: 3px;
+ 
+  padding: 10px 10px;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+  width: 100%;
+
+}
+
+/*Hide all except first fieldset*/
+
+#msform fieldset:not(:first-of-type) {
+  display: none;
+}
+
+
+#msform .action-button {
+  width: 100px;
+  background: #1AB394;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 1px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+}
+
+#msform .action-button:hover,
+#msform .action-button:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+/*headings*/
+
+.fs-title {
+  font-size: 15px;
+  text-transform: uppercase;
+  color: #2C3E50;
+  margin-bottom: 10px;
+}
+
+.fs-subtitle {
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+/*progressbar*/
+
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  /*CSS counters to number the steps*/
+  text-align: center;
+  counter-reset: step;
+}
+
+#progressbar li {
+  list-style-type: none;
+  color: #616161;
+  text-transform: uppercase;
+  font-size: 15px;
+  width: 33.33%;
+  float: left;
+  position: relative;
+}
+
+#progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+  width: 90%;
+  height: 30px;
+  line-height: 20px;
+  display: block;
+  font-size: 18px;
+  padding: 5px;
+  color: #333;
+  background: white;
+  border-radius: 3px;
+  margin: 0 auto 5px auto;
+}
+
+#progressbar li:first-child:after {
+  /*connector not needed before the first step*/
+  
+  content: none;
+}
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+
+#progressbar li.active:before,
+#progressbar li.active:after {
+  background: #1AB394;
+  color: white;
+}
+
+/*
+    Common
+*/
+
