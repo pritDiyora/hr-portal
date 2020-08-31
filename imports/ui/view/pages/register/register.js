@@ -1,17 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 
-
-
 export default class Registration extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             fields: {},
             errors: {}
         }
-        
         this.handleValidation = this.handleValidation.bind(this);
     }
 
@@ -20,6 +16,8 @@ export default class Registration extends Component {
         fields[field] = e.target.value;
         this.setState({ fields });
     }
+
+    //validation
     handleValidation() {
         let fields = this.state.fields;
         let errors = {};
@@ -52,7 +50,7 @@ export default class Registration extends Component {
         if (fields["password"] !== fields["confirmPassword"]) {
             formIsValid = false;
             errors["password"] = "Cannot be different";
-    
+
         }
 
         //Email
@@ -74,30 +72,19 @@ export default class Registration extends Component {
         this.setState({ errors: errors });
         return formIsValid;
     }
+
     registerSubmit(e) {
         e.preventDefault();
-        
-        if(this.handleValidation()){
+
+        if (this.handleValidation()) {
 
             console.log("form submitted");
-            // alertify.alert("Form submitted");
-         }else{
-             console.log("errors!!");
-           // alertify.alert("Form has errors.")
-         }
+        } else {
+            console.log("errors!!");
+        }
         let flag = true;
-     
 
 
-        // if (!fname && !lname && !email && !password && !confirmPassword && !phoneNumber) {
-        //     console.log("Please fill all fields.");
-        //     alertify.alert('Hello World!');
-        //     return;
-        // }
-        // if (password !== confirmPassword) {
-        //     console.log("confirm password is not same as passowrd");
-        // }
-     
 
         let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
         var options = {
@@ -124,14 +111,11 @@ export default class Registration extends Component {
         }
     }
 
-
     render() {
         return (
             <div className="middle-box text-center animated fadeInDown">
                 <div>
-                    {/* <div>
-                        <h1 className="logo-name">IN+</h1>
-                    </div> */}
+                   
                     <form className="m-t" onSubmit={(e) => this.registerSubmit(e)}>
                         <fieldset>
                             <div>
@@ -225,7 +209,7 @@ export default class Registration extends Component {
                             </div>
                             <p className="text-muted text-center"><small>Already have an account?</small></p>
                             <div className="col-md-12">
-                                <p className="submit btn btn-sm btn-white btn-block m-b" href="login.js">Login</p>
+                                <a className="submit btn btn-sm btn-white btn-block m-b" href="/">Login</a>
                             </div>
                         </fieldset>
                     </form>

@@ -3,68 +3,74 @@ import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Accounts } from 'meteor/accounts-base'
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class ResetPassword extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
+            newpassword: "",
+            confirmpassword: ""
         }
     }
-    // if(Accounts._resetPasswordToken) {
-    //     Session.set('resetPassword', Accounts._resetPasswordToken);
-    // }
+
+
 
     resetPassword(e) {
         e.preventDefault();
-        // var email = this.state.email;
-        // Session.set('resetPassword', Accounts._resetPasswordToken);
-        console.log("msdhoni");
-        const password ="bmA0hIvw6ZA3lPwMNTZ5GwgfBjPcBVJS8W2LneEScnx";
 
-        Accounts.resetPassword(password, "prit@123", function(err) {
-
-            if (err) {
-              console.log('We are sorry but something went wrong.', err);
+        let { newpassword, confirmpassword } = this.state;
+        if (newpassword.length >= 8) {
+            if (newpassword === confirmpassword) {
+                Accounts.resetPassword(Session.get('resetpassword'), newpassword, function (err) {
+                    if (err) {
+                        toast.error(err.message)
+                    } else {
+                        toast.success('Password Reset successfully');
+                        FlowRouter.go('/');
+                    }
+                })
             } else {
-              console.log('Your password has been changed. Welcome back!');
-              Session.set('resetPassword', null);
+                toast.error('Password and confirm password must be same.');
             }
-        })
+        } else {
+            toast.error('Password at least 8 character');
+        }
+
     }
 
     render() {
         return (
 
             <div className="middle-box text-center loginscreen animated fadeInDown">
-                <div>
-                    <form className="m-t form-group" onSubmit={(e) => this.resetPassword(e)}>
-                        <input
-                            className="form-control"
-                            id="resetPasswordPassword" 
-                            name="password" 
-                            placeholder="New Password" 
-                            type="password" 
-                        />
-                        
-                        <input 
-                            className="form-control"
-                            id="resetPasswordPasswordConfirm" 
-                            name="password-confirm" 
-                            placeholder="Confirm" 
-                            type="password" 
-                        />
-                        <br />
-                        <input 
-                            className="btn btn-primary block full-width m-b" 
-                            type="submit" 
-                            value="Reset" 
-                        />
-                    </form>
 
-                </div>
+                <form className="m-t form-group" onSubmit={(e) => this.resetPassword(e)}>
+                    <input
+                        className="form-control"
+                        name="newpassword"
+                        placeholder="New Password"
+                        type="password"
+                        onChange={(e) => this.setState({ newpassword: e.target.value })}
+                    />
+
+                    <input
+                        className="form-control"
+                        name="confirmpassword"
+                        placeholder="Confirm"
+                        type="password"
+                        onChange={(e) => this.setState({ confirmpassword: e.target.value })}
+                    />
+                    <br />
+                    <input
+                        className="btn btn-primary block full-width m-b"
+                        type="submit"
+                        value="Reset"
+                    />
+                </form>
+
+
             </div>
 
 

@@ -35,3 +35,18 @@ Accounts.emailTemplates.enrollAccount = {
         return html;
     }
 }
+//reset
+SSR.compileTemplate('resetpassword', Assets.getText('verifyemail.html'));
+Accounts.urls.resetpassword =   token => Meteor.absoluteUrl(`resetpassword/${token}`);
+
+Accounts.emailTemplates.enrollAccount = {
+    subject() {
+        return 'resetpassword';
+    },
+    html(createdUser, url) {
+        let html = SSR.render('resetpassword', {
+            url: url, user: createdUser,text: "To Reset your your password"
+        });
+        return html;
+    }
+}

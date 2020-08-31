@@ -47,11 +47,81 @@ export default class AddHR extends Component {
         }
 
     }
+    
     myChangeHandler = (event) => {
         const { name, value } = event.target;
         $(".error").remove();
         this.setState({ [name]: value });
     }
+     userprofile () {
+        let user = {
+            email: this.state.email,
+            // password: "123456",
+            profile: {
+                userType: "admin",
+                firstName: this.state.firstname,
+                lastName: this.state.lastname,
+                fatherName: this.state.fathername,
+                motherName: this.state.mothername,
+                gender: this.state.gender,
+                birthDate: this.state.dateofbirth,
+                officalEmailId: this.state.offcialemailid,
+                phone: this.state.phone,
+            },
+            education: [{
+                cousrseName: this.state.coursename,
+                cousrseType: this.state.coursetype,
+                instituteName: this.state.institutename,
+                academicYear: this.state.academicyear,
+                address: {
+                    addressline1: this.state.addressline1,
+                    addressline2: this.state.addressline2,
+                    country: this.state.country,
+                    state: this.state.states,
+                    city: this.state.city,
+                    zipcode: this.state.zipcode
+                },
+                designation: 'Admin',
+                certificate: this.state.certificate
+            }],
+            experiance: [{
+                companyName: this.state.companyname,
+                address: {
+                    addressline1: this.state.addressline1,
+                    addressline2: this.state.addressline2,
+                    country: this.state.country,
+                    state: this.state.states,
+                    city: this.state.city,
+                    zipcode: this.state.zipcode
+                },
+                workExpeience: this.state.workexpeience,
+                startAt: this.state.startdate,
+                endAt: this.state.enddate,
+                technology: this.state.technology
+            }],
+            address: [{
+                addressline1: this.state.addressline1,
+                addressline2: this.state.addressline2,
+                country: this.state.country,
+                state: this.state.states,
+                city: this.state.city,
+                zipcode: this.state.zipcode
+            }],
+        }
+
+        Meteor.call('insertuser', user, function (err, result) {
+            if (!err) {
+                console.log('Inserted Record Successfully...' + result);
+            }
+            else {
+                console.log('Error' + err);
+
+            }
+        });
+    }
+    insertuserSubmit(e) {
+    }
+
     componentDidMount() {
         $('.tagsinput').tagsinput({
             tagClass: 'label label-primary'
@@ -109,29 +179,23 @@ export default class AddHR extends Component {
                     $('#zipcode').after('<span class="error"><b>Zipcode must be 6 number</b></span>')
                 }
                 else {
+                    userprofile();
                     if (animating) return false;
                     animating = true;
 
                     current_fs = $(this).parent();
                     next_fs = $(this).parent().next();
 
-                    //activate next step on progressbar using the index of next_fs
                     $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
-                    //show the next fieldset
 
                     next_fs.show();
-                    //hide the current fieldset with style
                     current_fs.animate({
                         opacity: 0
                     }, {
                         step: function (now, mx) {
-                            //as the opacity of current_fs reduces to 0 - stored in "now"
-                            //1. scale current_fs down to 80%
                             scale = 1 - (1 - now) * 0.2;
-                            //2. bring next_fs from the right(50%)
                             left = (now * 50) + "%";
-                            //3. increase opacity of next_fs to 1 as it moves in
                             opacity = 1 - now;
                             current_fs.css({
                                 'transform': 'scale(' + scale + ')'
@@ -153,7 +217,6 @@ export default class AddHR extends Component {
                             animating = false;
 
                         },
-                        //this comes from the custom easing plugin
                         easing: 'easeInOutBack'
                     });
                 }
@@ -166,22 +229,15 @@ export default class AddHR extends Component {
                 current_fs = $(this).parent();
                 previous_fs = $(this).parent().prev();
 
-                //de-activate current step on progressbar
                 $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
 
-                //show the previous fieldset
                 previous_fs.show();
-                //hide the current fieldset with style
                 current_fs.animate({
                     opacity: 0
                 }, {
                     step: function (now, mx) {
-                        //as the opacity of current_fs reduces to 0 - stored in "now"
-                        //1. scale previous_fs from 80% to 100%
                         scale = 0.8 + (1 - now) * 0.2;
-                        //2. take current_fs to the right(50%) - from 0%
                         left = ((1 - now) * 50) + "%";
-                        //3. increase opacity of previous_fs to 1 as it moves in
                         opacity = 1 - now;
                         current_fs.css({
                             'left': left
@@ -197,7 +253,6 @@ export default class AddHR extends Component {
                         animating = false;
 
                     },
-                    //this comes from the custom easing plugin
                     easing: 'easeInOutBack'
                 });
             });
@@ -207,78 +262,12 @@ export default class AddHR extends Component {
         })(jQuery);
 
     }
-    insertuserSubmit(e) {
-        e.preventDefault();
-        let user = {
-            email: this.state.email,
-            // password: "123456",
-            profile: {
-                userType: "admin",
-                firstName: this.state.firstname,
-                lastName: this.state.lastname,
-                fatherName: this.state.fathername,
-                motherName: this.state.mothername,
-                gender: this.state.gender,
-                birthDate: this.state.dateofbirth,
-                officalEmailId: this.state.offcialemailid,
-                phone: this.state.phone,
-            },
-            education: [{
-                cousrseName: this.state.coursename,
-                cousrseType: this.state.coursetype,
-                instituteName: this.state.institutename,
-                academicYear: this.state.academicyear,
-                address: {
-                    addressline1: this.state.addressline1,
-                    addressline2: this.state.addressline2,
-                    country: this.state.country,
-                    state: this.state.states,
-                    city: this.state.city,
-                    zipcode: this.state.zipcode
-                },
-                certificate: this.state.certificate
-            }],
-            experiance: [{
-                companyName: this.state.companyname,
-                address: {
-                    addressline1: this.state.addressline1,
-                    addressline2: this.state.addressline2,
-                    country: this.state.country,
-                    state: this.state.states,
-                    city: this.state.city,
-                    zipcode: this.state.zipcode
-                },
-                workExpeience: this.state.workexpeience,
-                startAt: this.state.startdate,
-                endAt: this.state.enddate,
-                technology: this.state.technology
-            }],
-            address: [{
-                addressline1: this.state.addressline1,
-                addressline2: this.state.addressline2,
-                country: this.state.country,
-                state: this.state.states,
-                city: this.state.city,
-                zipcode: this.state.zipcode
-            }]
-        }
-
-        Meteor.call('insertuser', user, function (err, result) {
-            if (!err) {
-                console.log('Inserted Record Successfully...' + result);
-            }
-            else {
-                console.log('Error' + err);
-
-            }
-        });
-
-
-    }
 
     render() {
         return (
             <div className="wrapper wrapper-content animated fadeInRight" >
+
+
                 <form id="form1" onSubmit={(e) => { this.insertuserSubmit(e) }} noValidate >
                     <div id="msform">
                         <ul id="progressbar" >
@@ -288,6 +277,7 @@ export default class AddHR extends Component {
                         </ul>
 
                         <fieldset>
+
                             <div className="container-fluid">
                                 <div className="row">
                                     <div className="col-md-12">
@@ -303,7 +293,7 @@ export default class AddHR extends Component {
 
                                 <div className="form-group row">
                                     <div className="col-md-12">
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label>First Name</label>
                                             <input type="text"
                                                 className="form-control"
@@ -314,7 +304,7 @@ export default class AddHR extends Component {
 
                                             />
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label>Last Name</label>
                                             <input type="text"
                                                 className="form-control"
@@ -324,7 +314,14 @@ export default class AddHR extends Component {
                                                 placeholder=""
                                             />
                                         </div>
-                                        <div className="col-md-4">
+
+
+                                    </div>
+                                </div>
+
+                                <div className="form-group row">
+                                    <div className="col-md-12">
+                                        <div className="col-md-6">
                                             <label>Father Name</label>
                                             <input
                                                 type="text"
@@ -335,13 +332,7 @@ export default class AddHR extends Component {
                                                 placeholder=""
                                             />
                                         </div>
-
-                                    </div>
-                                </div>
-
-                                <div className="form-group row">
-                                    <div className="col-md-12">
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label>Mother Name</label>
                                             <input
                                                 type="text"
@@ -353,7 +344,12 @@ export default class AddHR extends Component {
                                             />
                                         </div>
 
-                                        <div className="col-md-4">
+
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-md-12">
+                                        <div className="col-md-6">
                                             <label>Birth Date</label>
                                             <div className="input-group date">
                                                 <span className="input-group-addon"><i className="fa fa-calendar"></i></span>
@@ -367,7 +363,7 @@ export default class AddHR extends Component {
                                             </div>
                                         </div>
 
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label>Email Id</label>
                                             <input
                                                 type="email"
@@ -376,21 +372,14 @@ export default class AddHR extends Component {
                                                 id="email_id"
                                                 onChange={this.myChangeHandler}
                                                 placeholder="Enter Email" />
-                                            {/* { errors.email.length > 0 &&
-                                                <span style={{ color: "red" }}><b>{errors.email}</b></span>} */}
                                         </div>
                                     </div>
                                 </div>
 
 
-
                                 <div className="form-group row">
                                     <div className="col-md-12">
-
-
-                                     
-
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label className="inline">Offical EmailId </label>
                                             <input
                                                 type="email"
@@ -400,11 +389,9 @@ export default class AddHR extends Component {
                                                 onChange={this.myChangeHandler}
 
                                             />
-                                            {/* {errors.offcialemailid.length > 0 &&
-                                                <span style={{ color: "red" }}>{errors.offcialemailid}</span>} */}
                                         </div>
 
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label>Phone</label>
                                             <input
                                                 type="text"
@@ -415,9 +402,14 @@ export default class AddHR extends Component {
                                                 onChange={this.myChangeHandler}
 
                                             />
-                                            {/* {errors.phone.length > 0 &&
-                                                <span style={{ color: "red" }}>{errors.phone}</span>} */}
                                         </div>
+
+
+                                    </div>
+
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-md-12">
                                         <div className="col-md-4">
                                             <label>Gender</label><br />
                                             <div className="radio-inline form-check abc-radio abc-radio-success">
@@ -447,14 +439,13 @@ export default class AddHR extends Component {
                                             </div>
 
                                         </div>
-
                                     </div>
-
                                 </div>
+
 
                                 <div className="form-group row">
                                     <div className="col-md-12" >
-                                       
+
                                     </div>
                                 </div>
                                 <div className="row">
@@ -471,12 +462,11 @@ export default class AddHR extends Component {
 
                                 <div className="form-group row">
                                     <div className="col-md-12" >
-                                        <div className="col-md-11">
-                                            <label>Address</label>
+                                        <div className="col-md-6">
+                                            <label>Address Line 1</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                placeholder="Address line1"
                                                 name="addressline1"
                                                 id="add_line1"
                                                 style={{ marginRight: "15px" }}
@@ -484,25 +474,21 @@ export default class AddHR extends Component {
 
                                             />
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="form-group row">
-                                    <div className="col-md-12">
-                                        <div className="col-md-11">
+
+                                        <div className="col-md-6">
+                                            <label>Address Line 2</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                placeholder="Address line2"
                                                 name="addressline2"
                                                 onChange={this.myChangeHandler}
                                             />
                                         </div>
-
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-md-12">
-                                        <div className="col-md-4 ml-0">
+                                        <div className="col-md-6 ml-0">
                                             <label>Country</label>
                                             <select
                                                 className="form-control"
@@ -516,7 +502,7 @@ export default class AddHR extends Component {
                                             </select>
 
                                         </div>
-                                        <div className="col-md-4 ml-0">
+                                        <div className="col-md-6 ml-0">
                                             <label>State</label>
                                             <select
                                                 className="form-control"
@@ -530,7 +516,12 @@ export default class AddHR extends Component {
                                             </select>
 
                                         </div>
-                                        <div className="col-md-4 ml-0">
+
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-md-12">
+                                        <div className="col-md-6 ml-0">
                                             <label>City</label>
                                             <select
                                                 className="form-control"
@@ -543,11 +534,7 @@ export default class AddHR extends Component {
                                                 <option>Toronto</option>
                                             </select>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="form-group row">
-                                    <div className="col-md-12">
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <label>Zipcode</label>
                                             <input
                                                 type="text"
@@ -564,7 +551,8 @@ export default class AddHR extends Component {
                                 </div>
 
                             </div>
-                            <input type="button" name="next" className="next action-button" value="Next" />
+                            <input type="button" name="firstnext" className="next action-button" value="Next" />
+
                         </fieldset>
                         <fieldset>
                             <div className="container-fluid">
@@ -635,7 +623,7 @@ export default class AddHR extends Component {
                                 </div>
                             </div>
                             <input type="button" name="previous" className="previous action-button" value="Previous" />
-                            <input type="button" name="next" className="next action-button" value="Next" />
+                            <input type="button" name="educationnext" className="next action-button" value="Next" />
                         </fieldset>
                         <fieldset>
                             <div className="container-fluid">
@@ -663,11 +651,13 @@ export default class AddHR extends Component {
                                         </div>
                                         <div className="col-md-4">
                                             <label>Technlogoy</label><br />
-                                            <div className="bootstrap-tagsinput">
+                                            <div className="bootstrap-tagsinput" >
                                                 <input type="text"
+                                                    className="tagsinput form-control"
                                                     name="technology"
                                                     onChange={this.myChangeHandler}
-                                                    size="1" />
+                                                    size="1"
+                                                    style={{ display: "none" }} />
                                             </div>
 
                                         </div>
