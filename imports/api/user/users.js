@@ -167,7 +167,7 @@ Schemas.User = new SimpleSchema({
     },
     education: {
         type: [Schemas.UserEducation],
-        optional: true
+        optional: true,
     },
     experiance: {
         type: [Schemas.UserExperiance],
@@ -185,7 +185,7 @@ Schemas.User = new SimpleSchema({
         type: Object,
         optional: true,
         blackbox: true
-    },
+    },  
     joiningDate: {
         type: Date,
         optional: true
@@ -229,6 +229,7 @@ Schemas.User = new SimpleSchema({
 // Schemas.User.messages({
 //  "badEmail": "Email is invalid"
 // });
+
 
 Meteor.users.attachSchema(Schemas.User);
 

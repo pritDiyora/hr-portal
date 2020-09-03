@@ -16,10 +16,10 @@ import ListUser from '../../imports/ui/view/pages/Users/listusers/listusers';
 // Accounts
 FlowRouter.route('/register', {
     name: 'Register',
-    action () {
+    action() {
         mount(MainLayout1, {
             content() {
-              return <Registration />
+                return <Registration />
             }
         })
     }
@@ -70,12 +70,13 @@ FlowRouter.route('/changePassword', {
 })
 FlowRouter.route('/enrollAccount/:token', {
     name: 'enrollAccount',
-    action() {
+    action: function (params) {
         mount(MainLayout1, {
             content() {
                 return <ResetPassword />
             }
         })
+        Session.set("resetpassword",params.token);
     }
 })
 
@@ -83,12 +84,12 @@ FlowRouter.route('/enrollAccount/:token', {
 
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
-    action() {
+    action: function() {
         mount(MainLayout, {
             content() {
                 return <Dashboard1 />
             }
-        })
+        })  
     }
 })
 

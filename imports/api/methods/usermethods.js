@@ -9,9 +9,6 @@ Meteor.startup(() => {
             let userId = Accounts.createUser(user);
             return Accounts.sendEnrollmentEmail(userId);
        
-        },
-        resetpassword:function(userId,password){
-            Accounts.setPassword(userId, password)
         }
     });
 });
