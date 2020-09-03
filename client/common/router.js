@@ -12,6 +12,7 @@ import MainLayout1 from '../../imports/ui/view/layout/mainLayout1.js';
 import Dashboard1 from '/imports/ui/view/pages/dashboards/dashboard1.js';
 import Registration from '../../imports/ui/view/pages/register/register';
 import ChangePassword from '../../imports/ui/view/pages/changepassword/changePassword.js';
+import Profile from '../../imports/ui/view/pages/profile/profile.js';
 
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
@@ -53,6 +54,17 @@ FlowRouter.route('/changePassword', {
         mount(MainLayout, {
             content(){
                 return <ChangePassword />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/profile', {
+    name:'Profile',
+    action () {
+        mount(MainLayout, {
+            content(){
+                return <Profile />
             }
         })
     }

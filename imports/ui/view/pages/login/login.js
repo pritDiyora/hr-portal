@@ -20,6 +20,7 @@ export default class Login extends Component {
             if (!err) {
                 let user = Meteor.user();
                 FlowRouter.go('/dashboard');
+                $('#btnModal').click();
             }else{
                 alert('Incorrect password and email');
             }
@@ -28,7 +29,6 @@ export default class Login extends Component {
 
     render() {
         return (
-            
                 <div className="middle-box text-center loginscreen animated fadeInDown">
                     <div>
                         {/* <div>
@@ -58,8 +58,6 @@ export default class Login extends Component {
                         </form>
                     </div>
                 </div>
-            
-
         )
     }
 
