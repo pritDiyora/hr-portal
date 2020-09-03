@@ -9,7 +9,7 @@ export default class Footer extends Component {
          
         </div>
         <div>
-          <strong>Copyright</strong> Scaleteam Techonology PVT LTD © {moment().year()}
+          <strong>Copyright</strong> Scaleteam Technology PVT LTD © {moment().year()}
         </div>
       </div>
     )

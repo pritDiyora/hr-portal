@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/index';
-
+import '../imports/api/methods/usermethods';
 Meteor.startup(() => {
-    Accounts.config({
-        forbidClientAccountCreation: true
-      });
+   
+    process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
+
     if (Meteor.users.find().count() === 0) {
         var options = {
             username: "Admin",
@@ -19,6 +19,13 @@ Meteor.startup(() => {
             }
         };
         let resultuser = Accounts.createUser(options);
-        console.log('reresultuser :: ', resultuser);        
+        console.log('reresultuser :: ', resultuser);
     }
+
+    S3.config = {
+        key: 'AKIAIQZEI4RO6OSIZGQQ',
+        secret: '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',
+        bucket: 'apex-hr-portal',
+        region: 'ap-south-1',
+    };
 });

@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-awesome-modal';
+import ReactDOM, { render } from 'react-dom';
+import { Meteor } from 'meteor/meteor';
 
 
 export default class Header extends Component {
@@ -29,6 +31,15 @@ export default class Header extends Component {
 		});
 	}
 	
+	showMailNoti(e) {
+		e.preventDefault();
+		$('#dropdownNoti').toggleClass('open');
+	}
+
+	MsgNoti(e) {
+		e.preventDefault();
+		$('#dropdownMsgNoti').toggleClass('open');
+	}
 
 	toggleNavigation(e) {
 		e.preventDefault();
@@ -199,9 +210,10 @@ export default class Header extends Component {
           					<i className="fa fa-tasks"></i>
           				</a>
           			</li> */}
-					</ul>
-				</nav>
-			</div >
+          		</ul>
+          	</nav>
+          </div>
+
 		)
 	}
 }
