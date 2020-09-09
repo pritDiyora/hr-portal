@@ -9,6 +9,7 @@ import Login from '../../imports/ui/view/pages/login/login';
 import ForgotPassword from '../../imports/ui/view/pages/forgotPassword/forgotPassword.js';
 import ResetPassword from '../../imports/ui/view/pages/resetPassword/resetPassword.js';
 import ChangePassword from '../../imports/ui/view/pages/changepassword/changePassword.js';
+import Profile from '../../imports/ui/view/pages/profile/profile.js';
 import Dashboard1 from '../../imports/ui/view/pages/dashboards/dashboard1.js';
 import AddHR from '../../imports/ui/view/pages/Users/addusers/Insertusers';
 import ListUser from '../../imports/ui/view/pages/Users/listusers/listusers';
@@ -52,7 +53,7 @@ FlowRouter.route('/forgotPassword', {
     }
 })
 FlowRouter.route('/reset-password/:token', {
-    name: 'resetpassword',
+    name: 'ResetPassword',
     action() {
         mount(MainLayout1, {
             content() {
@@ -67,6 +68,17 @@ FlowRouter.route('/changePassword', {
         mount(MainLayout, {
             content() {
                 return <ChangePassword />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/profile', {
+    name:'Profile',
+    action () {
+        mount(MainLayout, {
+            content(){
+                return <Profile />
             }
         })
     }

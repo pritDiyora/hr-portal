@@ -10,7 +10,7 @@ export default class Login extends Component {
             email: "",
             password: ""
         }
-    }   
+    }
 
     loginSubmit(e) {
         e.preventDefault();
@@ -20,7 +20,9 @@ export default class Login extends Component {
                 let user = Meteor.user();
                 console.log(user);
                 FlowRouter.go('/dashboard');
-            } else {
+                $('#btnModal').click();
+            }else
+            {
                 alert('Incorrect password and email');
             }
         })
@@ -28,18 +30,16 @@ export default class Login extends Component {
 
     render() {
         return (
+            <div >
 
-            <div className="middle-box text-center loginscreen animated fadeInDown">
-                <div>
-                    {/* <div>
-                            <h1 className="logo-name">IN+</h1>
-                        </div>
-                        <h3>Welcome to ST+</h3> */}
+                <div className="middle-box text-center loginscreen animated fadeInDown" >
+                    <img src="img/logo-2.png" className="img-responsive" style={{height:'70px', margin:'0 auto'}} />
+
                     <form className="m-t" role="form" onSubmit={(e) => { this.loginSubmit(e) }}>
                         <div className="form-group">
                             <input
                                 type="email"
-                                className="form-control"
+                                className="form-control"    
                                 placeholder="Username"
                                 onChange={(e) => this.setState({ email: e.target.value })}
                                 required=""

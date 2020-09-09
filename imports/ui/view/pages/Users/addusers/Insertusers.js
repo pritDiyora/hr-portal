@@ -403,16 +403,13 @@ class AddHR extends React.Component {
                                         <div className="col-md-12">
                                             <div className="col-md-6">
                                                 <label>Birth Date</label>
-                                                <div className="input-group date">
-                                                    <span className="input-group-addon"><i className="fa fa-calendar"></i></span>
                                                     <input
-                                                        type="text"
+                                                        type="date"
                                                         className="form-control"
                                                         name="dateofbirth"
                                                         value={this.state.dateofbirth}
                                                         onChange={this.myChangeHandler.bind(this)}
-                                                    />
-                                                </div>
+                                                    />          
                                             </div>
 
                                             <div className="col-md-6">
@@ -462,15 +459,12 @@ class AddHR extends React.Component {
                                         <div className="col-md-12">
                                             <div class="col-md-6">
                                                 <label>Joining Date</label>
-                                                <div className="input-group date">
-                                                    <span className="input-group-addon"><i className="fa fa-calendar"></i></span>
                                                     <input
-                                                        type="text"
+                                                        type="date"
                                                         className="form-control"
                                                         name="joiningdate"
                                                         onChange={this.myChangeHandler.bind(this)}
                                                     />
-                                                </div>
                                             </div>
                                             <div className="col-md-2">
                                                 <label>Gender</label><br />

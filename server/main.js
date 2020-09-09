@@ -25,6 +25,7 @@ Meteor.startup(() => {
             return (u && u.isAdmin);
         }
     });
+   
     process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
 
     if (Meteor.users.find().count() === 0) {
@@ -40,7 +41,8 @@ Meteor.startup(() => {
                 designation: 'owner'
             }
         };
-        Accounts.createUser(options);
+        let resultuser = Accounts.createUser(options);
+        console.log('reresultuser :: ', resultuser);
     }
     
     S3.config = {

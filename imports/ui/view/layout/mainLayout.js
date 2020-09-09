@@ -10,7 +10,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 toast.configure()
 export default class MainLayout extends Component{
-
+  componentWillMount(){
+    $("body").removeClass('gray-bg');
+  }
   render(){
     return(
       	<div id="wrapper">

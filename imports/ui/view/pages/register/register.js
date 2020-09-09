@@ -115,6 +115,7 @@ export default class Registration extends Component {
         return (
             <div className="middle-box text-center animated fadeInDown">
                 <div>
+                <img src="img/logo-2.png" className="img-responsive" style={{height:'70px', margin:'0 auto'}} />
                    
                     <form className="m-t" onSubmit={(e) => this.registerSubmit(e)}>
                         <fieldset>
@@ -131,7 +132,6 @@ export default class Registration extends Component {
                                             required=""
                                             onChange={this.handleChange.bind(this, "fname")}
                                             value={this.state.fields["fname"]}
-                                        // onChange={(e) => this.setState({ lname: e.target.value })}
                                         />
                                     </div>
                                     <div className="col-md-6">
@@ -146,7 +146,6 @@ export default class Registration extends Component {
                                             required=""
                                             onChange={this.handleChange.bind(this, "lname")}
                                             value={this.state.fields["lname"]}
-                                        // onChange={(e) => this.setState({ lname: e.target.value })}
                                         />
                                     </div>
                                 </div>
@@ -161,7 +160,6 @@ export default class Registration extends Component {
                                     required=""
                                     onChange={this.handleChange.bind(this, "email")}
                                     value={this.state.fields["email"]}
-                                // onChange={(e) => this.setState({ email: e.target.value })}
                                 />
                             </div>
                             <div className="col-md-12 form-group">
@@ -172,7 +170,6 @@ export default class Registration extends Component {
                                     placeholder="Phone Number"
                                     onChange={this.handleChange.bind(this, "tel")}
                                     value={this.state.fields["tel"]}
-                                // onChange={(e) => this.setState({ phoneNumber: e.target.value })}
                                 />
                             </div>
                             <div className="col-md-12 form-group no-padding">
@@ -186,7 +183,6 @@ export default class Registration extends Component {
                                         required=""
                                         onChange={this.handleChange.bind(this, "password")}
                                         value={this.state.fields["password"]}
-                                    // onChange={(e) => this.setState({ password: e.target.value })}
                                     />
                                 </div>
                                 <div className="col-md-6">
@@ -199,7 +195,6 @@ export default class Registration extends Component {
                                         required=""
                                         onChange={this.handleChange.bind(this, "confirmPassword")}
                                         value={this.state.fields["confirmPassword"]}
-                                    // onChange={(e) => this.setState({ confirmPassword: e.target.value })}
                                     />
                                 </div>
 

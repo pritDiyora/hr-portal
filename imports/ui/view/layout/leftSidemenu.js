@@ -1,7 +1,12 @@
 import React, { Component, PropTypes } from 'react'
-import ReactDOM, { render } from 'react-dom'
+import {Meteor} from 'meteor/meteor';
+import {withTracker} from 'meteor/react-meteor-data';
 
-export default class LeftSidemenu extends Component {
+class LeftSidemenu extends Component {
+
+  constructor(props) {
+    super(props);
+  }
 
   componentDidMount() {
     $('#side-menu').metisMenu();
@@ -16,7 +21,10 @@ export default class LeftSidemenu extends Component {
     Meteor.logout();
     FlowRouter.go('/');
   }
+
+
   render() {
+    let { currentUser } = this.props;
     return (
       <nav className="navbar-default navbar-static-side" role="navigation">
         <div className="sidebar-collapse">
@@ -24,12 +32,16 @@ export default class LeftSidemenu extends Component {
             <li className="nav-header">
               <div id="profile" className="dropdown profile-element"> <span>
                 <img alt="image" className="img-circle" src="img/profile_small.jpg" />
-              </span>
+                </span>
+            
                 <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
-                  <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">David Williams</strong>
-                  </span> <span className="text-muted text-xs block">Art Director <b className="caret"></b></span> </span> </a>
+                  <span className="clear"> <span className="block m-t-xs">
+                  <strong className="font-bold">{currentUser && currentUser.profile && currentUser.profile.firstName}</strong>
+            
+                  </span> 
+                  <span className="text-muted text-xs block">{currentUser && currentUser.profile && currentUser.profile.designation}<b className="caret"></b></span> </span> </a>
                 <ul className="dropdown-menu animated fadeInRight m-t-xs">
-                  <li><a href="#">Profile</a></li>
+                  <li><a href="/profile">Profile</a></li>
                   <li><a href="#">Contacts</a></li>
                   <li><a href="#">Mailbox</a></li>
                   <li className="divider"></li>
@@ -228,26 +240,22 @@ export default class LeftSidemenu extends Component {
                   <a href="#"><i className="fa fa-sitemap"></i> <span className="nav-label">Menu Levels </span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li>
-                      <a href="#" id="damian">Third Level <span className="fa arrow"></span></a>
-                      <ul className="nav nav-third-level collapse">
-                        <li>
-                          <a href="#">Third Level Item</a>
-                        </li>
-                        <li>
-                          <a href="#">Third Level Item</a>
-                        </li>
-                        <li>
-                          <a href="#">Third Level Item</a>
-                        </li>
-
-                      </ul>
+                      <a href="#">Third Level Item</a>
                     </li>
-                    <li><a href="#">Second Level Item</a></li>
                     <li>
-                      <a href="#">Second Level Item</a></li>
+                      <a href="#">Third Level Item</a>
+                    </li>
                     <li>
-                      <a href="#">Second Level Item</a></li>
+                      <a href="#">Third Level Item</a>
+                    </li>
+
                   </ul>
+                </li>
+                <li><a href="#">Second Level Item</a></li>
+                <li>
+                  <a href="#">Second Level Item</a></li>
+                <li>
+                  <a href="#">Second Level Item</a></li>
                 </li> */}
             {/* <li>
                   <a href="css_animation.html"><i className="fa fa-magic"></i> <span className="nav-label">CSS Animations </span><span className="label label-info pull-right">62</span></a>
@@ -258,6 +266,17 @@ export default class LeftSidemenu extends Component {
                 <li className="special_link">
                   <a href="package.html"><i className="fa fa-database"></i> <span className="nav-label">Package</span></a>
                 </li> */}
+              {/* </ul>
+            </li>
+            <li>
+              <a href="css_animation.html"><i className="fa fa-magic"></i> <span className="nav-label">CSS Animations </span><span className="label label-info pull-right">62</span></a>
+            </li>
+            <li className="landing_link">
+              <a target="_blank" href="landing.html"><i className="fa fa-star"></i> <span className="nav-label">Landing Page</span> <span className="label label-warning pull-right">NEW</span></a>
+            </li>
+            <li className="special_link">
+              <a href="package.html"><i className="fa fa-database"></i> <span className="nav-label">Package</span></a>
+            </li> */}
           </ul>
 
         </div>
@@ -266,3 +285,10 @@ export default class LeftSidemenu extends Component {
     )
   }
 }
+
+export default withTracker(() => {
+  Meteor.subscribe('user');
+  return{
+    currentUser: Meteor.user()
+  }
+})(LeftSidemenu);
