@@ -12,6 +12,9 @@ import ChangePassword from '../../imports/ui/view/pages/changepassword/changePas
 import Dashboard1 from '../../imports/ui/view/pages/dashboards/dashboard1.js';
 import AddHR from '../../imports/ui/view/pages/Users/addusers/Insertusers';
 import ListUser from '../../imports/ui/view/pages/Users/listusers/listusers';
+import Countries from '../../imports/ui/view/pages/countries/countries';
+import State from '../../imports/ui/view/pages/states/addstate';
+import City from '../../imports/ui/view/pages/city/city';
 
 // Accounts
 FlowRouter.route('/register', {
@@ -113,7 +116,37 @@ FlowRouter.route('/listuser', {
         })
     }
 })
+FlowRouter.route('/addcountry', {
+    name: 'addcountry',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <Countries />
+            }
+        })
+    }
+})
 
+FlowRouter.route('/addstate', {
+    name: 'addstate',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <State />
+            }
+        })
+    }
+})
+FlowRouter.route('/addcity', {
+    name: 'addstate',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <City />
+            }
+        })
+    }
+})
 
 
 

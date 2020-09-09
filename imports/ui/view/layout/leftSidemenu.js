@@ -1,58 +1,68 @@
-import React,{Component,PropTypes} from 'react'
-import ReactDOM,{render} from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import ReactDOM, { render } from 'react-dom'
 
 export default class LeftSidemenu extends Component {
 
-    componentDidMount(){
-      $('#side-menu').metisMenu();
-    }
+  componentDidMount() {
+    $('#side-menu').metisMenu();
+  }
 
-    profUpdate(e){
-     e.preventDefault();
-     $('#profile').toggleClass('open');
-    }
-    logout(e) {
-      e.preventDefault();
-      Meteor.logout();
-      FlowRouter.go('/');
-    }
-  render(){
-    return(
-          <nav className="navbar-default navbar-static-side" role="navigation">
-            <div className="sidebar-collapse">
-              <ul className="nav metismenu" id="side-menu">
-                <li className="nav-header">
-                  <div id="profile" className="dropdown profile-element"> <span>
-                    <img alt="image" className="img-circle" src="img/profile_small.jpg"/>
-                     </span>
-                    <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
-                    <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">David Williams</strong>
-                     </span> <span className="text-muted text-xs block">Art Director <b className="caret"></b></span> </span> </a>
-                    <ul className="dropdown-menu animated fadeInRight m-t-xs">
-                      <li><a href="#">Profile</a></li>
-                      <li><a href="#">Contacts</a></li>
-                      <li><a href="#">Mailbox</a></li>
-                      <li className="divider"></li>
-                      <li><a href="#" onClick={(e) => this.logout(e)}>Logout</a></li>
-                    </ul>
+  profUpdate(e) {
+    e.preventDefault();
+    $('#profile').toggleClass('open');
+  }
+  logout(e) {
+    e.preventDefault();
+    Meteor.logout();
+    FlowRouter.go('/');
+  }
+  render() {
+    return (
+      <nav className="navbar-default navbar-static-side" role="navigation">
+        <div className="sidebar-collapse">
+          <ul className="nav metismenu" id="side-menu">
+            <li className="nav-header">
+              <div id="profile" className="dropdown profile-element"> <span>
+                <img alt="image" className="img-circle" src="img/profile_small.jpg" />
+              </span>
+                <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
+                  <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">David Williams</strong>
+                  </span> <span className="text-muted text-xs block">Art Director <b className="caret"></b></span> </span> </a>
+                <ul className="dropdown-menu animated fadeInRight m-t-xs">
+                  <li><a href="#">Profile</a></li>
+                  <li><a href="#">Contacts</a></li>
+                  <li><a href="#">Mailbox</a></li>
+                  <li className="divider"></li>
+                  <li><a href="#" onClick={(e) => this.logout(e)}>Logout</a></li>
+                </ul>
+              </div>
+              <div className="logo-element">
+                IN+
                   </div>
-                  <div className="logo-element">
-                    IN+
-                  </div>
-                </li>
-                <li className="active">
-                  <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
-                  <ul className="nav nav-second-level collapse in">
-                    <li><a href="/dashboard">Dashboard v.1</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a>
-                </li>
-                <li>
-                  <a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a>
-                </li>
-                {/* <li>
+            </li>
+            <li className="active">
+              <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
+              <ul className="nav nav-second-level collapse in">
+                <li><a href="/dashboard">Dashboard v.1</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">User</span> <span className="fa arrow"></span></a>
+              <ul className="nav nav-second-level collapse in">
+                <li><a href="/listuser">List User</a></li>
+                <li><a href="/insertuser">Add User</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="/addcountry"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a>
+            </li>
+            <li>
+              <a href="/addstate"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a>
+            </li>
+            <li>
+              <a href="/addcity"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a>
+            </li>
+            {/* <li>
                   <a href="#"><i className="fa fa-bar-chart-o"></i> <span className="nav-label">Graphs</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="graph_flot.html">Flot Charts</a></li>
@@ -65,7 +75,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="graph_sparkline.html">Sparkline Charts</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="mailbox.html"><i className="fa fa-envelope"></i> <span className="nav-label">Mailbox </span><span className="label label-warning pull-right">16/24</span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="mailbox.html">Inbox</a></li>
@@ -74,13 +84,13 @@ export default class LeftSidemenu extends Component {
                     <li><a href="email_template.html">Email templates</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="metrics.html"><i className="fa fa-pie-chart"></i> <span className="nav-label">Metrics</span>  </a>
                 </li>
                 <li>
                   <a href="widgets.html"><i className="fa fa-flask"></i> <span className="nav-label">Widgets</span></a>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-edit"></i> <span className="nav-label">Forms</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="form_basic.html">Basic form</a></li>
@@ -92,7 +102,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="form_markdown.html">Markdown</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-desktop"></i> <span className="nav-label">App Views</span>  <span className="pull-right label label-primary">SPECIAL</span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="contacts.html">Contacts</a></li>
@@ -117,7 +127,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="pin_board.html">Pin board</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-files-o"></i> <span className="nav-label">Other Pages</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="search_results.html">Search results</a></li>
@@ -132,7 +142,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="empty_page.html">Empty page</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-globe"></i> <span className="nav-label">Miscellaneous</span><span className="label label-info pull-right">NEW</span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="toastr_notifications.html">Notification</a></li>
@@ -165,7 +175,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="tour.html">Tour</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-flask"></i> <span className="nav-label">UI Elements</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="typography.html">Typography</a></li>
@@ -193,7 +203,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="jq_grid.html">jqGrid</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-shopping-cart"></i> <span className="nav-label">E-commerce</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="ecommerce_products_grid.html">Products grid</a></li>
@@ -205,7 +215,7 @@ export default class LeftSidemenu extends Component {
                     <li><a href="ecommerce_payments.html">Credit Card form</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-picture-o"></i> <span className="nav-label">Gallery</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="basic_gallery.html">Lightbox Gallery</a></li>
@@ -214,7 +224,7 @@ export default class LeftSidemenu extends Component {
 
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-sitemap"></i> <span className="nav-label">Menu Levels </span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li>
@@ -239,19 +249,19 @@ export default class LeftSidemenu extends Component {
                       <a href="#">Second Level Item</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="css_animation.html"><i className="fa fa-magic"></i> <span className="nav-label">CSS Animations </span><span className="label label-info pull-right">62</span></a>
                 </li> */}
-                {/* <li className="landing_link">
+            {/* <li className="landing_link">
                   <a target="_blank" href="landing.html"><i className="fa fa-star"></i> <span className="nav-label">Landing Page</span> <span className="label label-warning pull-right">NEW</span></a>
                 </li>
                 <li className="special_link">
                   <a href="package.html"><i className="fa fa-database"></i> <span className="nav-label">Package</span></a>
                 </li> */}
-              </ul>
+          </ul>
 
-            </div>
-          </nav>
+        </div>
+      </nav>
 
     )
   }

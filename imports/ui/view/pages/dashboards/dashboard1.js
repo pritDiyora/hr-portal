@@ -6,8 +6,8 @@ import IboxTools from '/imports/ui/view/layout/iboxTools.js'
 export default class Dashboard1 extends Component {
     constructor(props) {
         super(props)
-        this.state={
-            user:''
+        this.state = {
+            user: ''
         }
     }
 

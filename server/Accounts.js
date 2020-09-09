@@ -22,7 +22,7 @@ Accounts.config({
 
 //enroll
 SSR.compileTemplate('enrollAccount', Assets.getText('verifyemail.html'));
-Accounts.urls.enrollAccount =   token => Meteor.absoluteUrl(`enrollAccount/${token}`);
+Accounts.urls.enrollAccount = token => Meteor.absoluteUrl(`enrollAccount/${token}`);
 
 Accounts.emailTemplates.enrollAccount = {
     subject() {
@@ -30,23 +30,23 @@ Accounts.emailTemplates.enrollAccount = {
     },
     html(createdUser, url) {
         let html = SSR.render('enrollAccount', {
-            url: url, user: createdUser,text: "To Verify your Email visit following link"
+            url: url, user: createdUser, text: "To Verify your Email visit following link"
         });
         return html;
     }
 }
 //reset
-SSR.compileTemplate('resetpassword', Assets.getText('verifyemail.html'));
-Accounts.urls.resetpassword =   token => Meteor.absoluteUrl(`resetpassword/${token}`);
+// SSR.compileTemplate('resetpassword', Assets.getText('verifyemail.html'));
+// Accounts.urls.resetPassword = token => Meteor.absoluteUrl(`reset-password/${token}`);
 
-Accounts.emailTemplates.enrollAccount = {
-    subject() {
-        return 'resetpassword';
-    },
-    html(createdUser, url) {
-        let html = SSR.render('resetpassword', {
-            url: url, user: createdUser,text: "To Reset your your password"
-        });
-        return html;
-    }
-}
+// Accounts.emailTemplates.enrollAccount = {
+//     subject() {
+//         return 'resetpassword';
+//     },
+//     html(url) {
+//         let html = SSR.render('resetpassword', {
+//             url: url,  text: "To Reset your your password"
+//         });
+//         return html;
+//     }
+// }

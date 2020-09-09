@@ -112,6 +112,7 @@ Schemas.UserEducation = new SimpleSchema({
 Schemas.UserExperiance = new SimpleSchema({
     companyName: {
         type: String,
+        optional: true
     },
     address: {
         type: Schemas.UserAddress,
@@ -119,21 +120,40 @@ Schemas.UserExperiance = new SimpleSchema({
     },
     workExpeience: {
         type: String,
+        optional: true
     },
     startAt: {
-        type: Date
+        type: Date,
+        optional: true
     },
     endAt: {
-        type: Date
+        type: Date,
+        optional: true
     },
     technology: {
-        type: [String]
+        type: Array,
+        optional: true
+    },
+    'technology.$': {
+        type: String
     }
 });
 
+export default User = Meteor.users;
+User.deny({
+    insert: () => true,
+    update: () => true,
+    remove: () => true
+});
+User.allow({
+    insert: () => true,
+    update: () => true,
+    remove: () => true
+});
 Schemas.User = new SimpleSchema({
     username: {
         type: String,
+        optional:true
     },
     emails: {
         type: Array,
@@ -152,29 +172,37 @@ Schemas.User = new SimpleSchema({
     password:
     {
         type: String,
-    },
-    confirmPassword: {
-        type: String,
-        custom: function () {//Another usage of the custom function.
-            if (this.value !== this.field('password').value) {
-                return "passwordMismatch";
-            }
-        }
+        optional:true
     },
     profile: {
         type: Schemas.UserProfile,
         blackbox: true
     },
     education: {
-        type: [Schemas.UserEducation],
+        type: Array,
+        optional:true
+    },
+    'education.$': {
+        type: Schemas.UserEducation,
         optional: true,
+        blackbox: true,
     },
     experiance: {
-        type: [Schemas.UserExperiance],
-        optional: true
+        type: Array,
+        optional:true
+    },
+    'experiance.$': {
+        type: Schemas.UserExperiance,
+        optional: true,
+        blackbox: true,
     },
     address: {
-        type: [Schemas.UserAddress],
+        type: Array,
+        blackbox: true,
+        optional: true,
+    },
+    'address.$': {
+        type: Schemas.UserAddress,
         optional: true
     },
     currentAddress: {
@@ -185,7 +213,7 @@ Schemas.User = new SimpleSchema({
         type: Object,
         optional: true,
         blackbox: true
-    },  
+    },
     joiningDate: {
         type: Date,
         optional: true
@@ -202,27 +230,31 @@ Schemas.User = new SimpleSchema({
         type: Date,
         autoValue() {
             return new Date();
-        }
+        },
+        optional:true
     },
     createdBy: {
-        type: Date,
+        type: String,
         autoValue() {
             if (this.isInsert) {
                 return this.userId;
             }
-        }
+        },
+        optional:true
     },
     modifiedAt: {
         type: Date,
         autoValue() {
             return new Date();
-        }
+        },
+        optional:true
     },
     modifiedBy: {
-        type: Date,
+        type: String,
         autoValue() {
             return this.userId;
-        }
+        },
+        optional:true
     }
 });
 
@@ -231,8 +263,7 @@ Schemas.User = new SimpleSchema({
 // });
 
 
-Meteor.users.attachSchema(Schemas.User);
-
+User.attachSchema(Schemas.User);
 
 // accountDetails : {
 // accountNO
