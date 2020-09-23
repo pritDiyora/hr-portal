@@ -18,8 +18,9 @@ class LeftSidemenu extends Component {
   }
   logout(e) {
     e.preventDefault();
-    Meteor.logout();
-    FlowRouter.go('/');
+    Meteor.logout(() => {
+      FlowRouter.go('/');
+    });
   }
 
 
@@ -51,30 +52,23 @@ class LeftSidemenu extends Component {
               <div className="logo-element">
                 IN+
                   </div>
-            </li>
-            <li className="active">
-              <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
-              <ul className="nav nav-second-level collapse in">
-                <li><a href="/dashboard">Dashboard v.1</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">User</span> <span className="fa arrow"></span></a>
-              <ul className="nav nav-second-level collapse in">
-                <li><a href="/listuser">List User</a></li>
-                <li><a href="/insertuser">Add User</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a>
-            </li>
-            <li>
-              <a href="/addstate"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a>
-            </li>
-            <li>
-              <a href="/addcity"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a>
-            </li>
-            {/* <li>
+                </li>
+                <li className="active">
+                  <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
+                  <ul className="nav nav-second-level collapse in">
+                    <li><a href="/dashboard">Dashboard v.1</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a>
+                </li>
+                <li>
+                  <a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a>
+                </li>
+                <li>
+                  <a href="/employeeAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
+                </li>
+                {/* <li>
                   <a href="#"><i className="fa fa-bar-chart-o"></i> <span className="nav-label">Graphs</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="graph_flot.html">Flot Charts</a></li>

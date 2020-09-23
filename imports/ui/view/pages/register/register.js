@@ -108,6 +108,30 @@ export default class Registration extends Component {
 
 
 
+        let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
+        var options = {
+            username: email,
+            email: email,
+            password: password,
+            profile: {
+                userType: 'superadmin',
+                firstName: fname,
+                lastName: lname,
+                phone: phoneNumber,
+                clockStatus: false
+            }
+        }
+        console.log('options :: ', options);
+        if (flag) {
+            Meteor.call('registerUser', options, function (err, res) {
+                if (!err) {
+                    console.log("Registration success!");
+                    FlowRouter.go('/')
+                } else {
+                    console.log("getting error!", err);
+                }
+            });
+        }
 
     }
 

@@ -1,6 +1,10 @@
 accounts-base@1.7.0
 accounts-password@1.6.2
 alanning:roles@3.2.3
+aldeed:collection2@2.10.0
+aldeed:collection2-core@1.2.0
+aldeed:schema-deny@1.1.0
+aldeed:schema-index@1.1.1
 aldeed:collection2@2.7.1
 aldeed:collection2-core@2.1.2
 aldeed:simple-schema@1.5.4

@@ -14,6 +14,7 @@ import Dashboard1 from '../../imports/ui/view/pages/dashboards/dashboard1.js';
 import InsertUser from '../../imports/ui/view/pages/Users/addusers/insertUser';
 import UpdateUser from '../../imports/ui/view/pages/Users/addusers/updateUser';
 import ListUser from '../../imports/ui/view/pages/Users/listusers/listusers';
+import EmployeeAttendance from '../../imports/ui/view/pages/attendance/employeeAttendance.js';
 import Countries from '../../imports/ui/view/pages/countries/countries';
 import State from '../../imports/ui/view/pages/states/addstate';
 import City from '../../imports/ui/view/pages/city/city';
@@ -151,6 +152,16 @@ FlowRouter.route('/country', {
     }
 })
 
+FlowRouter.route('/employeeAttendance', {
+    name: 'EmployeeAttendance',
+    action () {
+        mount(MainLayout, {
+            content() {
+                return <EmployeeAttendance />
+            }
+        })
+    }
+})
 FlowRouter.route('/addstate', {
     name: 'addstate',
     action() {

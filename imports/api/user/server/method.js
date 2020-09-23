@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import Attendance from './../../attendance/attendance';
 
 import User from '../users';
 
@@ -44,10 +45,22 @@ if (Meteor.isServer) {
             return User.update({ _id: userid }, { $set: { experiance: experi } });
         },
         'userOldData': (id) => {
-           return User.find({ _id: id }).fetch();
+            return User.find({ _id: id }).fetch();
         },
-        'updateUserProfile':(userid,userProfile) =>{
-            return User.update({ _id: userid }, { $set: {'emails.0.address':userProfile.email,profile:userProfile.profile } });
-        }
-    });
+        'updateUserProfile': (userid, userProfile) => {
+            return User.update({ _id: userid }, { $set: { 'emails.0.address': userProfile.email, profile: userProfile.profile } });
+        },
+        'checkInOut': (checkInOutData) => {
+            if (Meteor.isServer) {
+                if (Meteor.user()) {
+                    let updateStatus = Meteor.users.update({ _id: Meteor.userId() }, { $set: { 'profile.clockStatus': checkInOutData.isCheckIn } });
+                    console.log('updateStatus : ', updateStatus);
+                    return Attendance.insert(checkInOutData);
+                } else {
+                    throw new Meteor.Error('BAD', "You Don't have Permission to do this")
+                }
+            }
+        },
+    })
 }
+

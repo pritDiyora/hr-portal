@@ -8582,6 +8582,28 @@ body.md-skin {
   }
 }
 
+/* attendance today activity */
+
+.imgDiv {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.listView {
+  border-bottom: 1px solid #ddd;
+  height: 60px;
+  padding: 0%;
+}
+.pt-0 {
+  padding-top: 0 !important;
+}
+.pr-0 {
+  padding-right: 0 !important;
+}
+.mt-20 {
+  margin-top: 20px !important;
+}
 /* Tags*/
 .react-tagsinput {
   background-color: #fff;
@@ -8941,15 +8963,16 @@ body.md-skin {
   &:focus-within {
       border: 1px solid #0052cc;
   }
-  input {
-      flex: 1;
-      border: none;
-      height: 46px;
-      font-size: 14px;
-      padding: 4px 0 0 0;
-      &:focus {
-          outline: transparent;
-      }
+  
+}
+input {
+  flex: 1;
+  border: none;
+  height: 46px;
+  font-size: 14px;
+  padding: 4px 0 0 0;
+  focus {
+      outline: transparent;
   }
 }
 

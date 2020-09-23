@@ -1,56 +1,51 @@
-import React, { Component, PropTypes } from 'react';
-import Modal from 'react-awesome-modal';
-import ReactDOM, { render } from 'react-dom';
+import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import Attendance from '../../../api/attendance/attendance';
+import moment from 'moment';
 
+class Header extends Component {
 
-export default class Header extends Component {
-
-	//   rightsideopen(e){
-	//     e.preventDefault;
-	//     $('#right-sidebar').toggleClass('sidebar-open');
-	//   }
 	constructor(props) {
 		super(props);
 		this.state = {
-			visible: false,
-			button1: false,
-			button2: false
+			secondsElapsed: "",
+			createdAt: this.props.createdAt,
+			isLoading: false,
+			show: true
+		}
+	}
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.checkInOutList !== this.props.checkInOutList) {
+			this.setTiming();
+		}
+	}
+	
+	setTiming() {
+		let chkInStatus = Meteor.user() && Meteor.user().profile.clockStatus;
+		if (chkInStatus) {
+			this.countdown = setInterval(() => {
+				let { checkInOutList } = this.props;
+				let dateTime = checkInOutList && checkInOutList.dateTime && moment(checkInOutList.dateTime).format("HH:mm:ss");
+				let currentTime = moment().format("HH:mm:ss")
+				this.setState({
+					secondsElapsed: moment.utc(moment(currentTime, "HH:mm:ss").diff(moment(dateTime, "HH:mm:ss"))).format("HH:mm:ss")
+				})
+			}, 1000);
+		} else {
+			this.setState({
+				secondsElapsed: '00:00:00'
+			},() => {
+				clearInterval(this.countdown);
+			});
 		}
 	}
 
-	openModal() {
-		this.setState({
-			visible: true
-		});
-	}
 
-	closeModal() {
-		this.setState({
-			visible: false
-		});
-	}
-
-	clockout(){
-		this.setState({
-			visible: false
-		});
-	}
-
-	showMailNoti(e) {
-		e.preventDefault();
-		$('#dropdownNoti').toggleClass('open');
-	}
-
-	MsgNoti(e) {
-		e.preventDefault();
-		$('#dropdownMsgNoti').toggleClass('open');
-	}
 
 	toggleNavigation(e) {
 		e.preventDefault();
 		$("body").toggleClass("mini-navbar");
-		// smoothlyMenu();
 	}
 
 	showMailNoti(e) {
@@ -64,20 +59,29 @@ export default class Header extends Component {
 	}
 	logout(e) {
 		e.preventDefault();
-		Meteor.logout();
-		FlowRouter.go('/');
+		Meteor.logout(() => {
+			FlowRouter.go('/');
+		});
 	}
 
-	clockin(value) {
-		if (value === 1) {
-			this.setState({ button1: !this.state.button1, button2: false ,visible: false})
-		} else {
-			this.setState({ button1: false, button2: !this.state.button2,visible: false })
+	clockInOut = () => {
+		this.setState({
+			isLoading: true
+		})
+		setTimeout(() => {
+			this.setState({
+				isLoading: false
+			})
+		}, 1000)
+		let value = {
+			userId: Meteor.userId(),
+			isCheckIn: !Meteor.user().profile.clockStatus,
+			dateTime: new Date()
 		}
+		Meteor.call('checkInOut', value);
 	}
 
 	render() {
-
 		return (
 			<div className="row border-bottom">
 				<nav className="navbar navbar-static-top" role="navigation" style={{ 'marginBottom': '0' }}>
@@ -90,9 +94,14 @@ export default class Header extends Component {
 						</form>
 					</div>
 					<ul className="nav navbar-top-links navbar-right">
-						<li>
-							<button type="button" className="btn btn-primary" id="btnModal" onClick={() => this.openModal()}>Open</button>
-						</li>
+						{Meteor.userId() && <li>
+							<span type="button" className="btn btn-primary" id="btnModal" onClick={this.clockInOut} disabled={this.state.isLoading} style={{fontSize:"12px"}}>
+								{ this.state.isLoading 
+									? <i className="fa fa-spinner fa-spin"></i> 
+									: <>Clock In/Out <p className="no-margins" style={{fontSize:"10px"}}>{this.state.secondsElapsed}</p></>
+								}
+							</span>
+						</li>}
 						<li id="dropdownNoti" className="dropdown">
 							<a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.showMailNoti(e)}>
 								<i className="fa fa-envelope"></i>
@@ -200,26 +209,18 @@ export default class Header extends Component {
 								<i className="fa fa-sign-out"></i> Log out
           				</a>
 						</li>
-						{/* <li>
-          				<a className="right-sidebar-toggle"  onClick={(e) => this.rightsideopen(e)}>
-          					<i className="fa fa-tasks"></i>
-          				</a>
-          			</li> */}
 					</ul>
 				</nav>
-				<Modal visible={this.state.visible} id="modal" width="400" height="120" effect="fadeInUp" onClickAway={() => this.closeModal()}>
-					<div className="col-sm-6" style={{ marginTop: 10 }}>
-						<button className="btn btn-primary btn-block" onClick={() => this.clockin()} >Clock IN</button>
-					</div>
-					<div className="col-sm-6" style={{ marginTop: 10 }}>
-						<button className="btn btn-primary btn-block" onClick={() => this.clockout()}>Clock Out</button>
-					</div>
-					<div className="col-sm-12" style={{ marginTop: 20 }}>
-						<button className="btn btn-danger btn-block" onClick={() => this.closeModal()}>Close</button>
-					</div>
-				</Modal>
 			</div>
 
 		)
 	}
 }
+
+export default withTracker(() => {
+	Meteor.subscribe('checkInOutList');
+	return {
+		checkInOutList: Attendance.findOne({ "userId": Meteor.userId() }, { sort: { "dateTime": -1 } })
+	}
+})(Header);
+
