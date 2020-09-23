@@ -19,11 +19,11 @@ class AddHR extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profile: {}, email: "", tags: [], loading: false, CountryOption: {}, StateOption: {}, CityOption: {},
+            profile: {}, email: "",  loading: false, CountryOption: {}, StateOption: {}, CityOption: {},
             education: [{ key: Random.id(), index: 0 }],
             flag: null,
             experiance: [{ key: Random.id(), index: 0 }],
-            lastIndex: 0, countrie: [], states: [], city: [], addressline1: "", addressline2: "", userid: ""
+            lastIndex: 0, countrie: [], states: [], city: [],zipcode:"", addressline1: "", addressline2: "", userid: ""
         }
         this.filechangeHandler = this.filechangeHandler.bind(this);
         this.profileChangeHandler = this.profileChangeHandler.bind(this);
@@ -35,7 +35,6 @@ class AddHR extends React.Component {
         this.ExperienceaddmoreClick = this.ExperienceaddmoreClick.bind(this);
         this.ExperienceChangeHandler = this.ExperienceChangeHandler.bind(this);
         this.removeClickexperiance = this.removeClickexperiance.bind(this)
-        this.TaghandleChange = this.TaghandleChange.bind(this);
         this.userexperiance = this.userexperiance.bind(this);
         this.AddressChangeHandler = this.AddressChangeHandler.bind(this);
         this.BirthDateChangeHandler = this.BirthDateChangeHandler.bind(this);
@@ -119,11 +118,11 @@ class AddHR extends React.Component {
                 };
                 education.push(value)
                 this.setState({
-                    [`education.coursename_${value.key}_${value.index}`]: edu.cousrseName,
-                    [`education.coursetype_${value.key}_${value.index}`]: edu.cousrseType,
-                    [`education.institutename_${value.key}_${value.index}`]: edu.instituteName,
-                    [`education.acedemicyear_${value.key}_${value.index}`]: edu.academicYear,
-                    [`education.certificate_${value.key}_${value.index}`]: edu.certificate,
+                    [`education.coursename_${value.key}`]: edu.cousrseName,
+                    [`education.coursetype_${value.key}`]: edu.cousrseType,
+                    [`education.institutename_${value.key}`]: edu.instituteName,
+                    [`education.acedemicyear_${value.key}`]: edu.academicYear,
+                    [`education.certificate_${value.key}`]: edu.certificate,
                     education
                 });
             });
@@ -137,11 +136,11 @@ class AddHR extends React.Component {
                 };
                 experiance.push(value)
                 self.setState({
-                    [`experiance.companyname_${value.key}_${value.index}`]: exp.companyName,
-                    [`experiance.workexperiance_${value.key}_${value.index}`]: exp.workExpeience,
-                    [`experiance.startdate_${value.key}_${value.index}`]: exp.startAt,
-                    [`experiance.enddate_${value.key}_${value.index}`]: exp.endAt,
-                    [`experiance.techonology_${value.key}_${value.index}`]: exp.technology || [],
+                    [`experiance.companyname_${value.key}`]: exp.companyName,
+                    [`experiance.workexperiance_${value.key}`]: exp.workExpeience,
+                    [`experiance.startdate_${value.key}`]: exp.startAt,
+                    [`experiance.enddate_${value.key}`]: exp.endAt,
+                    [`experiance.techonology_${value.key}`]: exp.technology || [],
                     experiance
                 })
             });
@@ -176,13 +175,18 @@ class AddHR extends React.Component {
     createUI() {
         return this.state.education.map((el, i) => {
             return (<EducationComponent
-                rowData={el} id={i} education={this.state.education} EducationaddmoreClick={this.EducationaddmoreClick} previous={this.previous} Educationvalidator={this.Educationvalidator}
-                EduucationremoveClick={this.EduucationremoveClick} EducationchangeHandler={this.EducationchangeHandler} filechangeHandler={this.filechangeHandler} usereducation={this.usereducation}
-                coursename={this.state[`education.coursename_${el.key}_${el.index}`] || ''}
-                instituename={this.state[`education.institutename_${el.key}_${el.index}`] || ''}
-                academicyear={this.state[`education.acedemicyear_${el.key}_${el.index}`] || ''}
-                coursetype={this.state[`education.coursetype_${el.key}_${el.index}`] || ''}
-                certificate={this.state[`education.certificate_${el.key}_${el.index}`] || ''}
+                rowData={el} id={i} education={this.state.education} EducationaddmoreClick={this.EducationaddmoreClick} 
+                previous={this.previous} Educationvalidator={this.Educationvalidator}
+                EduucationremoveClick={this.EduucationremoveClick} 
+                EducationchangeHandler={this.EducationchangeHandler} 
+                filechangeHandler={this.filechangeHandler} 
+                usereducation={this.usereducation}
+                coursename={this.state[`education.coursename_${el.key}`] || ''}
+                loading={this.state.loading}
+                instituename={this.state[`education.institutename_${el.key}`] || ''}
+                academicyear={this.state[`education.acedemicyear_${el.key}`] || ''}
+                coursetype={this.state[`education.coursetype_${el.key}`] || ''}
+                certificate={this.state[`education.certificate_${el.key}`] || ''}
             />)
         })
 
@@ -210,16 +214,18 @@ class AddHR extends React.Component {
         });
     }
     //file upload
-    filechangeHandler(e, i, key) {
+    filechangeHandler(e, key) {
         var self = this;
         let filess = e.target.files;
+        self.setState({ loading: true })
         S3.upload({
             files: filess,
             path: "/img"
         }, function (err, r) {
             if (!err) {
                 self.setState({
-                    [`education.certificate_${key}_${i}`]: r.url
+                    [`education.certificate_${key}`]: r.url,
+                    loading:false
                 }, () => {
                     console.log("df :: ", self.state);
                 });
@@ -228,9 +234,9 @@ class AddHR extends React.Component {
 
 
     }
-    EducationchangeHandler(event, i) {
+    EducationchangeHandler(event) {
         this.setState({
-            [`${event.target.name}_${i}`]: event.target.value
+            [`${event.target.name}`]: event.target.value
         });
     }
     //Add More Experiance
@@ -275,26 +281,19 @@ class AddHR extends React.Component {
         this.setState({ CityOption });
     }
     //tag
-    TaghandleChange(tags, key, i) {
-        this.setState({
-            tags
-        });
-        this.setState({
-            [`experiance.techonology_${key}_${i}`]: tags
-        }, () => {
-            console.log("tag :: ", this.state[`experiance.techonology_${key}_${i}`], this.state);
-
-        });
-    }
+    
     AddressChangeHandler(event) {
         const { name, value } = event.target;
         this.setState({
             [`${name}`]: value
         });
     }
-    ExperienceChangeHandler(event, i) {
+    ExperienceChangeHandler(event) {
         this.setState({
-            [`${event.target.name}_${i}`]: event.target.value
+            [`${event.target.name}`]: event.target.value
+        }, () => {
+            console.log("tag :: ", this.state);
+
         });
     }
     EmailChangeHandler(event) {
@@ -374,11 +373,11 @@ class AddHR extends React.Component {
         let educations = [];
         this.state.education.map((el, i) => {
             let obj = {
-                cousrseName: this.state[`education.coursename_${el.key}_${el.index}`],
-                cousrseType: this.state[`education.coursetype_${el.key}_${el.index}`],
-                instituteName: this.state[`education.institutename_${el.key}_${el.index}`],
-                academicYear: this.state[`education.acedemicyear_${el.key}_${el.index}`],
-                certificate: this.state[`education.certificate_${el.key}_${el.index}`]
+                cousrseName: this.state[`education.coursename_${el.key}`],
+                cousrseType: this.state[`education.coursetype_${el.key}`],
+                instituteName: this.state[`education.institutename_${el.key}`],
+                academicYear: this.state[`education.acedemicyear_${el.key}`],
+                certificate: this.state[`education.certificate_${el.key}`]
             }
             educations.push(obj);
         });
@@ -402,11 +401,11 @@ class AddHR extends React.Component {
         let exp = [];
         this.state.experiance.map((el, i) => {
             let obj = {
-                companyName: this.state[`experiance.companyname_${el.key}_${el.index}`],
-                workExpeience: this.state[`experiance.workexperiance_${el.key}_${el.index}`],
-                startAt: this.state[`experiance.startdate_${el.key}_${el.index}`],
-                endAt: this.state[`experiance.enddate_${el.key}_${el.index}`],
-                technology: this.state[`experiance.techonology_${el.key}_${el.index}`]
+                companyName: this.state[`experiance.companyname_${el.key}`],
+                workExpeience: this.state[`experiance.workexperiance_${el.key}`],
+                startAt: this.state[`experiance.startdate_${el.key}`],
+                endAt: this.state[`experiance.enddate_${el.key}`],
+                technology: this.state[`experiance.techonology_${el.key}`]
             };
             exp.push(obj);
         });
@@ -445,7 +444,7 @@ class AddHR extends React.Component {
     }
 
     render() {
-        const { tags, countrie, states, city } = this.state;
+        const { countrie, states, city } = this.state;
         return (
             <div className="wrapper wrapper-content animated fadeInRight" >
                 <div className="tabs-container">
@@ -514,16 +513,15 @@ class AddHR extends React.Component {
                                     ExperienceChangeHandler={this.ExperienceChangeHandler}
                                     flag={this.state.flag}
                                     previous={this.previous}
-                                    TaghandleChange={this.TaghandleChange}
                                     Experiencevalidator={this.Experiencevalidator}
                                     userexperiance={this.userexperiance}
                                     removeClickexperiance={this.removeClickexperiance}
                                     ExperienceaddmoreClick={this.ExperienceaddmoreClick}
-                                    compantname={this.state[`experiance.companyname_${el.key}_${el.index}`] || ''}
-                                    workexpeience={this.state[`experiance.workexperiance_${el.key}_${el.index}`] || ''}
-                                    technology={this.state[`experiance.techonology_${el.key}_${el.index}`] || tags}
-                                    startdate={this.state[`experiance.startdate_${el.key}_${el.index}`] || ''}
-                                    enddate={this.state[`experiance.enddate_${el.key}_${el.index}`] || ''}
+                                    compantname={this.state[`experiance.companyname_${el.key}`] || ''}
+                                    workexpeience={this.state[`experiance.workexperiance_${el.key}`] || ''}
+                                    technology={this.state[`experiance.techonology_${el.key}`] || ''}
+                                    startdate={this.state[`experiance.startdate_${el.key}`] || ''}
+                                    enddate={this.state[`experiance.enddate_${el.key}`] || ''}
                                 />)
                             })}
                         </div>

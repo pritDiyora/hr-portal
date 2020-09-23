@@ -8973,6 +8973,7 @@ body.md-skin {
   border-radius: 6px;
   margin: 0 8px 8px 0;
   background: #0052cc;
+}
   .tag-title {
       margin-top: 3px;
   }
@@ -8989,10 +8990,34 @@ body.md-skin {
       background: #fff;
       cursor: pointer;
   }
-}
+
 
 @media screen and (max-width: 567px) {
   .tags-input {
       width: calc(100vw - 32px);
   }
+}
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: .25em solid #1ab394;
+  border-right-color: transparent;
+  border-radius: 50%;
+  margin-top: 20px;
+  margin-left: 30px;
+  -webkit-animation: spinner-border .75s linear infinite;
+  animation: spinner-border .75s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spinner-border {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spinner-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

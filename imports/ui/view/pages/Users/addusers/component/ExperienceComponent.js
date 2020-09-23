@@ -3,6 +3,19 @@ import TagsInput from 'react-tagsinput';
 class ExperieanceComponent extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            tags: []
+        }
+    }
+    TaghandleChange(tags, key) {
+        this.setState({
+            tags
+        });
+        this.setState({
+            [`experiance.techonology_${key}`]: tags
+        },()=>{
+            console.log("tag",this.state);
+        });
     }
     render() {
         const el = this.props.rowData;
@@ -19,7 +32,7 @@ class ExperieanceComponent extends Component {
                                 className="form-control"
                                 value={this.props.compantname}
                                 name={`experiance.companyname_${el.key}`}
-                                onChange={(e) => this.props.ExperienceChangeHandler(e, el.index)}
+                                onChange={(e) => this.props.ExperienceChangeHandler(e)}
                             />
                             {this.props.Experiencevalidator.message('Companyname', this.props.compantname, 'required')}
                         </div>
@@ -29,7 +42,7 @@ class ExperieanceComponent extends Component {
                                 type="text"
                                 className="form-control"
                                 name={`experiance.workexperiance_${el.key}`}
-                                onChange={(e) => this.props.ExperienceChangeHandler(e, el.index)}
+                                onChange={(e) => this.props.ExperienceChangeHandler(e)}
                                 value={this.props.workexpeience}
                             />
                             {this.props.Experiencevalidator.message('Workexperiance', this.props.workexpeience, 'required')}
@@ -37,10 +50,12 @@ class ExperieanceComponent extends Component {
                         <div className="col-md-4">
                             <label>Technlogoy</label><br />
                             <TagsInput
-                                value={this.props.technology}
+                                // currentValue={this.state[`experiance.techonology_${el.key}`]}
+                                onlyUnique={this.state.tags}
+                                value={this.state.tags}
                                 name={`experiance.techonology_${el.key}`}
-                                onChange={(e) => this.props.TaghandleChange(e, el.index, el.key)} />
-                            {this.props.Experiencevalidator.message('Technology', this.props.technology, 'required')}
+                                onChange={(e) => this.TaghandleChange(e,el.key)} />
+                            {/* {this.props.Experiencevalidator.message('Technology', this.state[`experiance.techonology_${el.key}`], 'required')} */}
                         </div>
                     </div>
                 </div>
@@ -54,7 +69,7 @@ class ExperieanceComponent extends Component {
                                 className="form-control"
                                 value={this.props.startdate}
                                 name={`experiance.startdate_${el.key}`}
-                                onChange={(e) => this.props.ExperienceChangeHandler(e, el.index)}
+                                onChange={(e) => this.props.ExperienceChangeHandler(e)}
                             />
                             {this.props.Experiencevalidator.message('StartDate', this.props.startdate, 'required')}
                         </div>
@@ -66,7 +81,7 @@ class ExperieanceComponent extends Component {
                                 className="form-control"
                                 name={`experiance.enddate_${el.key}`}
                                 value={this.props.enddate}
-                                onChange={(e) => this.props.ExperienceChangeHandler(e, el.index)}
+                                onChange={(e) => this.props.ExperienceChangeHandler(e)}
                             />
                             {this.props.Experiencevalidator.message('EndDate', this.props.enddate, 'required')}
                         </div>
