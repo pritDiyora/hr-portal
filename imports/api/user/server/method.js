@@ -1,8 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import Country from '../../country/country';
+
 import User from '../users';
-import State from '../../states/states';
-import Cities from '../../cites/cites';
+
 
 process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
 if (Meteor.isServer) {
@@ -29,30 +28,26 @@ if (Meteor.isServer) {
                 return false;
             }
         },
-        'insertuser': (user) => {
+        'insertUserProfile': (user) => {
             let userId = Accounts.createUser(user);
             Accounts.sendEnrollmentEmail(userId);
             return userId;
 
         },
+        'adddressadd': (userid, address) => {
+            return User.update({ _id: userid }, { $set: { address: address } });
+        },
         'addeducation': (userid, educations) => {
-            return User.update({ _id: userid }, { $set: { education: educations }, });
+            return User.update({ _id: userid }, { $set: { education: educations } });
         },
         'addexperiance': (userid, experi) => {
-            return User.update({ _id: userid }, { $set: { experiance: experi }, });
-        }
-
-        //Country state and city 
-        ,
-        'addcountry': (cname, ccode) => {
-            return Country.insert({ countryname: cname, countrycode: ccode });
+            return User.update({ _id: userid }, { $set: { experiance: experi } });
         },
-        'addstate': (cid, sname) => {
-            return State.insert({ countryId: cid, stateName: sname });
+        'userOldData': (id) => {
+           return User.find({ _id: id }).fetch();
         },
-        'addcity': (cid, sid, cityname) => {
-            return Cities.insert({ countryId: cid, stateId: sid, cityName: cityname });
+        'updateUserProfile':(userid,userProfile) =>{
+            return User.update({ _id: userid }, { $set: {'emails.0.address':userProfile.email,profile:userProfile.profile } });
         }
-        
     });
 }

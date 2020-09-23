@@ -66,7 +66,7 @@ class LeftSidemenu extends Component {
               </ul>
             </li>
             <li>
-              <a href="/addcountry"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a>
+              <a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a>
             </li>
             <li>
               <a href="/addstate"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a>

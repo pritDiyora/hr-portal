@@ -119,7 +119,7 @@ Schemas.UserExperiance = new SimpleSchema({
         optional: true
     },
     workExpeience: {
-        type: String,
+        type: Number,
         optional: true
     },
     startAt: {
@@ -145,11 +145,11 @@ User.deny({
     update: () => true,
     remove: () => true
 });
-User.allow({
-    insert: () => true,
-    update: () => true,
-    remove: () => true
-});
+// User.allow({
+//     insert: () => true,
+//     update: () => true,
+//     remove: () => true
+// });
 Schemas.User = new SimpleSchema({
     username: {
         type: String,
@@ -216,7 +216,7 @@ Schemas.User = new SimpleSchema({
     },
     joiningDate: {
         type: Date,
-        optional: true
+        optional: true,
     },
     outDate: {
         type: Date,

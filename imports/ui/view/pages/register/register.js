@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default class Registration extends Component {
     constructor(props) {
         super(props);
@@ -77,46 +78,45 @@ export default class Registration extends Component {
         e.preventDefault();
 
         if (this.handleValidation()) {
-
-            console.log("form submitted");
+            let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
+            var options = {
+                username: email,
+                email: email,
+                password: password,
+                profile: {
+                    userType: 'superadmin',
+                    firstName: fname,
+                    lastName: lname,
+                    phone: phoneNumber
+                }
+            }
+            if (flag) {
+                Meteor.call('registerUser', options, function (err, res) {
+                    if (!err) {
+                        toast.success("Registration success!");
+                        FlowRouter.go('/')
+                    } else {
+                        toast.error("getting error!", err);
+                    }
+                });
+            }
+            toast.success("form submitted");
         } else {
-            console.log("errors!!");
+            toast.error("errors!!");
         }
         let flag = true;
 
 
 
-        let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
-        var options = {
-            username: email,
-            email: email,
-            password: password,
-            profile: {
-                userType: 'superadmin',
-                firstName: fname,
-                lastName: lname,
-                phone: phoneNumber
-            }
-        }
-        console.log('options :: ', options);
-        if (flag) {
-            Meteor.call('registerUser', options, function (err, res) {
-                if (!err) {
-                    console.log("Registration success!");
-                    FlowRouter.go('/')
-                } else {
-                    console.log("getting error!", err);
-                }
-            });
-        }
+
     }
 
     render() {
         return (
             <div className="middle-box text-center animated fadeInDown">
                 <div>
-                <img src="img/logo-2.png" className="img-responsive" style={{height:'70px', margin:'0 auto'}} />
-                   
+                    <img src="img/logo-2.png" className="img-responsive" style={{ height: '70px', margin: '0 auto' }} />
+
                     <form className="m-t" onSubmit={(e) => this.registerSubmit(e)}>
                         <fieldset>
                             <div>

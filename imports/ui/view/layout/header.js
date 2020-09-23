@@ -31,6 +31,12 @@ export default class Header extends Component {
 		});
 	}
 
+	clockout(){
+		this.setState({
+			visible: false
+		});
+	}
+
 	showMailNoti(e) {
 		e.preventDefault();
 		$('#dropdownNoti').toggleClass('open');
@@ -64,9 +70,9 @@ export default class Header extends Component {
 
 	clockin(value) {
 		if (value === 1) {
-			this.setState({ button1: !this.state.button1, button2: false })
+			this.setState({ button1: !this.state.button1, button2: false ,visible: false})
 		} else {
-			this.setState({ button1: false, button2: !this.state.button2 })
+			this.setState({ button1: false, button2: !this.state.button2,visible: false })
 		}
 	}
 

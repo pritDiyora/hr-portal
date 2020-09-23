@@ -1,31 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/index';
+import Country from '../imports/api/country/country';
+import State from '../imports/api/states/states';
 // import S3 from 'aws-sdk/clients/s3';
-Meteor.startup(() => {
-    Meteor.users.allow({
-        insert: function (userId, doc) {
-            // only admin can insert 
-            var u = Meteor.users.findOne({ _id: userId });
-            return (u && u.isAdmin);
-        },
-        update: function (userId, doc, fields, modifier) {
-            console.log("user " + userId + "wants to modify doc" + doc._id);
-            if (userId && doc._id === userId) {
-                console.log("user allowed to modify own account!");
-                // user can modify own 
-                return true;
-            }
-            // admin can modify any
-            var u = Meteor.users.findOne({ _id: userId });
-            return (u && u.isAdmin);
-        },
-        remove: function (userId, doc) {
-            // only admin can remove
-            var u = Meteor.users.findOne({ _id: userId });
-            return (u && u.isAdmin);
-        }
-    });
-   
+Meteor.startup(async () => {
     process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
 
     if (Meteor.users.find().count() === 0) {
@@ -41,8 +19,7 @@ Meteor.startup(() => {
                 designation: 'owner'
             }
         };
-        let resultuser = Accounts.createUser(options);
-        console.log('reresultuser :: ', resultuser);
+        Accounts.createUser(options);
     }
     
     S3.config = {
@@ -52,5 +29,17 @@ Meteor.startup(() => {
         region: 'ap-south-1',
     };
 
-   
+    let countryIndexes = {
+        countrycode: "text",
+        countryname:"text"
+    }
+    let stateIndexes = {
+        countryId: "text",
+        stateName:"text"
+    }
+    await Country.rawCollection().dropIndexes();
+    await State.rawCollection().dropIndexes();
+    Country.rawCollection().createIndex(countryIndexes);
+    State.rawCollection().createIndex(stateIndexes);
+
 });

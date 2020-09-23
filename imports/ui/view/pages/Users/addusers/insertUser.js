@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AddHR from './Commanfield';
-class UpdateUser extends Component {
+class InsertUser extends Component {
     constructor(props) {
         super(props);
+
     }
     render() {
         return (
             <div>
-                <form id="updateUser">
-                    <AddHR flag={1} />
+                <form id="insertUser">
+                    <AddHR flag={0} />
                 </form>
             </div>
         );
     }
 }
-export default UpdateUser;
+export default InsertUser;
