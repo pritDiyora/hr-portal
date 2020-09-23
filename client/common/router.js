@@ -11,9 +11,13 @@ import ResetPassword from '../../imports/ui/view/pages/resetPassword/resetPasswo
 import ChangePassword from '../../imports/ui/view/pages/changepassword/changePassword.js';
 import Profile from '../../imports/ui/view/pages/profile/profile.js';
 import Dashboard1 from '../../imports/ui/view/pages/dashboards/dashboard1.js';
-import AddHR from '../../imports/ui/view/pages/Users/addusers/Insertusers';
+import InsertUser from '../../imports/ui/view/pages/Users/addusers/insertUser';
+import UpdateUser from '../../imports/ui/view/pages/Users/addusers/updateUser';
 import ListUser from '../../imports/ui/view/pages/Users/listusers/listusers';
 import EmployeeAttendance from '../../imports/ui/view/pages/attendance/employeeAttendance.js';
+import Countries from '../../imports/ui/view/pages/countries/countries';
+import State from '../../imports/ui/view/pages/states/addstate';
+import City from '../../imports/ui/view/pages/city/city';
 
 // Accounts
 FlowRouter.route('/register', {
@@ -72,10 +76,10 @@ FlowRouter.route('/changePassword', {
 })
 
 FlowRouter.route('/profile', {
-    name:'Profile',
-    action () {
+    name: 'Profile',
+    action() {
         mount(MainLayout, {
-            content(){
+            content() {
                 return <Profile />
             }
         })
@@ -89,7 +93,7 @@ FlowRouter.route('/enrollAccount/:token', {
                 return <ResetPassword />
             }
         })
-        Session.set("resetpassword",params.token);
+        Session.set("resetpassword", params.token);
     }
 })
 
@@ -97,21 +101,10 @@ FlowRouter.route('/enrollAccount/:token', {
 
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
-    action: function() {
+    action: function () {
         mount(MainLayout, {
             content() {
                 return <Dashboard1 />
-            }
-        })  
-    }
-})
-
-FlowRouter.route('/insertuser', {
-    name: 'AddHR',
-    action() {
-        mount(MainLayout, {
-            content() {
-                return <AddHR />
             }
         })
     }
@@ -122,6 +115,38 @@ FlowRouter.route('/listuser', {
         mount(MainLayout, {
             content() {
                 return <ListUser />
+            }
+        })
+    }
+})
+FlowRouter.route('/insertuser', {
+    name: 'AddHR',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <InsertUser />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/updateuser/:_id', {
+    name: 'UpdateUser',
+    action: function (params) {
+        mount(MainLayout, {
+            content() {
+                return <UpdateUser />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/country', {
+    name: 'country',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <Countries />
             }
         })
     }
@@ -137,5 +162,26 @@ FlowRouter.route('/employeeAttendance', {
         })
     }
 })
+FlowRouter.route('/addstate', {
+    name: 'addstate',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <State />
+            }
+        })
+    }
+})
+FlowRouter.route('/addcity', {
+    name: 'addstate',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <City />
+            }
+        })
+    }
+})
+
 
 

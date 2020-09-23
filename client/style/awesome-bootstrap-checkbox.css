@@ -200,9 +200,9 @@
   opacity: 0;
   z-index: 1; }
 .abc-radio input[type="radio"]:focus + label::before {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px; }
+  outline: none;
+  /* outline: 5px auto -webkit-focus-ring-color; */
+  outline-offset: 0px !important; }
 .abc-radio input[type="radio"]:checked + label::after {
   transform: scale(1, 1); }
 .abc-radio input[type="radio"]:disabled + label {
@@ -243,11 +243,11 @@
   background-color: #ffc107; }
 
 .abc-radio-success input[type="radio"] + label::after {
-  background-color: #1AB394; }
+  background-color: #28a745; }
 .abc-radio-success input[type="radio"]:checked + label::before {
-  border-color: #1AB394; }
+  border-color: #28a745; }
 .abc-radio-success input[type="radio"]:checked + label::after {
-  background-color: #1AB394; }
+  background-color: #28a745; }
 
 label .was-validated .form-check-input:invalid .abc-checkbox:before, label
 .was-validated .form-check-input:invalid .abc-radio:before, label .form-check-input.is-invalid .abc-checkbox:before, label

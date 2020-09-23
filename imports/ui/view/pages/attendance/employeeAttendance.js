@@ -122,7 +122,7 @@ class EmployeeAttendance extends Component {
         isPunchIn: getPunchInTime,
         isPunchOut: getPunchOutTime,
         diffs,
-        monthProgress: (((Sugar.Array.sum(diffs) / 60) * 100 / 180) / 100 * 180).toFixed(2)
+        overTimeProgress: ((Sugar.Array.sum(diffs) / 60) * 100 / 180).toFixed(2)
       })
 
     }

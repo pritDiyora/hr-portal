@@ -1,523 +1,407 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import IboxTools from '../../../layout/iboxTools';
 import $ from 'jquery';
-// import DataTable from 'datatables.net';
+import { withTracker } from 'meteor/react-meteor-data';
+import User from '../../../../../api/user/users';
+import Country from '../../../../../api/country/country';
+import State from '../../../../../api/states/states';
+import Cities from '../../../../../api/cites/cites';
+import Pagination from "react-js-pagination";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-export default class ListUser extends Component {
+class ListUser extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            userid: "",
+            displayedUser: [],
+            sortbutton: "default",
+            //table (sorting,seraching,pagination)
+            pageLength: 10,
+            searchStr: "",
+            sortKey: "createdAt",
+            sortValue: 1,
+            currentPage: 1,
+            totalpage: 0
+        }
 
     }
-
     componentDidMount() {
-        // window.$ = window.jquery = require('../../.././../../../node_modules/jquery');
-        // window.dt = require('../../../../../../node_modules/datatables.net')();
-        // window.$('.dataTables-example').DataTable({
-        //     pageLength: 25,
-        //     responsive: true,
-        //     dom: '<"html5buttons"B>lTfgitp',
-        //     buttons: [
-        //         { extend: 'copy' },
-        //         { extend: 'csv' },
-        //         { extend: 'excel', title: 'ExampleFile' },
-        //         { extend: 'pdf', title: 'ExampleFile' },
-
-        //         {
-        //             extend: 'print',
-        //             customize: function (win) {
-        //                 $(win.document.body).addClass('white-bg');
-        //                 $(win.document.body).css('font-size', '10px');
-
-        //                 $(win.document.body).find('table')
-        //                     .addClass('compact')
-        //                     .css('font-size', 'inherit');
-        //             }
-        //         }
-        //     ]
-        // });
-
-        // $('.dataTables-example').DataTable({
-        //     pageLength: 25,
-        //     responsive: true,
-        //     dom: '<"html5buttons"B>lTfgitp',
-        //     buttons: [
-        //         { extend: 'copy' },
-        //         { extend: 'csv' },
-        //         { extend: 'excel', title: 'ExampleFile' },
-        //         { extend: 'pdf', title: 'ExampleFile' },
-
-        //         {
-        //             extend: 'print',
-        //             customize: function (win) {
-        //                 $(win.document.body).addClass('white-bg');
-        //                 $(win.document.body).css('font-size', '10px');
-
-        //                 $(win.document.body).find('table')
-        //                     .addClass('compact')
-        //                     .css('font-size', 'inherit');
-        //             }
-        //         }
-        //     ]
-
-        // });
+        this.getCountryData();
     }
+    showhandle(event) {
+        this.setState({
+            currentPage: 1,
+            pageLength: parseInt(event.target.value)
+        }, () => {
+            this.getCountryData();
+        })
+    }
+    handlePageChange(pageNumber) {
+        const currentPage = pageNumber;
+        const totalpage = pageNumber;
+        this.setState({
+            currentPage, totalpage
+        }, () => {
+            this.getCountryData();
+        });
+    }
+    search(e) {
+        this.setState({
+            currentPage: 1,
+            searchStr: e.target.value
+        }, () => {
+            this.getCountryData();
+        })
+    }
+    getCountryData() {
+        const self = this;
+        let pipeline = [
+            {
+                "$lookup": {
+                    from: "country",
+                    localField: "address.0.country",
+                    foreignField: "_id",
+                    as: "countryname"
+                }
+            },
+            { "$unwind": "$countryname" },
+            {
+                "$lookup": {
+                    from: "state",
+                    localField: "address.0.state",
+                    foreignField: "_id",
+                    as: "statename"
+                }
+            },
+            { "$unwind": "$statename" },
+            {
+                "$lookup": {
+                    from: "city",
+                    localField: "address.0.city",
+                    foreignField: "_id",
+                    as: "cityname"
+                }
+            },
+            { "$unwind": "$cityname" },
+            {
+                "$match": {
+                    "$or": [
+                        { "countryname.countryname": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "statename.stateName": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "cityname.cityName": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "profile.joiningDate": { $regex: this.state.searchStr, $options: 'i' } },
+                        { 'emails.0.address': { $regex: this.state.searchStr, $options: 'i' } },
+                        { "profile.phone": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "profile.birthDate": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "profile.gender": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "profile.firstName": { $regex: this.state.searchStr, $options: 'i' } },
+                        { "profile.lastName": { $regex: this.state.searchStr, $options: 'i' } },
+                    ]
+                }
+            },
+            { "$sort": { [this.state.sortKey]: this.state.sortValue } },
+            { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
+            { "$limit": this.state.pageLength },
+        ];
+        Meteor.call("searchUser", pipeline, function (err, res) {
+            if (!err) {
+                console.log(res);
+                Meteor.call("countUserdata", res, function (err1, res1) {
+                    if (!err) {
+                        self.setState({ totalpage: res1 });
+                    }
+                })
+                self.setState({ displayedUser: res });
+            } else {
+                toast.error(err);
+            }
+        });
 
+    }
+    descdata(e, name) {
+        $(".default").removeClass('fa fa-fw fa-sort');
+        this.setState({
+            sortbutton: "desc",
+            sortValue: -1,
+            sortKey: name,
+            currentPage: 1
+        }, () => {
+            this.getCountryData();
+        })
+    }
+    asecdata(e, name) {
+        $(".default").removeClass('fa fa-fw fa-sort');
+        this.setState({
+            sortbutton: "asc",
+            sortValue: 1,
+            sortKey: name,
+            currentPage: 1
+        }, () => {
+            this.getCountryData();
+        }
+        );
 
+    }
+    openmodeldelete(e, id) {
+        e.preventDefault();
+        $("#deletemodel").modal("show");
+        this.setState({ userid: id })
+    }
+    deletrecord(e) {
+        e.preventDefault();
+        Meteor.call('deleteuser', this.state.userid, function (err, res) {
+            if (!err) {
+                $("#deletemodel").modal("hide");
+                toast.success("Record Deleted.." + res)
+            } else {
+                toast.error(err)
+            }
+        })
+    }
+    datedifferent(date1, date2) {
+        var str;
+        var joinindate = date1 || undefined;
+        joinindate = moment(date1, "YYYY-MM-DD");
+        const cuurentdate = moment(date2, "YYYY-MM-DD");
+
+        let years = cuurentdate.diff(joinindate, 'year');
+        joinindate.add(years, 'years');
+
+        let months = cuurentdate.diff(joinindate, 'months');
+        joinindate.add(months, 'months');
+
+        let days = cuurentdate.diff(joinindate, 'days');
+        joinindate.add(days, 'days');
+        if (years == 0) {
+            if (months == 0) {
+                if (days == 0) {
+                    str = "No Date found";
+                } else {
+                    str = days + ' days ';
+                }
+            } else {
+                str = months + ' months ' + days + ' days ';
+            }
+        } else if (months == 0) {
+            if (days == 0) {
+                str = years + ' years ';
+            } else {
+                str = years + ' years ' + days + ' days ';
+            }
+        } else if (isNaN(years) && isNaN(months) && isNaN(days)) {
+            str = "No Date found";
+        }
+        else {
+            str = years + ' years ' + months + ' months ' + days + ' days ';
+        }
+        return str;
+    }
+    experiance(exp) {
+        let exps = exp || [] || undefined;
+        let count = 0;
+        for (let i = 0; i < exps.length; i++) {
+            count = count + parseFloat(exps[i].workExpeience);
+        }
+        if (count == 0) {
+            count = "No Experiance";
+        }
+        return count;
+    }
     render() {
 
         return (
-            <div class="wrapper wrapper-content animated fadeInRight">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="ibox ">
-                            <div class="ibox-title">
-                                <h5>Basic Data Tables example with responsive plugin</h5>
+            <div>
+                <div className="wrapper wrapper-content animated fadeInRight">
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="ibox ">
+                                <div className="ibox-title">
+                                    <h5>Basic Data Tables example with responsive plugin</h5>
                                     <IboxTools />
-                              
-                            </div>
-                            <div class="ibox-content">
-
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover dataTables-example" >
-                                        <thead>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="gradeX">
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                Explorer 4.0
-                                                 </td>
-                                                <td>Win 95+</td>
-                                                <td class="center">4</td>
-                                                <td class="center">X</td>
-                                            </tr>
-                                            <tr class="gradeC">
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                Explorer 5.0
-                                            </td>
-                                                <td>Win 95+</td>
-                                                <td class="center">5</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                Explorer 5.5
-                                            </td>
-                                                <td>Win 95+</td>
-                                                <td class="center">5.5</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                Explorer 6
-                                             </td>
-                                                <td>Win 98+</td>
-                                                <td class="center">6</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Trident</td>
-                                                <td>Internet Explorer 7</td>
-                                                <td>Win XP SP2+</td>
-                                                <td class="center">7</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Trident</td>
-                                                <td>AOL browser (AOL desktop)</td>
-                                                <td>Win XP</td>
-                                                <td class="center">6</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Firefox 1.0</td>
-                                                <td>Win 98+ / OSX.2+</td>
-                                                <td class="center">1.7</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Firefox 1.5</td>
-                                                <td>Win 98+ / OSX.2+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Firefox 2.0</td>
-                                                <td>Win 98+ / OSX.2+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Firefox 3.0</td>
-                                                <td>Win 2k+ / OSX.3+</td>
-                                                <td class="center">1.9</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Camino 1.0</td>
-                                                <td>OSX.2+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Camino 1.5</td>
-                                                <td>OSX.3+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Netscape 7.2</td>
-                                                <td>Win 95+ / Mac OS 8.6-9.2</td>
-                                                <td class="center">1.7</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Netscape Browser 8</td>
-                                                <td>Win 98SE+</td>
-                                                <td class="center">1.7</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Netscape Navigator 9</td>
-                                                <td>Win 98+ / OSX.2+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.0</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.1</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1.1</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.2</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1.2</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.3</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1.3</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.4</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1.4</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.5</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1.5</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.6</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">1.6</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.7</td>
-                                                <td>Win 98+ / OSX.1+</td>
-                                                <td class="center">1.7</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Mozilla 1.8</td>
-                                                <td>Win 98+ / OSX.1+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Seamonkey 1.1</td>
-                                                <td>Win 98+ / OSX.2+</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Gecko</td>
-                                                <td>Epiphany 2.20</td>
-                                                <td>Gnome</td>
-                                                <td class="center">1.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>Safari 1.2</td>
-                                                <td>OSX.3</td>
-                                                <td class="center">125.5</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>Safari 1.3</td>
-                                                <td>OSX.3</td>
-                                                <td class="center">312.8</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>Safari 2.0</td>
-                                                <td>OSX.4+</td>
-                                                <td class="center">419.3</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>Safari 3.0</td>
-                                                <td>OSX.4+</td>
-                                                <td class="center">522.1</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>OmniWeb 5.5</td>
-                                                <td>OSX.4+</td>
-                                                <td class="center">420</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>iPod Touch / iPhone</td>
-                                                <td>iPod</td>
-                                                <td class="center">420.1</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Webkit</td>
-                                                <td>S60</td>
-                                                <td>S60</td>
-                                                <td class="center">413</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 7.0</td>
-                                                <td>Win 95+ / OSX.1+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 7.5</td>
-                                                <td>Win 95+ / OSX.2+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 8.0</td>
-                                                <td>Win 95+ / OSX.2+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 8.5</td>
-                                                <td>Win 95+ / OSX.2+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 9.0</td>
-                                                <td>Win 95+ / OSX.3+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 9.2</td>
-                                                <td>Win 88+ / OSX.3+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera 9.5</td>
-                                                <td>Win 88+ / OSX.3+</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Opera for Wii</td>
-                                                <td>Wii</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Nokia N800</td>
-                                                <td>N800</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Presto</td>
-                                                <td>Nintendo DS browser</td>
-                                                <td>Nintendo DS</td>
-                                                <td class="center">8.5</td>
-                                                <td class="center">C/A<sup>1</sup></td>
-                                            </tr>
-                                            <tr class="gradeC">
-                                                <td>KHTML</td>
-                                                <td>Konqureror 3.1</td>
-                                                <td>KDE 3.1</td>
-                                                <td class="center">3.1</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>KHTML</td>
-                                                <td>Konqureror 3.3</td>
-                                                <td>KDE 3.3</td>
-                                                <td class="center">3.3</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>KHTML</td>
-                                                <td>Konqureror 3.5</td>
-                                                <td>KDE 3.5</td>
-                                                <td class="center">3.5</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeX">
-                                                <td>Tasman</td>
-                                                <td>Internet Explorer 4.5</td>
-                                                <td>Mac OS 8-9</td>
-                                                <td class="center">-</td>
-                                                <td class="center">X</td>
-                                            </tr>
-                                            <tr class="gradeC">
-                                                <td>Tasman</td>
-                                                <td>Internet Explorer 5.1</td>
-                                                <td>Mac OS 7.6-9</td>
-                                                <td class="center">1</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeC">
-                                                <td>Tasman</td>
-                                                <td>Internet Explorer 5.2</td>
-                                                <td>Mac OS 8-X</td>
-                                                <td class="center">1</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Misc</td>
-                                                <td>NetFront 3.1</td>
-                                                <td>Embedded devices</td>
-                                                <td class="center">-</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeA">
-                                                <td>Misc</td>
-                                                <td>NetFront 3.4</td>
-                                                <td>Embedded devices</td>
-                                                <td class="center">-</td>
-                                                <td class="center">A</td>
-                                            </tr>
-                                            <tr class="gradeX">
-                                                <td>Misc</td>
-                                                <td>Dillo 0.8</td>
-                                                <td>Embedded devices</td>
-                                                <td class="center">-</td>
-                                                <td class="center">X</td>
-                                            </tr>
-                                            <tr class="gradeX">
-                                                <td>Misc</td>
-                                                <td>Links</td>
-                                                <td>Text only</td>
-                                                <td class="center">-</td>
-                                                <td class="center">X</td>
-                                            </tr>
-                                            <tr class="gradeX">
-                                                <td>Misc</td>
-                                                <td>Lynx</td>
-                                                <td>Text only</td>
-                                                <td class="center">-</td>
-                                                <td class="center">X</td>
-                                            </tr>
-                                            <tr class="gradeC">
-                                                <td>Misc</td>
-                                                <td>IE Mobile</td>
-                                                <td>Windows Mobile 6</td>
-                                                <td class="center">-</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeC">
-                                                <td>Misc</td>
-                                                <td>PSP browser</td>
-                                                <td>PSP</td>
-                                                <td class="center">-</td>
-                                                <td class="center">C</td>
-                                            </tr>
-                                            <tr class="gradeU">
-                                                <td>Other browsers</td>
-                                                <td>All others</td>
-                                                <td>-</td>
-                                                <td class="center">-</td>
-                                                <td class="center">U</td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
                                 </div>
+                                <div className="ibox-content">
+                                    <div className="row text-center">
+                                        <div className="col-sm-12" style={{ marginBottom: "15px" }}>
+                                            <div className="col-sm-6" >
+                                                <div class="dataTables_length" id="example_length">
+                                                    <label className="dataTables_length text">Show <select name="example_length"
+                                                        className="form-control" onChange={this.showhandle.bind(this)}>
+                                                        <option value="5">5</option>
+                                                        <option value="10" selected>10</option>
+                                                        <option value="25">25</option>
+                                                        <option value="50">50</option>
+                                                        <option value="100">100</option>
+                                                    </select> entries</label>
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-6" >
+                                                <div className="page1" id="example_length">
+                                                    <label className="dataTables_length1 text">Search :
+                                            <input type="text" name="example_length" onChange={this.search.bind(this)}
+                                                            className="form-control" style={{ width: "200px" }} /></label>
+                                                </div>
 
+                                            </div>
+                                        </div>
+
+                                        <div className="container-fluid">
+                                            <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
+                                                <thead>
+                                                    <tr>
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "profile.joiningDate")}> Joining Date<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "profile.joiningDate")}>Joining Date<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "profile.joiningDate")}>Joining Date<i className="fa fa-sort-amount-desc desc sortdata" ></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "profile.firstName")}>Name<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "profile.firstName")}>Name<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "profile.firstName")}>Name<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "emails.0.address")}>Emaile Id<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "emails.0.address")}>Emaile Id<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "emails.0.address")}>Emaile Id<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "profile.phone")}>Conatct No<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "profile.phone")}>Conatct No<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "phone")}>Conatct No<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "cityName")}>No of Experiance<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "cityName")}>No of Experiance<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "cityName")}>No of Experiance<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "profile.birthDate")}>Date Of Birth<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "profile.birthDate")}>Date Of Birth<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "birthDate")}>Date Of Birth<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "address.0.country")}>Location<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "address.0.country")}>Location<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "address.0.country")}>Location<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "profile.gender")}>Gender<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "profile.gender")}>Gender<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "gender")}>Gender<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        {
+                                                            this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "cityName")}>...<i className="fa fa-fw fa-sort default sortdata"></i></th>
+                                                                : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "cityName")}>...<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
+                                                                    : <th onClick={(e) => this.asecdata(e, "cityName")}>...<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
+                                                        }
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {this.state.displayedUser.map((event, i) => {
+                                                        let name;
+                                                        name = event.profile.firstName + " " + event.profile.lastName;
+                                                        let experiances = this.experiance(event.experiance)
+                                                        let location = event.countryname.countryname + "," + event.statename.stateName + "," + event.cityname.cityName;
+                                                        const dateFormat = "YYYY-MM-DD";
+                                                        let datediff = this.datedifferent(event.profile.joiningDate, moment().format(dateFormat));
+                                                        return (
+                                                            <tr key={i}>
+                                                                <td>{event.profile.joiningDate}</td>
+                                                                <td>{name}</td>
+                                                                <td>{event.emails[0].address}</td>
+                                                                <td>{event.profile.phone}</td>
+                                                                <td>{experiances}</td>
+                                                                <td>{event.profile.birthDate}</td>
+                                                                <td>{location}</td>
+                                                                <td>{event.profile.gender}</td>
+                                                                <td>{datediff}</td>
+                                                                <td>
+                                                                    <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, event._id)}>
+                                                                        <i className="fa fa-trash-o"></i></a>
+
+                                                                    <a href={`updateuser/${event._id}`} className="btn btn-xs  btn-primary ">
+                                                                        <i className="fa fa-edit"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Joining Date</th>
+                                                        <th>Name</th>
+                                                        <th>Emaile Id</th>
+                                                        <th>Conatct No</th>
+                                                        <th>No of Experiance</th>
+                                                        <th>Date Of Birth</th>
+                                                        <th>Location</th>
+                                                        <th>Gender</th>
+                                                        <th>...</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                            <div style={{ textAlign: "right" }}>
+                                                <Pagination
+                                                    activePage={this.state.currentPage}
+                                                    itemsCountPerPage={this.state.pageLength}
+                                                    totalItemsCount={this.state.totalpage}
+                                                    pageRangeDisplayed={5}
+                                                    onChange={this.handlePageChange.bind(this)}
+
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Modal title</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Are you sure you want to delete.. ?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            // <div>add
+            //     <form id="addUser"> <userFields data={}></form>
+            // </div>
+            // <div>update
+            //     <form id="updateUser"> <userFields data={userdata}></form>
+            // </div>
+
+
+
         )
     }
 
 }
+export default withTracker(() => {
+    Meteor.subscribe('CountryData');
+    Meteor.subscribe('Statedata');
+    Meteor.subscribe('Citydata');
+    return {
+        country: Country.find({}).fetch(),
+        states: State.find({}).fetch(),
+        city: Cities.find({}).fetch()
+    }
+})(ListUser);

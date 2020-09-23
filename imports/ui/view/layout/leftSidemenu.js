@@ -81,7 +81,7 @@ class LeftSidemenu extends Component {
                     <li><a href="graph_sparkline.html">Sparkline Charts</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="mailbox.html"><i className="fa fa-envelope"></i> <span className="nav-label">Mailbox </span><span className="label label-warning pull-right">16/24</span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="mailbox.html">Inbox</a></li>
@@ -90,13 +90,13 @@ class LeftSidemenu extends Component {
                     <li><a href="email_template.html">Email templates</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="metrics.html"><i className="fa fa-pie-chart"></i> <span className="nav-label">Metrics</span>  </a>
                 </li>
                 <li>
                   <a href="widgets.html"><i className="fa fa-flask"></i> <span className="nav-label">Widgets</span></a>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-edit"></i> <span className="nav-label">Forms</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="form_basic.html">Basic form</a></li>
@@ -108,7 +108,7 @@ class LeftSidemenu extends Component {
                     <li><a href="form_markdown.html">Markdown</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-desktop"></i> <span className="nav-label">App Views</span>  <span className="pull-right label label-primary">SPECIAL</span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="contacts.html">Contacts</a></li>
@@ -133,7 +133,7 @@ class LeftSidemenu extends Component {
                     <li><a href="pin_board.html">Pin board</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-files-o"></i> <span className="nav-label">Other Pages</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="search_results.html">Search results</a></li>
@@ -148,7 +148,7 @@ class LeftSidemenu extends Component {
                     <li><a href="empty_page.html">Empty page</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-globe"></i> <span className="nav-label">Miscellaneous</span><span className="label label-info pull-right">NEW</span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="toastr_notifications.html">Notification</a></li>
@@ -181,7 +181,7 @@ class LeftSidemenu extends Component {
                     <li><a href="tour.html">Tour</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-flask"></i> <span className="nav-label">UI Elements</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="typography.html">Typography</a></li>
@@ -209,7 +209,7 @@ class LeftSidemenu extends Component {
                     <li><a href="jq_grid.html">jqGrid</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-shopping-cart"></i> <span className="nav-label">E-commerce</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="ecommerce_products_grid.html">Products grid</a></li>
@@ -221,7 +221,7 @@ class LeftSidemenu extends Component {
                     <li><a href="ecommerce_payments.html">Credit Card form</a></li>
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-picture-o"></i> <span className="nav-label">Gallery</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="basic_gallery.html">Lightbox Gallery</a></li>
@@ -230,7 +230,7 @@ class LeftSidemenu extends Component {
 
                   </ul>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="#"><i className="fa fa-sitemap"></i> <span className="nav-label">Menu Levels </span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li>
@@ -251,10 +251,10 @@ class LeftSidemenu extends Component {
                 <li>
                   <a href="#">Second Level Item</a></li>
                 </li> */}
-                {/* <li>
+            {/* <li>
                   <a href="css_animation.html"><i className="fa fa-magic"></i> <span className="nav-label">CSS Animations </span><span className="label label-info pull-right">62</span></a>
                 </li> */}
-                {/* <li className="landing_link">
+            {/* <li className="landing_link">
                   <a target="_blank" href="landing.html"><i className="fa fa-star"></i> <span className="nav-label">Landing Page</span> <span className="label label-warning pull-right">NEW</span></a>
                 </li>
                 <li className="special_link">

@@ -24,7 +24,7 @@ Accounts.emailTemplates.enrollAccount = {
         return html;
     }
 }
-//reset
+
 SSR.compileTemplate('resetpassword', Assets.getText('verifyemail.html'));
 
 Accounts.urls.resetPassword = token => {

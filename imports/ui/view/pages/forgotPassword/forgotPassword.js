@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Accounts } from 'meteor/accounts-base'
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class ForgotPassword extends Component {
 
@@ -13,42 +14,24 @@ export default class ForgotPassword extends Component {
             // password: ""
         }
     }
-    // loginSubmit(e) {
-    //     e.preventDefault();
-    //     let { email, password } = this.state;
-    //     Meteor.loginWithPassword(email, password, (err, res) => {
-    //         if (!err) {
-    //             let user = Meteor.user();
-    //             console.log(user);
-    //             FlowRouter.go('/dashboard');
-    //         } else {
-    //             alert('Incorrect password and email');
-    //         }
-    //     })
-    // }
-
     forgotPassword(e) {
         e.preventDefault();
         var email = this.state.email;
-        console.log(email);
-
         Accounts.forgotPassword({ email: email }, function (err, res) {
-
             if (err) {
                 if (err.message === 'User not found [403]') {
-                    console.log('This email does not exist.');
+                    toast.error('This email does not exist.');
                 } else {
-                    console.log('We are sorry but something went wrong.');
+                    toast.error('We are sorry but something went wrong.');
                 }
             } else {
-                console.log('Email Sent. Check your mailbox.', res);
+                toast.success('Email Sent. Check your mailbox.', res);
             }
         });
     }
 
     render() {
         return (
-
             <div className="middle-box text-center loginscreen animated fadeInDown">
                 <img src="img/logo-2.png" className="img-responsive" style={{ height: '70px', margin: '0 auto' }} />
                 <div>
@@ -86,8 +69,6 @@ export default class ForgotPassword extends Component {
 
                 </div>
             </div>
-
-
         )
     }
 
