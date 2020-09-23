@@ -20,7 +20,7 @@ export default class Login extends Component {
                 let user = Meteor.user();
                 console.log(user);
                 FlowRouter.go('/dashboard');
-                $('#btnModal').click();
+                // $('#btnModal').click();
             }else
             {
                 alert('Incorrect password and email');

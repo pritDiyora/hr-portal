@@ -8571,3 +8571,26 @@ body.md-skin {
     margin: 0;
   }
 }
+
+/* attendance today activity */
+
+.imgDiv {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.listView {
+  border-bottom: 1px solid #ddd;
+  height: 60px;
+  padding: 0%;
+}
+.pt-0 {
+  padding-top: 0 !important;
+}
+.pr-0 {
+  padding-right: 0 !important;
+}
+.mt-20 {
+  margin-top: 20px !important;
+}

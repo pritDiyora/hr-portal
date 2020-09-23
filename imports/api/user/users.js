@@ -1,4 +1,3 @@
-import SimpleSchema from 'simpl-schema';
 Schemas = {};
 
 Schemas.UserProfile = new SimpleSchema({
@@ -63,6 +62,10 @@ Schemas.UserProfile = new SimpleSchema({
     description: {
         type: String,
         optional: true
+    },
+    clockStatus: {
+        type: Boolean,
+        defaultValue: false
     }
 });
 

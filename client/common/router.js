@@ -13,6 +13,7 @@ import Profile from '../../imports/ui/view/pages/profile/profile.js';
 import Dashboard1 from '../../imports/ui/view/pages/dashboards/dashboard1.js';
 import AddHR from '../../imports/ui/view/pages/Users/addusers/Insertusers';
 import ListUser from '../../imports/ui/view/pages/Users/listusers/listusers';
+import EmployeeAttendance from '../../imports/ui/view/pages/attendance/employeeAttendance.js';
 
 // Accounts
 FlowRouter.route('/register', {
@@ -126,6 +127,15 @@ FlowRouter.route('/listuser', {
     }
 })
 
-
+FlowRouter.route('/employeeAttendance', {
+    name: 'EmployeeAttendance',
+    action () {
+        mount(MainLayout, {
+            content() {
+                return <EmployeeAttendance />
+            }
+        })
+    }
+})
 
 

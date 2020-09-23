@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
+import  Attendance from './../../attendance/attendance';
 
 Meteor.methods({
-   
+
     'registerUser': (data) => {
         check(data, Object);
         if (Meteor.isServer) {
@@ -24,5 +25,18 @@ Meteor.methods({
         } else {
             return false;
         }
-    }
+    },
+
+    'checkInOut': (checkInOutData) => {
+        if (Meteor.isServer) {
+            if(Meteor.user()) {
+                let updateStatus = Meteor.users.update({ _id: Meteor.userId() }, { $set: { 'profile.clockStatus': checkInOutData.isCheckIn } });
+                console.log('updateStatus : ', updateStatus);
+                return Attendance.insert(checkInOutData);
+            } else {
+                throw new Meteor.Error('BAD', "You Don't have Permission to do this")
+            }
+        }
+    },
+
 });

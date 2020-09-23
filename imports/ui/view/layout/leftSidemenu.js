@@ -18,8 +18,9 @@ class LeftSidemenu extends Component {
   }
   logout(e) {
     e.preventDefault();
-    Meteor.logout();
-    FlowRouter.go('/');
+    Meteor.logout(() => {
+      FlowRouter.go('/');
+    });
   }
 
 
@@ -63,6 +64,9 @@ class LeftSidemenu extends Component {
                 </li>
                 <li>
                   <a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a>
+                </li>
+                <li>
+                  <a href="/employeeAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
                 </li>
                 {/* <li>
                   <a href="#"><i className="fa fa-bar-chart-o"></i> <span className="nav-label">Graphs</span><span className="fa arrow"></span></a>

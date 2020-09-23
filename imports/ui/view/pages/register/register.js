@@ -95,7 +95,8 @@ export default class Registration extends Component {
                 userType: 'superadmin',
                 firstName: fname,
                 lastName: lname,
-                phone: phoneNumber
+                phone: phoneNumber,
+                clockStatus: false
             }
         }
         console.log('options :: ', options);
