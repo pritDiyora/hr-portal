@@ -33,6 +33,5 @@ email@2.0.0
 session@1.2.0
 lepozepo:s3
 aldeed:collection2
-aldeed:collection2-core@2.0.0
-aldeed:collection2
+aldeed:simple-schema
 random@1.2.0

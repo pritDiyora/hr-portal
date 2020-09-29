@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import {Meteor} from 'meteor/meteor';
-import {withTracker} from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 class LeftSidemenu extends Component {
 
@@ -33,14 +33,14 @@ class LeftSidemenu extends Component {
             <li className="nav-header">
               <div id="profile" className="dropdown profile-element"> <span>
                 <img alt="image" className="img-circle" src="img/profile_small.jpg" />
-                </span>
-            
+              </span>
+
                 <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
                   <span className="clear"> <span className="block m-t-xs">
-                  <strong className="font-bold">{currentUser && currentUser.profile && currentUser.profile.firstName}</strong>
-            
-                  </span> 
-                  <span className="text-muted text-xs block">{currentUser && currentUser.profile && currentUser.profile.designation}<b className="caret"></b></span> </span> </a>
+                    <strong className="font-bold">{currentUser && currentUser.profile && currentUser.profile.firstName}</strong>
+
+                  </span>
+                    <span className="text-muted text-xs block">{currentUser && currentUser.profile && currentUser.profile.designation}<b className="caret"></b></span> </span> </a>
                 <ul className="dropdown-menu animated fadeInRight m-t-xs">
                   <li><a href="/profile">Profile</a></li>
                   <li><a href="#">Contacts</a></li>
@@ -52,23 +52,32 @@ class LeftSidemenu extends Component {
               <div className="logo-element">
                 IN+
                   </div>
-                </li>
-                <li className="active">
-                  <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
-                  <ul className="nav nav-second-level collapse in">
-                    <li><a href="/dashboard">Dashboard v.1</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a>
-                </li>
-                <li>
-                  <a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a>
-                </li>
-                <li>
-                  <a href="/employeeAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
-                </li>
-                {/* <li>
+            </li>
+            <li className="active">
+              <a href="#"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
+              <ul className="nav nav-second-level collapse in">
+                <li><a href="/dashboard">Dashboard v.1</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a>
+            </li>
+            <li>
+              <a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a>
+            </li>
+            <li>
+              <a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a>
+            </li>
+            <li>
+              <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a>
+            </li>
+            <li>
+              <a href="/city"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a>
+            </li>
+            <li>
+              <a href="/employeeAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
+            </li>
+            {/* <li>
                   <a href="#"><i className="fa fa-bar-chart-o"></i> <span className="nav-label">Graphs</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
                     <li><a href="graph_flot.html">Flot Charts</a></li>
@@ -260,7 +269,7 @@ class LeftSidemenu extends Component {
                 <li className="special_link">
                   <a href="package.html"><i className="fa fa-database"></i> <span className="nav-label">Package</span></a>
                 </li> */}
-              {/* </ul>
+            {/* </ul>
             </li>
             <li>
               <a href="css_animation.html"><i className="fa fa-magic"></i> <span className="nav-label">CSS Animations </span><span className="label label-info pull-right">62</span></a>
@@ -282,7 +291,7 @@ class LeftSidemenu extends Component {
 
 export default withTracker(() => {
   Meteor.subscribe('user');
-  return{
+  return {
     currentUser: Meteor.user()
   }
 })(LeftSidemenu);

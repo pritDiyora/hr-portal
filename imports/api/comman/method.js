@@ -3,6 +3,7 @@ import Country from '../country/country';
 import State from '../states/states';
 import Cities from '../cites/cites';
 import User from '../user/users';
+import Attendance from '../attendance/attendance';
 if (Meteor.isServer) {
     Meteor.methods({
         //Country state and city 
@@ -60,9 +61,16 @@ if (Meteor.isServer) {
         'searchUser': (pipeline) => {
             return Promise.await(User.rawCollection().aggregate(pipeline).toArray());
         },
+        'searchAttendanceDate': (pipeline) => {
+            return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
+            // delete pipeline['$skip']
+            // delete pipeline['$limit'] // count()
+            // return [ data, count]
+        },
         'countUserdata': () => {
             return User.find({}).count();
         },
+        
         'deleteuser': (id) => {
             return User.remove({ _id: id });
         }

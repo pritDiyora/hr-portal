@@ -78,6 +78,7 @@ export default class Registration extends Component {
         e.preventDefault();
 
         if (this.handleValidation()) {
+            let flag = true;
             let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
             var options = {
                 username: email,
@@ -87,52 +88,22 @@ export default class Registration extends Component {
                     userType: 'superadmin',
                     firstName: fname,
                     lastName: lname,
-                    phone: phoneNumber
+                    phone: phoneNumber,
+                    clockStatus: false
                 }
             }
+            console.log('options :: ', options);
             if (flag) {
                 Meteor.call('registerUser', options, function (err, res) {
                     if (!err) {
-                        toast.success("Registration success!");
+                        console.log("Registration success!");
                         FlowRouter.go('/')
                     } else {
-                        toast.error("getting error!", err);
+                        console.log("getting error!", err);
                     }
                 });
             }
-            toast.success("form submitted");
-        } else {
-            toast.error("errors!!");
         }
-        let flag = true;
-
-
-
-        let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
-        var options = {
-            username: email,
-            email: email,
-            password: password,
-            profile: {
-                userType: 'superadmin',
-                firstName: fname,
-                lastName: lname,
-                phone: phoneNumber,
-                clockStatus: false
-            }
-        }
-        console.log('options :: ', options);
-        if (flag) {
-            Meteor.call('registerUser', options, function (err, res) {
-                if (!err) {
-                    console.log("Registration success!");
-                    FlowRouter.go('/')
-                } else {
-                    console.log("getting error!", err);
-                }
-            });
-        }
-
     }
 
     render() {

@@ -1,5 +1,5 @@
 import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+
 schema = {}
 
 const Country = new Mongo.Collection('country');

@@ -76,7 +76,8 @@ class Header extends Component {
 		let value = {
 			userId: Meteor.userId(),
 			isCheckIn: !Meteor.user().profile.clockStatus,
-			dateTime: new Date()
+			dateTime: new Date(),
+			date: moment().format("YYYY-MM-DD")
 		}
 		Meteor.call('checkInOut', value);
 	}

@@ -29,7 +29,7 @@
     "react-select-2": "^2.0.11",
     "react-tagsinput": "^3.19.0",
     "react-toastify": "^6.0.8",
-    "simpl-schema": "^1.10.0",
-    "simple-react-validator": "^1.5.0"
+    "simple-react-validator": "^1.5.0",
+    "sugar": "^2.0.6"
   }
 }

@@ -162,7 +162,7 @@ FlowRouter.route('/employeeAttendance', {
         })
     }
 })
-FlowRouter.route('/addstate', {
+FlowRouter.route('/state', {
     name: 'addstate',
     action() {
         mount(MainLayout, {
@@ -172,7 +172,7 @@ FlowRouter.route('/addstate', {
         })
     }
 })
-FlowRouter.route('/addcity', {
+FlowRouter.route('/city', {
     name: 'addstate',
     action() {
         mount(MainLayout, {
@@ -182,6 +182,3 @@ FlowRouter.route('/addcity', {
         })
     }
 })
-
-
-
