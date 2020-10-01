@@ -76,38 +76,7 @@ export default class Registration extends Component {
 
     registerSubmit(e) {
         e.preventDefault();
-
-        if (this.handleValidation()) {
-            let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
-            var options = {
-                username: email,
-                email: email,
-                password: password,
-                profile: {
-                    userType: 'superadmin',
-                    firstName: fname,
-                    lastName: lname,
-                    phone: phoneNumber
-                }
-            }
-            if (flag) {
-                Meteor.call('registerUser', options, function (err, res) {
-                    if (!err) {
-                        toast.success("Registration success!");
-                        FlowRouter.go('/')
-                    } else {
-                        toast.error("getting error!", err);
-                    }
-                });
-            }
-            toast.success("form submitted");
-        } else {
-            toast.error("errors!!");
-        }
         let flag = true;
-
-
-
         let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;
         var options = {
             username: email,
@@ -125,10 +94,10 @@ export default class Registration extends Component {
         if (flag) {
             Meteor.call('registerUser', options, function (err, res) {
                 if (!err) {
-                    console.log("Registration success!");
+                    toast.success("Registration success!");
                     FlowRouter.go('/')
                 } else {
-                    console.log("getting error!", err);
+                    toast.error("getting error!", err);
                 }
             });
         }

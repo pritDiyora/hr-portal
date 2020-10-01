@@ -1,23 +1,19 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react'
 import { Meteor } from 'meteor/meteor';
 import IboxTools from '../../layout/iboxTools';
-import Country from '../../../../api/country/country';
-import { withTracker } from 'meteor/react-meteor-data';
-import States from '../../../../api/states/states';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
-class State extends Component {
-
+import SimpleReactValidator from 'simple-react-validator';
+export default class LeaveType extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            countryid: "",
-            statename: "",
-            stateid: "",
+            typename: "",
+            noofday: undefined,
+            leaveTypeId: "",
             button: false,
-            displayedState: [],
-            sortbutton: "default",
+            displayedLeaveType: [],
             //table (sorting,seraching,pagination)
             pageLength: 10,
             searchStr: "",
@@ -25,12 +21,10 @@ class State extends Component {
             sortValue: 1,
             currentPage: 1,
             totalpage: 0
-
         }
+        this.leaveTypeValidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
     }
-    componentDidMount() {
-        this.getCountryData();
-    }
+    //Dropdown pagination
     showhandle(event) {
         this.setState({
             currentPage: 1,
@@ -38,6 +32,9 @@ class State extends Component {
         }, () => {
             this.getCountryData();
         })
+    }
+    componentDidMount() {
+        this.getCountryData();
     }
     handlePageChange(pageNumber) {
         const currentPage = pageNumber;
@@ -47,6 +44,78 @@ class State extends Component {
         }, () => {
             this.getCountryData();
         });
+    }
+    addLeaveType(e) {
+        e.preventDefault();
+        const self = this;
+        let { typename, noofday ,leaveTypeId} = this.state;
+        if (this.state.button == true) {
+            Meteor.call('updateLeaveType', typename, noofday, leaveTypeId, function (err, result) {
+                if (!err) {
+                    toast.success("Record updates..." + result);
+                    $("#add-panel").modal("hide");
+                    self.setState({
+                        typename: "",
+                        noofday: "",
+                        leaveTypeId: "",
+                        button: false
+                    })
+                    // window.location.reload(false);
+                } else {
+                    toast.error("Error ::" + err);
+                }
+            })
+        } else {
+            Meteor.call('addleaveType', typename, noofday, function (err, result) {
+                if (!err) {
+                    toast.success("Record Inserted..." + result);
+                    $("#add-panel").modal("hide");
+                    // window.location.reload(false);
+                } else {
+                    toast.error("Error ::" + err);
+                }
+            })
+        }
+
+    }
+    //Delete Model
+    deletemodel(e, id) {
+        e.preventDefault();
+        $("#deletemodel").modal("show");
+        this.setState({ countryid: id })
+    }
+    deletrecord(e) {
+        e.preventDefault();
+        Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+            if (!err) {
+                $("#deletemodel").modal("hide");
+                toast.success("Record Deleted.." + res)
+            } else {
+                toast.error(err)
+            }
+        })
+    }
+    //Insert and Edit Model
+    modelclick(event, id) {
+        event.preventDefault()
+        $("#add-panel").modal("show");
+    }
+    updaterecord(e, id) {
+        this.state.displayedLeaveType.map((le, i) => {
+            if (le._id == id) {
+                this.setState({ typename: le.leaveTypeName, noofday: le.noOfDay, button: true, leaveTypeId: id })
+            }
+        })
+        $("#add-panel").modal("show");
+    }
+    cancel(e) {
+        this.setState({
+            countryname: "",
+            countrycode: "",
+            countryid: "",
+            button: false
+        })
+        $("#add-panel").modal("hide");
     }
     search(e) {
         this.setState({
@@ -60,19 +129,10 @@ class State extends Component {
         const self = this;
         let pipeline = [
             {
-                "$lookup": {
-                    from: "country",
-                    localField: "countryId",
-                    foreignField: "_id",
-                    as: "countryname"
-                }
-            },
-            { "$unwind": "$countryname" },
-            {
                 "$match": {
                     "$or": [
-                        { "countryname.countryname": { $regex: this.state.searchStr, $options: 'i' } },
-                        { stateName: { $regex: this.state.searchStr, $options: 'i' } }
+                        { leaveTypeName: { $regex: this.state.searchStr, $options: 'i' } },
+                        { noOfDay: { $regex: this.state.searchStr, $options: 'i' } }
                     ]
                 }
             },
@@ -80,14 +140,14 @@ class State extends Component {
             { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
             { "$limit": this.state.pageLength },
         ];
-        Meteor.call("searchState", pipeline, function (err, res) {
+        Meteor.call("searchLeaveType", pipeline, function (err, res) {
             if (!err) {
-                Meteor.call("countStatedata", res, function (err1, res1) {
+                Meteor.call("countLeaveTypeData", res, function (err1, res1) {
                     if (!err) {
                         self.setState({ totalpage: res1 });
                     }
                 })
-                self.setState({ displayedState: res });
+                self.setState({ displayedLeaveType: res });
             } else {
                 toast.error(err);
             }
@@ -114,63 +174,6 @@ class State extends Component {
             })
         }
     }
-    addstate(e) {
-        e.preventDefault();
-        let { countryid, statename } = this.state;
-        if (this.state.button == true) {
-            Meteor.call('updatestatedata', countryid, statename, this.state.stateid, function (err, result) {
-                if (!err) {
-                    toast.success("Record Updated..." + result);
-                    $("#add-panel").modal("hide");
-                } else {
-                    toast.error("Error ::" + err);
-
-                }
-            })
-            this.setState({ countryid: "", statename: "", button: false, stateid: "" })
-        } else {
-            Meteor.call('addstate', countryid, statename, function (err, result) {
-                if (!err) {
-                    toast.success("Record Inserted..." + result);
-                    $("#add-panel").modal("hide");
-                } else {
-                    toast.error("Error ::" + err);
-
-                }
-            })
-        }
-    }
-    modelclick(event) {
-        $("#add-panel").modal("show");
-    }
-    openmodeldelete(e, id) {
-        e.preventDefault();
-        $("#deletemodel").modal("show");
-        this.setState({ stateid: id })
-    }
-    deletrecord(e) {
-        e.preventDefault();
-        Meteor.call('deletestate', this.state.stateid, function (err, res) {
-            if (!err) {
-                $("#deletemodel").modal("hide");
-                toast.success("Record Deleted.." + res)
-            } else {
-                toast.error(err)
-            }
-        })
-    }
-    updaterecord(e, id) {
-        this.state.displayedState.map((state, i) => {
-            if (state._id == id) {
-                this.setState({ countryid: state.countryId, statename: state.stateName, button: true, stateid: id })
-            }
-        })
-        $("#add-panel").modal("show");
-    }
-    cancel(e) {
-        this.setState({ countryid: "", statename: "", button: false, stateid: "" })
-        $("#add-panel").modal("hide");
-    }
     render() {
         let { sortKey, sortValue } = this.state;
         return (
@@ -178,12 +181,12 @@ class State extends Component {
                 <div className="wrapper wrapper-content animated fadeInRight" >
                     <div className="ibox ">
                         <div className="ibox-title">
-                            <h5>State Lists</h5>
+                            <h5>Leave Type List</h5>
                             <IboxTools />
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add States</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add Leave Type</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
@@ -200,39 +203,30 @@ class State extends Component {
                                     <div className="col-sm-6" style={{ paddingRight: "0px" }}>
                                         <div className="page1" id="example_length">
                                             <label className="dataTables_length1 text">Search :
-                                            <input type="text" name="example_length" onChange={this.search.bind(this)}
-                                                    className="form-control" style={{ width: "200px" }} /></label>
+                                            <input type="text" name="example_length" onChange={this.search.bind(this)} className="form-control" style={{ width: "200px" }} /></label>
                                         </div>
-
                                     </div>
                                 </div>
-
                                 <div className="container-fluid">
                                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                <th onClick={(e) => this.ascDesc(e, "countryname")}>Country Name  <i className={`fa fa-sort mr-10 ${sortKey === 'countryname' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
-                                                <th onClick={(e) => this.ascDesc(e, "stateName")}>Country Code  <i className={`fa fa-sort mr-10 ${sortKey === 'stateName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "leaveTypeName")}>Leave Type Name  <i className={`fa fa-sort mr-10 ${sortKey === 'leaveTypeName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "noOfDay")}>No Of Day<i className={`fa fa-sort mr-10 ${sortKey === 'noOfDay' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                this.state.displayedState.map((state, i) => {
-                                                    return (
-                                                        <tr key={i}>
-                                                            <td>{state.countryname.countryname}</td>
-                                                            <td>{state.stateName}</td>
-                                                            <td>
-                                                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, state._id)}>
-                                                                    <i className="fa fa-trash-o"></i></a>
-
-                                                                <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, state._id)}>
-                                                                    <i className="fa fa-edit"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })
+                                            {this.state.displayedLeaveType.map((lev, i) => {
+                                                return (
+                                                    <tr key={i}>
+                                                        <td>{lev.leaveTypeName}</td>
+                                                        <td>{lev.noOfDay}</td>
+                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
+                                                            <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, lev._id)}><i className="fa fa-edit"></i></a>
+                                                        </td>
+                                                    </tr>)
+                                            })
                                             }
                                         </tbody>
                                     </table>
@@ -242,16 +236,12 @@ class State extends Component {
                                             itemsCountPerPage={this.state.pageLength}
                                             totalItemsCount={this.state.totalpage}
                                             pageRangeDisplayed={5}
-                                            onChange={this.handlePageChange.bind(this)}
-
-                                        />
+                                            onChange={this.handlePageChange.bind(this)} />
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
                 <div className="modal fade" id="add-panel" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
@@ -259,55 +249,39 @@ class State extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title">Add State Data</h4>
+                                <h4 className="modal-title">Add Country Data</h4>
                             </div>
                             <div className="modal-body">
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
                                             <div className="col-md-6">
-                                                <label>Country Name</label>
-                                                <select className="form-control"
-                                                    onChange={(e) => this.setState({ countryid: e.target.value })}
-                                                    value={this.state.countryid}
-                                                >
-                                                    <option defaultValue>Select Country</option>
-                                                    {this.props.countries.map((country) => (
-                                                        <option value={country._id} key={country._id}>{country.countryname}</option>
-                                                    ))}
-                                                </select>
+                                                <label>Leave Type Name</label>
+                                                <input type="text" className="form-control" value={this.state.typename} onChange={(e) => this.setState({ typename: e.target.value })}
+                                                />
                                             </div>
                                             <div className="col-md-6">
-                                                <label>State Name</label>
-                                                <input type="text"
-                                                    className="form-control"
-                                                    onChange={(e) => this.setState({ statename: e.target.value })}
-                                                    value={this.state.statename}
+                                                <label>No Of Day</label>
+                                                <input type="text" className="form-control" value={this.state.noofday} onChange={(e) => this.setState({ noofday: e.target.value })}
                                                 />
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" id="cancel-button" data-dismiss="modal" onClick={(e) => this.cancel(e)}>Cancel</button>
-                                {
-                                    this.state.button ?
-                                        <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addstate(e) }}>Update State</button>
-                                        : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addstate(e) }}>Add State</button>
-                                }
-
+                                <button type="button" className="btn btn-default" id="cancel-button" onClick={(e) => this.cancel(e)}>Cancel</button>
+                                {this.state.button ? <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addLeaveType(e) }}>Update LeaveType</button>
+                                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addLeaveType(e) }}>Add LeaveType</button>}
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
+                                <h5 className="modal-title">Delete Model</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -322,17 +296,7 @@ class State extends Component {
                         </div>
                     </div>
                 </div>
-
-            </div>
-
+            </div >
         )
     }
-
 }
-export default withTracker(() => {
-    Meteor.subscribe('CountryData');
-    return {
-        countries: Country.find({}).fetch()
-    }
-})(State);
-

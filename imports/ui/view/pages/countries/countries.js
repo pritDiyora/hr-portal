@@ -4,6 +4,8 @@ import IboxTools from '../../layout/iboxTools';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
+import SimpleReactValidator from 'simple-react-validator';
+import { th } from 'date-fns/locale';
 export default class Countries extends Component {
 
     constructor(props) {
@@ -14,7 +16,6 @@ export default class Countries extends Component {
             countryid: "",
             button: false,
             displayedCountries: [],
-            sortbutton: "default",
             //table (sorting,seraching,pagination)
             pageLength: 10,
             searchStr: "",
@@ -23,6 +24,7 @@ export default class Countries extends Component {
             currentPage: 1,
             totalpage: 0
         }
+        this.countryValidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
     }
     //Dropdown pagination
     showhandle(event) {
@@ -46,37 +48,41 @@ export default class Countries extends Component {
         });
     }
     addcountry(e) {
+        e.preventDefault();
         const self = this;
         let { countryname, countrycode } = this.state;
-        if (this.state.button == true) {
-            Meteor.call('updatecountry', countryname, countrycode, this.state.countryid, function (err, result) {
-                if (!err) {
-                    toast.success("Record updates..." + result);
-                    $("#add-panel").modal("hide");
-                    self.setState({
-                        countryname: "",
-                        countrycode: "",
-                        countryid: "",
-                        button: false
-                    })
-                    // window.location.reload(false);
-                } else {
-                    toast.error("Error ::" + err);
-                }
-            })
-
-
+        if (self.countryValidator.allValid()) {
+            if (this.state.button == true) {
+                Meteor.call('updatecountry', countryname, countrycode, this.state.countryid, function (err, result) {
+                    if (!err) {
+                        toast.success("Record updates..." + result);
+                        $("#add-panel").modal("hide");
+                        self.setState({
+                            countryname: "",
+                            countrycode: "",
+                            countryid: "",
+                            button: false
+                        })
+                        // window.location.reload(false);
+                    } else {
+                        toast.error("Error ::" + err);
+                    }
+                })
+            } else {
+                Meteor.call('addcountry', countryname, countrycode, function (err, result) {
+                    if (!err) {
+                        toast.success("Record Inserted..." + result);
+                        $("#add-panel").modal("hide");
+                        // window.location.reload(false);
+                    } else {
+                        toast.error("Error ::" + err);
+                    }
+                })
+            }
         } else {
-            Meteor.call('addcountry', countryname, countrycode, function (err, result) {
-                if (!err) {
-                    toast.success("Record Inserted..." + result);
-                    $("#add-panel").modal("hide");
-                    // window.location.reload(false);
-                } else {
-                    toast.error("Error ::" + err);
-                }
-            })
+            self.countryValidator.showMessages();
         }
+
 
     }
     //Delete Model
@@ -155,31 +161,28 @@ export default class Countries extends Component {
         });
 
     }
-    descdata(e, name) {
-        $(".default").removeClass('fa fa-fw fa-sort');
-        this.setState({
-            sortbutton: "desc",
-            sortValue: -1,
-            sortKey: name,
-            currentPage: 1
-        }, () => {
-            this.getCountryData();
-        })
-    }
-    asecdata(e, name) {
-        $(".default").removeClass('fa fa-fw fa-sort');
-        this.setState({
-            sortbutton: "asc",
-            sortValue: 1,
-            sortKey: name,
-            currentPage: 1
-        }, () => {
-            this.getCountryData();
+    ascDesc(e, keyName) {
+        let { sortKey, sortValue } = this.state;
+        if (sortKey == keyName && sortValue == 1) {
+            this.setState({
+                sortValue: -1,
+                sortKey: keyName,
+                currentPage: 1
+            }, () => {
+                this.getCountryData();
+            })
+        } else {
+            this.setState({
+                sortValue: 1,
+                sortKey: keyName,
+                currentPage: 1
+            }, () => {
+                this.getCountryData();
+            })
         }
-        );
-
     }
     render() {
+        let { sortKey, sortValue } = this.state;
         return (
             <div>
                 <div className="wrapper wrapper-content animated fadeInRight" >
@@ -192,70 +195,47 @@ export default class Countries extends Component {
                             <div className="row text-center">
                                 <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add country</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
-                                    <div className="col-sm-6" >
-                                        <div class="dataTables_length" id="example_length">
-                                            <label className="dataTables_length text">Show <select name="example_length"
+                                    <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
+                                        <div className="dataTables_length" id="example_length">
+                                            <label className="dataTables_length text">Show <select name="example_length" value={this.state.pageLength}
                                                 className="form-control" onChange={this.showhandle.bind(this)}>
                                                 <option value="5">5</option>
-                                                <option value="10" selected>10</option>
+                                                <option value="10">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
                                                 <option value="100">100</option>
                                             </select> entries</label>
                                         </div>
                                     </div>
-                                    <div className="col-sm-6" >
+                                    <div className="col-sm-6" style={{ paddingRight: "0px" }}>
                                         <div className="page1" id="example_length">
                                             <label className="dataTables_length1 text">Search :
-                                            <input type="text" name="example_length" onChange={this.search.bind(this)} 
-                                                    className="form-control" style={{ width: "200px" }} /></label>
+                                            <input type="text" name="example_length" onChange={this.search.bind(this)} className="form-control" style={{ width: "200px" }} /></label>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div className="container-fluid">
                                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "countryname")}>Country Name <i class="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "countryname")}>Country Name <i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "countryname")}>Country Name<i class="fa fa-sort-amount-desc desc sortdata" ></i></th>
-                                                }
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "countrycode")}>Country Code<i class="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "countrycode")}>Country Code<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "countrycode")}>Country Code<i class="fa fa-sort-amount-desc desc sortdata"></i></th>
-                                                }
+                                                <th onClick={(e) => this.ascDesc(e, "countryname")}>Country Name  <i className={`fa fa-sort mr-10 ${sortKey === 'countryname' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "countrycode")}>Country Code  <i className={`fa fa-sort mr-10 ${sortKey === 'countrycode' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                this.state.displayedCountries.map((cou, i) => {
-                                                    return (
-                                                        <tr key={i}>
-                                                            <td>{cou.countryname}</td>
-                                                            <td>{cou.countrycode}</td>
-                                                            <td>
-                                                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, cou._id)}>
-                                                                    <i className="fa fa-trash-o"></i></a>
-
-                                                                <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, cou._id)}>
-                                                                    <i className="fa fa-edit"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })
+                                            {this.state.displayedCountries.map((cou, i) => {
+                                                return (
+                                                    <tr key={i}>
+                                                        <td>{cou.countryname}</td>
+                                                        <td>{cou.countrycode}</td>
+                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, cou._id)}> <i className="fa fa-trash-o"></i></a>
+                                                            <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, cou._id)}><i className="fa fa-edit"></i></a>
+                                                        </td>
+                                                    </tr>)
+                                            })
                                             }
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Country Name</th>
-                                                <th>Country Code</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                     <div style={{ textAlign: "right" }}>
                                         <Pagination
@@ -263,60 +243,52 @@ export default class Countries extends Component {
                                             itemsCountPerPage={this.state.pageLength}
                                             totalItemsCount={this.state.totalpage}
                                             pageRangeDisplayed={5}
-                                            onChange={this.handlePageChange.bind(this)}
-
-                                        />
+                                            onChange={this.handlePageChange.bind(this)} />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="modal fade" id="add-panel" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                <div className="modal fade" id="add-panel" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 class="modal-title">Add Country Data</h4>
+                                <h4 className="modal-title">Add Country Data</h4>
                             </div>
-                            <div class="modal-body">
+                            <div className="modal-body">
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
                                             <div className="col-md-6">
                                                 <label>Country Name</label>
-                                                <input type="text"
-                                                    className="form-control"
-                                                    value={this.state.countryname}
-                                                    onChange={(e) => this.setState({ countryname: e.target.value })}
+                                                <input type="text" className="form-control" value={this.state.countryname} onChange={(e) => this.setState({ countryname: e.target.value })}
                                                 />
+                                                 {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
                                             </div>
+                                           
                                             <div className="col-md-6">
                                                 <label>Country Code</label>
-                                                <input type="text"
-                                                    className="form-control"
-                                                    value={this.state.countrycode}
-                                                    onChange={(e) => this.setState({ countrycode: e.target.value })}
+                                                <input type="text" className="form-control" value={this.state.countrycode} onChange={(e) => this.setState({ countrycode: e.target.value })}
                                                 />
+                                                  {this.countryValidator.message('Country Name', this.state.countrycode, 'required|numeric')}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" id="cancel-button" onClick={(e) => this.cancel(e)}>Cancel</button>
-                                {this.state.button
-                                    ? <button type="button" class="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Update Country</button>
-                                    : <button type="button" class="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Add Country</button>}
-
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" id="cancel-button" onClick={(e) => this.cancel(e)}>Cancel</button>
+                                {this.state.button ? <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Update Country</button>
+                                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Add Country</button>}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="modal" tabindex="-1" role="dialog" id="deletemodel">
+
+                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -336,7 +308,6 @@ export default class Countries extends Component {
                     </div>
                 </div>
             </div >
-
         )
     }
 }

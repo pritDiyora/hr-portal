@@ -18,6 +18,20 @@ import EmployeeAttendance from '../../imports/ui/view/pages/attendance/employeeA
 import Countries from '../../imports/ui/view/pages/countries/countries';
 import State from '../../imports/ui/view/pages/states/addstate';
 import City from '../../imports/ui/view/pages/city/city';
+import NotFoundPage from '../../imports/ui/view/pages/notFoundPage/NotFoundPage';
+import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPage/AccessPermissionPage';
+import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
+import Leave from '../../imports/ui/view/pages/leave/leave';
+
+const accessRoute = [
+    { routeName: 'listuser', roles: ['superadmin', 'admin'] },
+    { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
+    { routeName: 'country', roles: ['superadmin', 'admin'] },
+    { routeName: 'state', roles: ['superadmin', 'admin'] },
+    { routeName: 'city', roles: ['superadmin', 'admin'] },
+    { routeName: 'leave', roles: ['superadmin', 'admin'] },
+    { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
+]
 
 // Accounts
 FlowRouter.route('/register', {
@@ -74,17 +88,6 @@ FlowRouter.route('/changePassword', {
         })
     }
 })
-
-FlowRouter.route('/profile', {
-    name: 'Profile',
-    action() {
-        mount(MainLayout, {
-            content() {
-                return <Profile />
-            }
-        })
-    }
-})
 FlowRouter.route('/enrollAccount/:token', {
     name: 'enrollAccount',
     action: function (params) {
@@ -96,92 +99,243 @@ FlowRouter.route('/enrollAccount/:token', {
         Session.set("resetpassword", params.token);
     }
 })
-
 //pages
-
+FlowRouter.route('/profile', {
+    name: 'Profile',
+    action() {
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            mount(MainLayout, {
+                content() {
+                    return <Profile />
+                }
+            })
+        }
+    }
+})
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
     action: function () {
-        mount(MainLayout, {
-            content() {
-                return <Dashboard1 />
-            }
-        })
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            mount(MainLayout, {
+                content() {
+                    return <Dashboard1 />
+                }
+            })
+        }
     }
 })
 FlowRouter.route('/listuser', {
     name: 'listuser',
     action() {
-        mount(MainLayout, {
-            content() {
-                return <ListUser />
-            }
-        })
+        if (requiredLogin()) {
+            mount(MainLayout, {
+                content() {
+                    return <ListUser />
+                }
+            })
+        }
     }
 })
 FlowRouter.route('/insertuser', {
-    name: 'AddHR',
+    name: 'insertuser',
     action() {
-        mount(MainLayout, {
-            content() {
-                return <InsertUser />
-            }
-        })
+        if (requiredLogin()) {
+            mount(MainLayout, {
+                content() {
+                    return <InsertUser />
+                }
+            })
+        }
     }
 })
-
 FlowRouter.route('/updateuser/:_id', {
-    name: 'UpdateUser',
+    name: 'updateuser',
     action: function (params) {
-        mount(MainLayout, {
-            content() {
-                return <UpdateUser />
-            }
-        })
+        // if(AccessPermission()){
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            mount(MainLayout, {
+                content() {
+                    return <UpdateUser />
+                }
+            })
+        }
+        // }else{
+        //     FlowRouter.go('/accesspermission')
+        // }
     }
 })
-
 FlowRouter.route('/country', {
     name: 'country',
     action() {
-        mount(MainLayout, {
-            content() {
-                return <Countries />
-            }
-        })
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            // if (AccessPermission()) {
+            mount(MainLayout, {
+                content() {
+                    return <Countries />
+                }
+            })
+            // } else {
+            //     FlowRouter.go('/accesspermission')
+            // }
+        }
     }
 })
-
 FlowRouter.route('/employeeAttendance', {
     name: 'EmployeeAttendance',
-    action () {
-        mount(MainLayout, {
-            content() {
-                return <EmployeeAttendance />
-            }
-        })
-    }
-})
-FlowRouter.route('/addstate', {
-    name: 'addstate',
     action() {
-        mount(MainLayout, {
-            content() {
-                return <State />
-            }
-        })
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            mount(MainLayout, {
+                content() {
+                    return <EmployeeAttendance />
+                }
+            })
+        }
     }
 })
-FlowRouter.route('/addcity', {
-    name: 'addstate',
+FlowRouter.route('/state', {
+    name: 'state',
     action() {
-        mount(MainLayout, {
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            // if (AccessPermission()) {
+            mount(MainLayout, {
+                content() {
+                    return <State />
+                }
+            })
+            // } else {
+            //     FlowRouter.go('/accesspermission')
+            // }
+        }
+    }
+})
+FlowRouter.route('/city', {
+    name: 'city',
+    action() {
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            // if (AccessPermission()) {
+            mount(MainLayout, {
+                content() {
+                    return <City />
+                }
+            })
+            // } else {
+            //     FlowRouter.go('/accesspermission')
+            // }
+        }
+    }
+})
+FlowRouter.route('/leaveType', {
+    name: 'leaveType',
+    action() {
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            // if (AccessPermission()) {
+            mount(MainLayout, {
+                content() {
+                    return <LeaveType />
+                }
+            })
+            // } else {
+            //     FlowRouter.go('/accesspermission')
+            // }
+        }
+
+    }
+});
+FlowRouter.route('/leave', {
+    name: 'leave',
+    action() {
+        if (!Meteor.userId()) {
+            FlowRouter.go('/')
+        } else {
+            // if (AccessPermission()) {
+            mount(MainLayout, {
+                content() {
+                    return <Leave />
+                }
+            })
+            // } else {
+            //     FlowRouter.go('/accesspermission')
+            // }
+        }
+
+    }
+});
+FlowRouter.triggers.event()
+// 400 Access Permission
+FlowRouter.route('/accesspermission', {
+    name: 'accesspermission',
+    action() {
+        mount(MainLayout1, {
             content() {
-                return <City />
+                return <AccessPermissionPage />
             }
         })
     }
-})
+});
+this.AccessPermission = function (routeName) {
+    if (!routeName) {
+        return true;
+    }
+    if (!accessRoute || accessRoute === 0) {
+        return true;
+    }
+    let accessRouteItem = _.find(accessRoute, function (item) {
+        return item.routeName == routeName
+    })
+    if (!accessRouteItem) {
+        return true;
+    }
+    if (!Meteor.user() || !Meteor.user().profile.userType) {
+        return false;
+    }
+    var usertype = Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType;
 
+    var allowRoles = accessRouteItem.roles;
+    var granted = _.intersection(allowRoles, [usertype])
 
+    if (!granted || granted.length === 0) {
+        return false;
+    }
+    return true;
+}
 
+function requiredLogin() {
+    if (Meteor.userId()) {
+        if (AccessPermission(this.FlowRouter.getRouteName())) {
+            return true;
+        } else {
+            FlowRouter.go('/accesspermission')
+        }
+    } else {
+        FlowRouter.go('/');
+    }
+}
+
+//404 Not Found Page
+
+FlowRouter.notFound = {
+    name: 'NotFoundPage',
+    action() {
+        mount(MainLayout1, {
+            content() {
+                return <NotFoundPage />
+            }
+        })
+    }
+}

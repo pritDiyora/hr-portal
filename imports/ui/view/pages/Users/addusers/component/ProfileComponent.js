@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+// import DayPickerInput from 'react-day-picker/DayPickerInput';
+import { DatePicker, DatePickerInput } from 'rc-datepicker';
+import 'rc-datepicker/lib/style.css';
 class ProfileComponent extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +24,7 @@ class ProfileComponent extends Component {
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
-                            <label>First Name</label>
+                            <label>First Name  <sup style={{ color: "red" }}>*</sup></label>
                             <input type="text"
                                 className="form-control"
                                 placeholder=""
@@ -34,7 +36,7 @@ class ProfileComponent extends Component {
                             {this.props.Profilevalidator.message('Firstname', this.props.firstName, 'required|alpha')}
                         </div>
                         <div className="col-md-6">
-                            <label>Last Name</label>
+                            <label>Last Name  <sup style={{ color: "red" }}>*</sup></label>
                             <input type="text"
                                 className="form-control"
                                 name="lastName"
@@ -50,7 +52,7 @@ class ProfileComponent extends Component {
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
-                            <label>Father Name</label>
+                            <label>Father Name  <sup style={{ color: "red" }}>*</sup></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -80,16 +82,17 @@ class ProfileComponent extends Component {
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
-                            <label>Birth Date</label>
-                            <DayPickerInput
+                            <label>Birth Date  <sup style={{ color: "red" }}>*</sup></label>
+                            <DatePickerInput
+                                className='my-custom-datepicker-component'
                                 name="birthDate"
-                                value={this.props.birthDate || ''}
-                                onDayChange={this.props.BirthDateChangeHandler}
+                                value={this.props.birthDate}
+                                onChange={this.props.BirthDateChangeHandler}
                             />
                         </div>
 
                         <div className="col-md-6">
-                            <label>Email Id</label>
+                            <label>Email Id  <sup style={{ color: "red" }}>*</sup></label>
                             <input
                                 type="email"
                                 className="form-control"
@@ -120,7 +123,7 @@ class ProfileComponent extends Component {
                         </div>
 
                         <div className="col-md-6">
-                            <label>Phone</label>
+                            <label>Phone  <sup style={{ color: "red" }}>*</sup></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -137,15 +140,16 @@ class ProfileComponent extends Component {
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
-                            <label>Joining Date</label>
-                            <DayPickerInput
+                            <label>Joining Date  <sup style={{ color: "red" }}>*</sup></label>
+                            <DatePickerInput
+                                className='my-custom-datepicker-component'
                                 name="joiningDate"
-                                value={this.props.joiningDate || ''}
-                                onDayChange={this.props.JoinDateChangeHandler}
+                                value={this.props.joiningDate}
+                                onChange={this.props.JoinDateChangeHandler}
                             />
                         </div>
                         <div className="col-md-2">
-                            <label>Gender</label><br />
+                            <label>Gender  <sup style={{ color: "red" }}>*</sup></label><br />
                             <div className="radio-inline form-check abc-radio abc-radio-success">
 
                                 <input className="form-check-input"
@@ -178,31 +182,57 @@ class ProfileComponent extends Component {
                         </div>
 
                         <div className="col-md-4">
-                            <label>User Type</label><br />
+                            <label>User Type  <sup style={{ color: "red" }}>*</sup></label><br />
                             <div className="radio-inline form-check abc-radio abc-radio-success">
+                                {Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin" ?
+                                    <input className="form-check-input"
+                                        type="radio"
+                                        name="userType"
+                                        id="superadmin"
+                                        value="superadmin"
+                                        disabled
+                                        checked={this.props.userType === 'superadmin'}
+                                        onChange={this.props.profileChangeHandler}
+                                    />
+                                    :
+                                    <input className="form-check-input"
+                                        type="radio"
+                                        name="userType"
+                                        id="superadmin"
+                                        value="superadmin"
+                                        checked={this.props.userType === 'superadmin'}
+                                        onChange={this.props.profileChangeHandler}
+                                    />
+                                }
 
-                                <input className="form-check-input"
-                                    type="radio"
-                                    name="userType"
-                                    id="superadmin"
-                                    value="superadmin"
-                                    checked={this.props.userType === 'superadmin'}
-                                    onChange={this.props.profileChangeHandler}
-                                />
                                 <label className="form-check-label" htmlFor="superadmin">
                                     Super Admin
                                  </label>
                             </div>&nbsp;&nbsp;&nbsp;
                             <div className="radio-inline  form-check abc-radio abc-radio-success">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="userType"
-                                    id="admin"
-                                    value="admin"
-                                    checked={this.props.userType === 'admin'}
-                                    onChange={this.props.profileChangeHandler}
-                                />
+                                {Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin" ?
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="userType"
+                                        id="admin"
+                                        value="admin"
+                                        disabled
+                                        checked={this.props.userType === 'admin'}
+                                        onChange={this.props.profileChangeHandler}
+                                    />
+                                    :
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="userType"
+                                        id="admin"
+                                        value="admin"
+                                        checked={this.props.userType === 'admin'}
+                                        onChange={this.props.profileChangeHandler}
+                                    />
+                                }
+
                                 <label className="form-check-label" htmlFor="admin">
                                     Admin
                               </label>
@@ -222,7 +252,7 @@ class ProfileComponent extends Component {
                                     Employee
                               </label>&nbsp;&nbsp;&nbsp;
                             </div>
-                            {this.props.Profilevalidator.message('Usertypw', this.props.userType, 'required|alpha')}
+                            {this.props.Profilevalidator.message('Usertype', this.props.userType, 'required|alpha')}
                         </div>
 
                     </div>

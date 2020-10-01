@@ -1,3 +1,4 @@
+
 Schemas = {};
 
 Schemas.UserProfile = new SimpleSchema({

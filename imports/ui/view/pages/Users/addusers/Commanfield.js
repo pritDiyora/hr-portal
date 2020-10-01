@@ -15,16 +15,20 @@ import ProfileComponent from './component/ProfileComponent';
 import ExperieanceComponent from './component/ExperienceComponent';
 import AddressComponent from './component/AddressComponent';
 import User from '../../../../../api/user/users';
+
 class AddHR extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profile: {}, email: "",  loading: false, CountryOption: {}, StateOption: {}, CityOption: {},
+            profile: {}, email: "", loading: false, CountryOption: {}, StateOption: {}, CityOption: {},
             education: [{ key: Random.id(), index: 0 }],
             flag: null,
             experiance: [{ key: Random.id(), index: 0 }],
-            lastIndex: 0, countrie: [], states: [], city: [],zipcode:"", addressline1: "", addressline2: "", userid: ""
+            lastIndex: 0, countrie: [], states: [], city: [], zipcode: "", addressline1: "", addressline2: "", userid: ""
         }
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.TaghandleChange = this.TaghandleChange.bind(this);
         this.filechangeHandler = this.filechangeHandler.bind(this);
         this.profileChangeHandler = this.profileChangeHandler.bind(this);
         this.previous = this.previous.bind(this);
@@ -41,15 +45,9 @@ class AddHR extends React.Component {
         this.JoinDateChangeHandler = this.JoinDateChangeHandler.bind(this);
         this.reactTags = React.createRef();
         this.EmailChangeHandler = this.EmailChangeHandler.bind(this);
-        this.Profilevalidator = new SimpleReactValidator({
-            autoForceUpdate: this, className: "text-danger",
-        });
-        this.Educationvalidator = new SimpleReactValidator({
-            autoForceUpdate: this, className: "text-danger",
-        });
-        this.Experiencevalidator = new SimpleReactValidator({
-            autoForceUpdate: this, className: "text-danger",
-        });
+        this.Profilevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
+        this.Educationvalidator = new SimpleReactValidator({autoForceUpdate: this, className: "text-danger"});
+        this.Experiencevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger"});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -57,15 +55,15 @@ class AddHR extends React.Component {
         nextProps.countries.length > 0 && nextProps.countries.map((country) => countrie.push({ value: country._id, label: country.countryname }));
         nextProps.state.length > 0 && nextProps.state.map((state) => states.push({ value: state._id, label: state.stateName }));
         nextProps.city.length > 0 && nextProps.city.map((cities) => city.push({ value: cities._id, label: cities.cityName }));
-        self.setState({
+        this.setState({
             countrie,
             states,
             city
         });
         if (this.props.flag == 1) {
             self.setState({ flag: this.props.flag, userid: FlowRouter.current("_id").params._id })
-            let { profile, lastIndex } = self.state;
-            let userAddress = nextProps.userdata.address || [],
+            let { profile } = self.state;
+            let userAddress = nextProps.userdata.address || [] || undefined,
                 userEducation = nextProps.userdata.education || [] || undefined,
                 userExperiance = nextProps.userdata.experiance || [] || undefined;
             //set User Profile
@@ -78,13 +76,14 @@ class AddHR extends React.Component {
             profile[`officalEmailid`] = nextProps.userdata.profile.officalEmailId;
             profile[`userType`] = nextProps.userdata.profile.userType;
             profile[`phone`] = nextProps.userdata.profile.phone;
+            profile[`joiningDate`] = nextProps.userdata.profile.joiningDate;
             self.setState({
                 email: nextProps.userdata.emails[0].address,
                 profile
             });
             //set User Address
             userAddress.map((addresses) => {
-                self.props.countries.map((c) => {
+                nextProps.countries.map((c) => {
                     if (addresses.country == c._id) {
                         let couobj = { value: addresses.country, label: c.countryname };
                         self.setState({ CountryOption: couobj });
@@ -150,6 +149,24 @@ class AddHR extends React.Component {
         }
 
     }
+    componentDidMount() {
+        //datepicker
+        $('.input-group.date').datepicker({
+            format: "yyyy",
+            autoclose: true,
+            minViewMode: "years",
+            changeYear: true,
+            yearRange: "2005:2015"
+        });
+
+        $('input[name="daterange"]').daterangepicker({
+            format: "yyyy",
+            autoclose: true,
+            minViewMode: "years",
+            changeYear: true,
+            yearRange: "2005:2015"
+        });
+    }
     //Addmore Education
     EducationaddmoreClick(e) {
         e.preventDefault();
@@ -175,11 +192,11 @@ class AddHR extends React.Component {
     createUI() {
         return this.state.education.map((el, i) => {
             return (<EducationComponent
-                rowData={el} id={i} education={this.state.education} EducationaddmoreClick={this.EducationaddmoreClick} 
+                rowData={el} id={i} education={this.state.education} EducationaddmoreClick={this.EducationaddmoreClick}
                 previous={this.previous} Educationvalidator={this.Educationvalidator}
-                EduucationremoveClick={this.EduucationremoveClick} 
-                EducationchangeHandler={this.EducationchangeHandler} 
-                filechangeHandler={this.filechangeHandler} 
+                EduucationremoveClick={this.EduucationremoveClick}
+                EducationchangeHandler={this.EducationchangeHandler}
+                filechangeHandler={this.filechangeHandler}
                 usereducation={this.usereducation}
                 coursename={this.state[`education.coursename_${el.key}`] || ''}
                 loading={this.state.loading}
@@ -191,23 +208,33 @@ class AddHR extends React.Component {
         })
 
     }
+    //tag
+    TaghandleChange(tag, key) {
+        this.setState({
+            [`experiance.techonology_${key}`]: tag
+        }, () => {
+            console.log("tag", this.state);
+        });
+
+    }
     EduucationremoveClick(event, i) {
         event.preventDefault();
         let education = [...this.state.education];
         education.splice(i, 1);
         this.setState({ education });
     }
-    BirthDateChangeHandler(day) {
+    BirthDateChangeHandler(date) {
         let { profile } = this.state;
-        let date = moment(day).format('YYYY-MM-DD');
-        profile[`birthDate`] = date;
+        profile[`birthDate`] =date;
         this.setState({
             profile
+        },()=>{
+            console.log(this.state);
+            
         });
     }
-    JoinDateChangeHandler(day) {
+    JoinDateChangeHandler(date) {
         let { profile } = this.state;
-        let date = moment(day).format('YYYY-MM-DD');
         profile[`joiningDate`] = date
         this.setState({
             profile
@@ -225,7 +252,7 @@ class AddHR extends React.Component {
             if (!err) {
                 self.setState({
                     [`education.certificate_${key}`]: r.url,
-                    loading:false
+                    loading: false
                 }, () => {
                     console.log("df :: ", self.state);
                 });
@@ -270,18 +297,34 @@ class AddHR extends React.Component {
     //country 
     myCountryHandlar = (CountryOption) => {
         this.setState({ CountryOption });
+        this.setState({ StateOption: '' });
+        this.setState({ CityOption: '' });
         Session.set('country', CountryOption.value);
     }
     //State
     mystateChangeHandler = (StateOption) => {
         this.setState({ StateOption });
+        this.setState({ CityOption: '' });
         Session.set('state', StateOption.value);
     }
+    //City
     mycityChangeHandler = (CityOption) => {
         this.setState({ CityOption });
     }
-    //tag
-    
+    //Date range 
+    handleFromChange(from, key) {
+        // Change the from date and focus the "to" input field
+        this.setState({
+            [`experiance.startdate_${key}`]: from
+        });
+    }
+    handleToChange(to, key) {
+        this.setState({
+            [`experiance.enddate_${key}`]: to
+        });
+        this.setState(this.refs.experience.showFromMonth())
+    }
+
     AddressChangeHandler(event) {
         const { name, value } = event.target;
         this.setState({
@@ -291,9 +334,6 @@ class AddHR extends React.Component {
     ExperienceChangeHandler(event) {
         this.setState({
             [`${event.target.name}`]: event.target.value
-        }, () => {
-            console.log("tag :: ", this.state);
-
         });
     }
     EmailChangeHandler(event) {
@@ -370,6 +410,7 @@ class AddHR extends React.Component {
     //Education
     usereducation(e) {
         e.preventDefault();
+        let self = this;
         let educations = [];
         this.state.education.map((el, i) => {
             let obj = {
@@ -383,7 +424,7 @@ class AddHR extends React.Component {
         });
         Meteor.call('addeducation', this.state.userid, educations, function (err, result) {
             if (!err) {
-                if (flag == 1) {
+                if (self.state.flag == 1) {
                     toast.success("Updated successfully...." + result);
                 } else {
                     toast.success("Inserted successfully...." + result);
@@ -398,22 +439,24 @@ class AddHR extends React.Component {
     //Experiance
     userexperiance(e) {
         e.preventDefault();
-        let exp = [];
+        let exp = [], self = this;
         this.state.experiance.map((el, i) => {
             let obj = {
                 companyName: this.state[`experiance.companyname_${el.key}`],
                 workExpeience: this.state[`experiance.workexperiance_${el.key}`],
                 startAt: this.state[`experiance.startdate_${el.key}`],
                 endAt: this.state[`experiance.enddate_${el.key}`],
-                technology: this.state[`experiance.techonology_${el.key}`]
+                technology: this.state[`experiance.techonology_${el.key}`] || []
             };
             exp.push(obj);
         });
         Meteor.call('addexperiance', this.state.userid, exp, function (err, result) {
             if (!err) {
-                if (flag == 1) {
+                if (self.state.flag == 1) {
+                    $('.nav-tabs li a[href="#tab-1"]').tab('show');
                     toast.success("Updated Experiance successfully...." + result);
                 } else {
+                    $('.nav-tabs li a[href="#tab-1"]').tab('show');
                     toast.success("Inserted Experiance successfully...." + result);
                 }
 
@@ -432,17 +475,6 @@ class AddHR extends React.Component {
             $('.nav-tabs li a[href="#tab-1"]').tab('show');
         }
     }
-    componentDidMount() {
-        //datepicker
-        $('.input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-        });
-    }
-
     render() {
         const { countrie, states, city } = this.state;
         return (
@@ -500,12 +532,14 @@ class AddHR extends React.Component {
                             </div>
                             }
                         </div>
+
                         <div role="tabpanel" id="tab-2" className="tab-pane">
                             {this.createUI()}
                         </div>
                         <div role="tabpanel" id="tab-3" className="tab-pane">
                             {this.state.experiance.map((el, i) => {
                                 return (<ExperieanceComponent
+                                    ref="experience"
                                     rowData={el}
                                     id={i}
                                     experiance={this.state.experiance}
@@ -513,15 +547,18 @@ class AddHR extends React.Component {
                                     ExperienceChangeHandler={this.ExperienceChangeHandler}
                                     flag={this.state.flag}
                                     previous={this.previous}
+                                    TaghandleChange={this.TaghandleChange}
                                     Experiencevalidator={this.Experiencevalidator}
                                     userexperiance={this.userexperiance}
                                     removeClickexperiance={this.removeClickexperiance}
                                     ExperienceaddmoreClick={this.ExperienceaddmoreClick}
                                     compantname={this.state[`experiance.companyname_${el.key}`] || ''}
                                     workexpeience={this.state[`experiance.workexperiance_${el.key}`] || ''}
-                                    technology={this.state[`experiance.techonology_${el.key}`] || ''}
-                                    startdate={this.state[`experiance.startdate_${el.key}`] || ''}
-                                    enddate={this.state[`experiance.enddate_${el.key}`] || ''}
+                                    technology={this.state[`experiance.techonology_${el.key}`] || []}
+                                    startdate={this.state[`experiance.startdate_${el.key}`] || undefined}
+                                    enddate={this.state[`experiance.enddate_${el.key}`] || undefined}
+                                    handleFromChange={this.handleFromChange}
+                                    handleToChange={this.handleToChange}
                                 />)
                             })}
                         </div>
@@ -531,7 +568,7 @@ class AddHR extends React.Component {
         )
     }
 }
-const AppContainer = withTracker(() => {
+export default withTracker(() => {
     Meteor.subscribe('CountryData');
     Meteor.subscribe('Statedata1', Session.get('country'));
     Meteor.subscribe('citydata', Session.get('state'));
@@ -547,4 +584,3 @@ const AppContainer = withTracker(() => {
         userdata: User.findOne({ _id: FlowRouter.current("_id").params._id })
     }
 })(AddHR);
-export default AppContainer;

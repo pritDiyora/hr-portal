@@ -1,9 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import Attendance from './../../attendance/attendance';
-
 import User from '../users';
-
-
 process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
 if (Meteor.isServer) {
     Meteor.methods({
@@ -45,7 +42,7 @@ if (Meteor.isServer) {
             return User.update({ _id: userid }, { $set: { experiance: experi } });
         },
         'userOldData': (id) => {
-            return User.find({ _id: id }).fetch();
+            return User.find({ _id: id });
         },
         'updateUserProfile': (userid, userProfile) => {
             return User.update({ _id: userid }, { $set: { 'emails.0.address': userProfile.email, profile: userProfile.profile } });
@@ -54,13 +51,21 @@ if (Meteor.isServer) {
             if (Meteor.isServer) {
                 if (Meteor.user()) {
                     let updateStatus = Meteor.users.update({ _id: Meteor.userId() }, { $set: { 'profile.clockStatus': checkInOutData.isCheckIn } });
-                    console.log('updateStatus : ', updateStatus);
                     return Attendance.insert(checkInOutData);
                 } else {
                     throw new Meteor.Error('BAD', "You Don't have Permission to do this")
                 }
             }
         },
+        'searchUser': (pipeline) => {
+            return Promise.await(User.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countUserdata': () => {
+            return User.find({}).count();
+        },
+        'deleteuser': (id) => {
+            return User.remove({ _id: id });
+        }
     })
 }
 

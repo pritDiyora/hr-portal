@@ -9,7 +9,7 @@ class EducationComponent extends React.Component {
         const el = this.props.rowData;
         let education1 = this.props.education;
         return (
-            <div className="panel-body" key={this.props.id} style={{ marginBottom: "5px" }}>
+            <div className="panel-body" key={this.props.id.toS} style={{ marginBottom: "5px" }}>
                 {education1.length !== 1 && <div style={{ textAlign: "right" }}><a className="btn btn-xs btn-primary" onClick={(e) => this.props.EduucationremoveClick(e, el.index)} ><i className="fa fa-times" aria-hidden="true"></i></a></div>}
                 <div className="form-group row">
                     <div className="col-md-12">
@@ -51,25 +51,20 @@ class EducationComponent extends React.Component {
                         <div className="col-md-5">
                             <label>Certificate</label>
                             <input type="file" className="form-control" id="certificates"
-                                onChange={(e) => this.props.filechangeHandler(e)} name={`education.certificate_${el.key}`}
+                                onChange={(e) => this.props.filechangeHandler(e,el.key)} name={`education.certificate_${el.key}`}
                             />
                             {this.props.Educationvalidator.message('Certificate', this.props.certificate, 'required|string')}
                         </div>
                         <div className="col-md-1">
-                            {this.props.loading ? <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div> : <img
-                                    src={this.props.certificate}
-                                    style={{ height: "50px", width: "105px", marginTop: "5.5px" }} />}
-
+                            {this.props.loading ? <div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div> 
+                            : <img src={this.props.certificate} style={{ height: "50px", width: "105px", marginTop: "5.5px" }} />}
                         </div>
                     </div>
                 </div>
-
-                {education1.length - 1 === this.props.id && <input className="btn  btn-primary float-right" type='submit' value='add more' onClick={(e) => this.props.EducationaddmoreClick(e)} />}
+                {education1.length - 1 === this.props.id && <button className="btn  btn-primary float-right" type='submit' value='add more' onClick={(e) => this.props.EducationaddmoreClick(e)} >Add More</button>}
                 {education1.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
-                    <input type="button" name="firstnext" className="btn  btn-primary" value="Previous" onClick={(e) => { this.props.previous(e) }} /> &nbsp;
-                         <input type="button" name="firstnext" className="btn  btn-primary" value="Next" onClick={(e) => { this.props.usereducation(e) }} />
+                    <button  name="firstnext" className="btn  btn-primary" value="Previous" onClick={(e) => { this.props.previous(e) }} >Previous</button> &nbsp;
+                         <button  name="firstnext" className="btn  btn-primary" value="Next" onClick={(e) => { this.props.usereducation(e) }} >Next</button>
                 </div>}
             </div>
 

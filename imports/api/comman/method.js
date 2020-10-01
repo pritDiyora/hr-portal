@@ -2,10 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import Country from '../country/country';
 import State from '../states/states';
 import Cities from '../cites/cites';
-import User from '../user/users';
+var Sugar = require('sugar');
+import LeaveType from '../leave/leaveTypeSchema';
 if (Meteor.isServer) {
+
     Meteor.methods({
-        //Country state and city 
+        //Add Country state and city 
         'addcountry': (cname, ccode) => {
             return Country.insert(
                 { countryname: cname, countrycode: ccode }
@@ -17,54 +19,62 @@ if (Meteor.isServer) {
         'addcity': (cid, sid, cityname) => {
             return Cities.insert({ countryId: cid, stateId: sid, cityName: cityname });
         },
-        //country
+        //Delete Country state and city 
         'deletecountry': (id) => {
             return Country.remove({ _id: id });
-        },
-        'updatecountry': (cname, ccode, id) => {
-            return Country.update({ _id: id }, { $set: { countryname: cname, countrycode: ccode } })
         },
         'deletestate': (id) => {
             return State.remove({ _id: id });
         },
-        'updatestatedata': (cid, sname, id) => {
-            return State.update({ _id: id }, { $set: { countryId: cid, stateName: sname } })
-        },
         'deletecity': (id) => {
             return Cities.remove({ _id: id });
         },
+        //Edit Country state and city 
+        'updatecountry': (cname, ccode, id) => {
+            return Country.update({ _id: id }, { $set: { countryname: cname, countrycode: ccode } })
+        },
+        'updatestatedata': (cid, sname, id) => {
+            return State.update({ _id: id }, { $set: { countryId: cid, stateName: sname } })
+        },
+
         'updatecitydata': (cid, sid, cityname, id) => {
             return Cities.update({ _id: id }, { $set: { countryId: cid, stateId: sid, cityName: cityname } })
         },
+        //Search Country state and city 
         'searchcountry': (pipeline) => {
             return Promise.await(Country.rawCollection().aggregate(pipeline).toArray());
-        },
-        'countrydata': (res) => {
-            return Country.find(res, { sort: { createdAt: 1 } }).fetch();
-        },
-        'countCountrydata': () => {
-            return Country.find({}).count();
         },
         'searchState': (pipeline) => {
             return Promise.await(State.rawCollection().aggregate(pipeline).toArray());
         },
-        'countStatedata': () => {
-            return State.find({}).count();
-        },
         'searchCity': (pipeline) => {
             return Promise.await(Cities.rawCollection().aggregate(pipeline).toArray());
+        },
+        //Count Country state and city 
+        'countCountrydata': () => {
+            return Country.find({}).count();
+        },
+        'countStatedata': () => {
+            return State.find({}).count();
         },
         'countCitydata': () => {
             return Cities.find({}).count();
         },
-        'searchUser': (pipeline) => {
-            return Promise.await(User.rawCollection().aggregate(pipeline).toArray());
+        //Leave type
+        'addleaveType': (leaveTypeName, noOfDay) => {
+            return LeaveType.insert({ leaveTypeName: leaveTypeName, noOfDay: noOfDay })
         },
-        'countUserdata': () => {
-            return User.find({}).count();
+        'updateLeaveType': (leaveTypeName, noofday,lid) => {
+            return LeaveType.update({ _id: lid }, { $set: { leaveTypeName: leaveTypeName, noOfDay: noofday } })
         },
-        'deleteuser': (id) => {
-            return User.remove({ _id: id });
+        'deleteLeaveType': (lid) => {
+            return LeaveType.remove({ _id: lid });
+        },
+        'searchLeaveType': (pipeline) => {
+            return Promise.await(LeaveType.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countLeaveTypeData': () => {
+            return LeaveType.find({}).count();
         }
     })
 }

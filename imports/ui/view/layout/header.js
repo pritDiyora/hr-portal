@@ -40,9 +40,6 @@ class Header extends Component {
 			});
 		}
 	}
-
-
-
 	toggleNavigation(e) {
 		e.preventDefault();
 		$("body").toggleClass("mini-navbar");

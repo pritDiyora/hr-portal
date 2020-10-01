@@ -1251,10 +1251,7 @@ button.dim:active:before {
   position: relative;
 }
 /* Tags Input Plugin */
-.bootstrap-tagsinput {
-  border: 1px solid #e5e6e7;
-  box-shadow: none;
-}
+
 /* PAGINATIN */
 .pagination > .active > a,
 .pagination > .active > span,
@@ -8692,13 +8689,6 @@ body.md-skin {
   margin-left: -1px;
 }
 
-.sorting:after {
-  opacity: 0.2;
-  content: "\e150";
-}
-.sortdata{
-  margin-left: 10px;
-}
 .text{
  font-style: normal;
   font-weight: normal;
@@ -8711,6 +8701,9 @@ body.md-skin {
   margin-left: 20px;
   margin-bottom: 20px;
   width: 120px;
+}
+.mr-10 {
+  margin-left: 10px;
 }
 
 
@@ -8802,21 +8795,17 @@ body.md-skin {
   padding: 0 0.5em;
   text-align: left;
 }
-
 .DayPicker-Caption > div {
   font-weight: 500;
   font-size: 1.15em;
 }
-
 .DayPicker-Weekdays {
   display: table-header-group;
   margin-top: 1em;
 }
-
 .DayPicker-WeekdaysRow {
   display: table-row;
 }
-
 .DayPicker-Weekday {
   display: table-cell;
   padding: 0.5em;
@@ -8824,20 +8813,16 @@ body.md-skin {
   text-align: center;
   font-size: 0.875em;
 }
-
 .DayPicker-Weekday abbr[title] {
   border-bottom: none;
   text-decoration: none;
 }
-
 .DayPicker-Body {
   display: table-row-group;
 }
-
 .DayPicker-Week {
   display: table-row;
 }
-
 .DayPicker-Day {
   display: table-cell;
   padding: 0.5em;
@@ -8846,7 +8831,6 @@ body.md-skin {
   text-align: center;
   cursor: pointer;
 }
-
 .DayPicker-WeekNumber {
   display: table-cell;
   padding: 0.5em;
@@ -8858,15 +8842,12 @@ body.md-skin {
   font-size: 0.75em;
   cursor: pointer;
 }
-
 .DayPicker--interactionDisabled .DayPicker-Day {
   cursor: default;
 }
-
 .DayPicker-Footer {
   padding-top: 0.5em;
 }
-
 .DayPicker-TodayButton {
   border: none;
   background-color: transparent;
@@ -8876,53 +8857,41 @@ body.md-skin {
   font-size: 0.875em;
   cursor: pointer;
 }
-
 /* Default modifiers */
-
 .DayPicker-Day--today {
   color: #D0021B;
   font-weight: 700;
 }
-
 .DayPicker-Day--outside {
   color: #8B9898;
   cursor: default;
 }
-
 .DayPicker-Day--disabled {
   color: #DCE0E0;
   cursor: default;
   /* background-color: #eff1f1; */
 }
-
 /* Example modifiers */
-
 .DayPicker-Day--sunday {
   background-color: #F7F8F8;
 }
-
 .DayPicker-Day--sunday:not(.DayPicker-Day--today) {
   color: #DCE0E0;
 }
-
 .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
   position: relative;
-
   background-color: #4A90E2;
   color: #F0F8FF;
 }
-
 .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
   background-color: #51A0FA;
 }
-
 .DayPicker:not(.DayPicker--interactionDisabled)
   .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
   background-color: #F0F8FF;
+  color: #4a90e2;
 }
-
 /* DayPickerInput */
-
 .DayPickerInput input{
   background-color: #FFFFFF;
     background-image: none;
@@ -8933,24 +8902,19 @@ body.md-skin {
     padding: 6px 12px;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     width: 100%;
+    height: 35px;
 }
-
 .DayPickerInput-OverlayWrapper {
-  
   position: relative;
 }
-
 .DayPickerInput-Overlay {
   position: absolute;
   left: 0;
   z-index: 1;
-  
-
   background: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
-
-
+/* TagInput Css*/
 .tags-input {
   display: flex;
   align-items: flex-start;
@@ -8960,9 +8924,7 @@ body.md-skin {
   padding: 0 8px;
   border: 1px solid rgb(214, 216, 218);
   border-radius: 6px;
-  &:focus-within {
-      border: 1px solid #0052cc;
-  }
+  
   
 }
 input {
@@ -8971,9 +8933,7 @@ input {
   height: 46px;
   font-size: 14px;
   padding: 4px 0 0 0;
-  focus {
-      outline: transparent;
-  }
+
 }
 
 #tags {
@@ -9044,3 +9004,54 @@ input {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+/* .select{
+  height: 15px;
+}
+.css-yk16xz-control{
+  height: 15px;
+}
+.css-g1d714-ValueContainer{
+  margin-top: 25px;
+  overflow: initial;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  height: 20px;
+}
+.css-b8ldur-Input{
+  height: 20px;
+}
+.css-1uccc91-singleValue{
+  height: 20px;
+  margin: 5px;
+}
+.css-b8ldur-Input{
+  height: 20px;
+} */
+
+/* Sorting */
+.sorting_asc::after{
+  top: 6px;
+  right: 6px;
+  opacity: .4;
+  content: "\e155";
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: block;
+  font-family: Glyphicons Halflings;
+  }
+  .sorting_desc::after{
+  top: 6px;
+  right: 6px;
+  opacity: .4;
+  content: "\e156";
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: block;
+  font-family: Glyphicons Halflings;
+  }
+  /* */
+  .fc-button{
+    height: 40px;
+  }
