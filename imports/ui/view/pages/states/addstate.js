@@ -29,14 +29,14 @@ class State extends Component {
         }
     }
     componentDidMount() {
-        this.getCountryData();
+        this.getStateData();
     }
     showhandle(event) {
         this.setState({
             currentPage: 1,
             pageLength: parseInt(event.target.value)
         }, () => {
-            this.getCountryData();
+            this.getStateData();
         })
     }
     handlePageChange(pageNumber) {
@@ -45,7 +45,7 @@ class State extends Component {
         this.setState({
             currentPage, totalpage
         }, () => {
-            this.getCountryData();
+            this.getStateData();
         });
     }
     search(e) {
@@ -53,10 +53,10 @@ class State extends Component {
             currentPage: 1,
             searchStr: e.target.value
         }, () => {
-            this.getCountryData();
+            this.getStateData();
         })
     }
-    getCountryData() {
+    getStateData() {
         const self = this;
         let pipeline = [
             {
@@ -94,38 +94,35 @@ class State extends Component {
         });
 
     }
-    descdata(e, name) {
-        $(".default").removeClass('fa fa-fw fa-sort');
-        this.setState({
-            sortbutton: "desc",
-            sortValue: -1,
-            sortKey: name,
-            currentPage: 1
-        }, () => {
-            this.getCountryData();
-        })
-    }
-    asecdata(e, name) {
-        $(".default").removeClass('fa fa-fw fa-sort');
-        this.setState({
-            sortbutton: "asc",
-            sortValue: 1,
-            sortKey: name,
-            currentPage: 1
-        }, () => {
-            this.getCountryData();
+    ascDesc(e, keyName) {
+        let { sortKey, sortValue } = this.state;
+        if (sortKey == keyName && sortValue == 1) {
+            this.setState({
+                sortValue: -1,
+                sortKey: keyName,
+                currentPage: 1
+            }, () => {
+                this.getStateData();
+            })
+        } else {
+            this.setState({
+                sortValue: 1,
+                sortKey: keyName,
+                currentPage: 1
+            }, () => {
+                this.getStateData();
+            })
         }
-        );
-
     }
     addstate(e) {
         e.preventDefault();
-        let { countryid, statename } = this.state;
+        let { countryid, statename } = this.state, self = this;
         if (this.state.button == true) {
             Meteor.call('updatestatedata', countryid, statename, this.state.stateid, function (err, result) {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -137,6 +134,7 @@ class State extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -154,10 +152,12 @@ class State extends Component {
     }
     deletrecord(e) {
         e.preventDefault();
+        const self = this;
         Meteor.call('deletestate', this.state.stateid, function (err, res) {
             if (!err) {
                 $("#deletemodel").modal("hide");
                 toast.success("Record Deleted.." + res)
+                self.getCountryData()
             } else {
                 toast.error(err)
             }
@@ -176,6 +176,7 @@ class State extends Component {
         $("#add-panel").modal("hide");
     }
     render() {
+        let { sortKey, sortValue } = this.state;
         return (
             <div>
                 <div className="wrapper wrapper-content animated fadeInRight" >
@@ -188,19 +189,19 @@ class State extends Component {
                             <div className="row text-center">
                                 <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add States</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
-                                    <div className="col-sm-6" >
-                                        <div class="dataTables_length" id="example_length">
-                                            <label className="dataTables_length text">Show <select name="example_length"
+                                    <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
+                                        <div className="dataTables_length" id="example_length">
+                                            <label className="dataTables_length text">Show <select name="example_length" value={this.state.pageLength}
                                                 className="form-control" onChange={this.showhandle.bind(this)}>
                                                 <option value="5">5</option>
-                                                <option value="10" selected>10</option>
+                                                <option value="10">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
                                                 <option value="100">100</option>
                                             </select> entries</label>
                                         </div>
                                     </div>
-                                    <div className="col-sm-6" >
+                                    <div className="col-sm-6" style={{ paddingRight: "0px" }}>
                                         <div className="page1" id="example_length">
                                             <label className="dataTables_length1 text">Search :
                                             <input type="text" name="example_length" onChange={this.search.bind(this)}
@@ -214,16 +215,8 @@ class State extends Component {
                                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "countryname")}>Country Name <i className="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "countryname")}>Country Name <i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "countryname")}>Country Name<i className="fa fa-sort-amount-desc desc sortdata" ></i></th>
-                                                }
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "stateName")}>State Name<i className="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "stateName")}>State Name<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "stateName")}>Country Code<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
-                                                }
+                                                <th onClick={(e) => this.ascDesc(e, "countryname")}>Country Name  <i className={`fa fa-sort mr-10 ${sortKey === 'countryname' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "stateName")}>Country Code  <i className={`fa fa-sort mr-10 ${sortKey === 'stateName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -246,13 +239,6 @@ class State extends Component {
                                                 })
                                             }
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Country Name</th>
-                                                <th>State Name</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                     <div style={{ textAlign: "right" }}>
                                         <Pagination
@@ -267,7 +253,7 @@ class State extends Component {
                                 </div>
                             </div>
                         </div>
-                   
+
                     </div>
 
                 </div>
@@ -345,7 +331,6 @@ class State extends Component {
 
         )
     }
-
 }
 export default withTracker(() => {
     Meteor.subscribe('CountryData');

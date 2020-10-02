@@ -33,12 +33,13 @@ class City extends Component {
 
     addcity(e) {
         e.preventDefault();
-        let { countryid, stateid, cityname } = this.state;
+        let { countryid, stateid, cityname } = this.state,self=this;
         if (this.state.button == true) {
             Meteor.call('updatecitydata', countryid, stateid, cityname, this.state.cityid, function (err, result) {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.getCityData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -50,6 +51,7 @@ class City extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.getCityData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -58,14 +60,14 @@ class City extends Component {
         }
     }
     componentDidMount() {
-        this.getCountryData();
+        this.getCityData();
     }
     showhandle(event) {
         this.setState({
             currentPage: 1,
             pageLength: parseInt(event.target.value)
         }, () => {
-            this.getCountryData();
+            this.getCityData();
         })
     }
     handlePageChange(pageNumber) {
@@ -74,7 +76,7 @@ class City extends Component {
         this.setState({
             currentPage, totalpage
         }, () => {
-            this.getCountryData();
+            this.getCityData();
         });
     }
     search(e) {
@@ -82,10 +84,10 @@ class City extends Component {
             currentPage: 1,
             searchStr: e.target.value
         }, () => {
-            this.getCountryData();
+            this.getCityData();
         })
     }
-    getCountryData() {
+    getCityData() {
         const self = this;
         let pipeline = [
             {
@@ -133,31 +135,27 @@ class City extends Component {
         });
 
     }
-    descdata(e, name) {
-        $(".default").removeClass('fa fa-fw fa-sort');
-        this.setState({
-            sortbutton: "desc",
-            sortValue: -1,
-            sortKey: name,
-            currentPage: 1
-        }, () => {
-            this.getCountryData();
-        })
-    }
-    asecdata(e, name) {
-        $(".default").removeClass('fa fa-fw fa-sort');
-        this.setState({
-            sortbutton: "asc",
-            sortValue: 1,
-            sortKey: name,
-            currentPage: 1
-        }, () => {
-            this.getCountryData();
+
+    ascDesc(e, keyName) {
+        let { sortKey, sortValue } = this.state;
+        if (sortKey == keyName && sortValue == 1) {
+            this.setState({
+                sortValue: -1,
+                sortKey: keyName,
+                currentPage: 1
+            }, () => {
+                this.getCityData();
+            })
+        } else {
+            this.setState({
+                sortValue: 1,
+                sortKey: keyName,
+                currentPage: 1
+            }, () => {
+                this.getCityData();
+            })
         }
-        );
-
     }
-
     openmodeldelete(e, id) {
         e.preventDefault();
         $("#deletemodel").modal("show");
@@ -191,6 +189,7 @@ class City extends Component {
         $("#add-panel").modal("show");
     }
     render() {
+        let { sortKey, sortValue } = this.state;
         return (
             <div>
                 <div className="wrapper wrapper-content animated fadeInRight" >
@@ -203,19 +202,19 @@ class City extends Component {
                             <div className="row text-center">
                                 <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add City</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
-                                    <div className="col-sm-6" >
-                                        <div class="dataTables_length" id="example_length">
-                                            <label className="dataTables_length text">Show <select name="example_length"
+                                    <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
+                                        <div className="dataTables_length" id="example_length">
+                                            <label className="dataTables_length text">Show <select name="example_length" value={this.state.pageLength}
                                                 className="form-control" onChange={this.showhandle.bind(this)}>
                                                 <option value="5">5</option>
-                                                <option value="10" selected>10</option>
+                                                <option value="10">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
                                                 <option value="100">100</option>
                                             </select> entries</label>
                                         </div>
                                     </div>
-                                    <div className="col-sm-6" >
+                                    <div className="col-sm-6" style={{ paddingRight: "0px" }}>
                                         <div className="page1" id="example_length">
                                             <label className="dataTables_length1 text">Search :
                                             <input type="text" name="example_length" onChange={this.search.bind(this)}
@@ -229,21 +228,9 @@ class City extends Component {
                                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "countryname")}>Country Name <i className="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "countryname")}>Country Name <i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "countryname")}>Country Name<i className="fa fa-sort-amount-desc desc sortdata" ></i></th>
-                                                }
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "stateName")}>State Name<i className="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "stateName")}>State Name<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "stateName")}>Country Code<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
-                                                }
-                                                {
-                                                    this.state.sortbutton == "default" ? <th onClick={(e) => this.descdata(e, "cityName")}>City Name<i className="fa fa-fw fa-sort default sortdata"></i></th>
-                                                        : this.state.sortbutton == "asc" ? <th onClick={(e) => this.descdata(e, "cityName")}>City Name<i className="fa fa-sort-amount-asc asc sortdata"></i></th>
-                                                            : <th onClick={(e) => this.asecdata(e, "cityName")}>City Name<i className="fa fa-sort-amount-desc desc sortdata"></i></th>
-                                                }
+                                                <th onClick={(e) => this.ascDesc(e, "countryname")}>Country Name  <i className={`fa fa-sort mr-10 ${sortKey === 'countryname' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "statename.stateName")}>State Name  <i className={`fa fa-sort mr-10 ${sortKey === 'statename.stateName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "cityName")}>City Name<i className={`fa fa-sort mr-10 ${sortKey === 'cityName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -256,25 +243,13 @@ class City extends Component {
                                                             <td>{city.statename.stateName}</td>
                                                             <td>{city.cityName}</td>
                                                             <td>
-                                                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, city._id)}>
-                                                                    <i className="fa fa-trash-o"></i></a>
-
-                                                                <a className="btn btn-xs  btn-primary " onClick={(e) => this.updaterecord(e, city._id)}>
-                                                                    <i className="fa fa-edit"></i></a>
+                                                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, city._id)}><i className="fa fa-trash-o"></i></a> <a className="btn btn-xs  btn-primary " onClick={(e) => this.updaterecord(e, city._id)}><i className="fa fa-edit"></i></a>
                                                             </td>
                                                         </tr>
                                                     )
                                                 })
                                             }
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Country Name</th>
-                                                <th>State Name</th>
-                                                <th>City Name</th>
-                                                <th>Actiion</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                     <div style={{ textAlign: "right" }}>
                                         <Pagination
@@ -282,26 +257,22 @@ class City extends Component {
                                             itemsCountPerPage={this.state.pageLength}
                                             totalItemsCount={this.state.totalpage}
                                             pageRangeDisplayed={5}
-                                            onChange={this.handlePageChange.bind(this)}
-
-                                        />
+                                            onChange={this.handlePageChange.bind(this)}  />
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <div class="modal fade" id="add-panel" tabIndex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                <div className="modal fade" id="add-panel" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 class="modal-title">Add City Data</h4>
+                                <h4 className="modal-title">Add City Data</h4>
                             </div>
-                            <div class="modal-body">
-
+                            <div className="modal-body">
                                 <div className="form-group row">
                                     <div className="col-md-12">
                                         <div className="col-md-4">
@@ -316,7 +287,7 @@ class City extends Component {
                                         </div>
                                         <div className="col-md-4">
                                             <label>State Name</label>
-                                            <select className="form-control"  value={this.state.stateid}
+                                            <select className="form-control" value={this.state.stateid}
                                                 onChange={(e) => this.setState({ stateid: e.target.value })}>
                                                 <option defaultValue>Select Country</option>
                                                 {this.props.states.map((state) => (
@@ -336,7 +307,7 @@ class City extends Component {
 
 
                             </div>
-                            <div class="modal-footer">
+                            <div className="modal-footer">
                                 <button type="button" className="btn btn-default" id="cancel-button" data-dismiss="modal" onClick={(e) => this.cancel(e)}>Cancel</button>
                                 {
                                     this.state.button ?
@@ -347,7 +318,25 @@ class City extends Component {
                         </div>
                     </div>
                 </div>
-
+                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Modal title</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Are you sure you want to delete.. ?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         )

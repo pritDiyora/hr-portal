@@ -76,7 +76,6 @@ export default class Registration extends Component {
 
     registerSubmit(e) {
         e.preventDefault();
-
         if (this.handleValidation()) {
             let flag = true;
             let { fname, lname, email, password, confirmPassword, phoneNumber } = this.state.fields;

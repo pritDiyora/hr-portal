@@ -1,22 +1,17 @@
 import { Mongo } from 'meteor/mongo'
+import { Number } from 'sugar';
 Schemas = {};
 
-const Attendance = new Mongo.Collection('Attendance')
+const LeaveType = new Mongo.Collection('leavetype');
 
-Schemas.Attendance =  new SimpleSchema({
-  userId: {
+Schemas.LeaveType =  new SimpleSchema({
+  leaveTypeName: {
     type: String
   },
-  isCheckIn: {
-    type: Boolean
+  noOfDay: {
+    type: String
   },
-  date: {
-    type: Date
-  },
-  dateTime: {
-    type: Date
-  },
-  isActive: {
+  isPaid: {
     type: Boolean,
     defaultValue: true
   },
@@ -52,9 +47,8 @@ Schemas.Attendance =  new SimpleSchema({
       }
     }
   },
-  
 })
 
-Attendance.attachSchema(Schemas.Attendance);
+LeaveType.attachSchema(Schemas.LeaveType);
 
-export default Attendance;
+export default LeaveType;

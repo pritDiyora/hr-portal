@@ -19,6 +19,7 @@ class LeftSidemenu extends Component {
   logout(e) {
     e.preventDefault();
     Meteor.logout(() => {
+      localStorage.removeItem('user');
       FlowRouter.go('/');
     });
   }
@@ -59,23 +60,23 @@ class LeftSidemenu extends Component {
                 <li><a href="/dashboard">Dashboard v.1</a></li>
               </ul>
             </li>
-            <li>
-              <a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a>
-            </li>
-            <li>
-              <a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a>
-            </li>
-            <li>
-              <a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a>
-            </li>
-            <li>
-              <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a>
-            </li>
-            <li>
-              <a href="/city"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a>
-            </li>
+            {AccessPermission()? <li><a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a></li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission()? <li><a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a></li>: <a href="/accesspermission"></a>
+            }
+            {AccessPermission()? <li><a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a></li>: <a href="/accesspermission"></a>
+            }
+            {AccessPermission()? <li> <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a></li>: <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/city"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a> </li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/leaveType"><i className="fa fa-diamond"></i> <span className="nav-label">Leave Type</span></a> </li> : <a href="/accesspermission"></a>
+            }
             <li>
               <a href="/employeeAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
+            </li>
+            <li>
+              <a href="/leave"><i className="fa fa-diamond"></i> <span className="nav-label">Leave</span></a>
             </li>
             <li>
               <a href="/generalSetting"><i className="fa fa-diamond"></i> <span className="nav-label">General Setting</span></a>
@@ -298,3 +299,12 @@ export default withTracker(() => {
     currentUser: Meteor.user()
   }
 })(LeftSidemenu);
+
+function AccessPermission() {
+  if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "superadmin"
+      || Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin") {
+      return true;
+  } else {
+      return false;
+  }
+}

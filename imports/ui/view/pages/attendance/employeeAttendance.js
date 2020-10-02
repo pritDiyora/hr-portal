@@ -39,7 +39,6 @@ class EmployeeAttendance extends Component {
       this.setBreakTime()
       this.progress()
     }, 1000);
-
   }
   componentWillReceiveProps(nextProps) {
 
@@ -105,7 +104,6 @@ class EmployeeAttendance extends Component {
       })
     }
   }
-
   setOverTimeProgress() {
     if (this.props.todayBreakList.length > 0) {
       let regHrs = this.props.hoursData && this.props.hoursData.todayHrs * 60
@@ -125,7 +123,6 @@ class EmployeeAttendance extends Component {
       })
     }
   }
-
   setBreakTime() {
     if (this.props.todayBreakList.length > 0) {
       let diffs = [];
@@ -205,7 +202,6 @@ class EmployeeAttendance extends Component {
       }
     });
   }
-
   render() {
     let { todayInOutList, hoursData } = this.props;
     let { attendanceData } = this.state

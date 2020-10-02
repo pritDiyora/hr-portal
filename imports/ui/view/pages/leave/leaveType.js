@@ -1,21 +1,20 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react'
 import { Meteor } from 'meteor/meteor';
 import IboxTools from '../../layout/iboxTools';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import SimpleReactValidator from 'simple-react-validator';
-import { th } from 'date-fns/locale';
-export default class Countries extends Component {
-
+export default class LeaveType extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            countryname: "",
-            countrycode: "",
-            countryid: "",
+            typename: "",
+            noofday: undefined,
+            leaveTypeId: "",
             button: false,
-            displayedCountries: [],
+            paid:'',
+            displayedLeaveType: [],
             //table (sorting,seraching,pagination)
             pageLength: 10,
             searchStr: "",
@@ -24,7 +23,7 @@ export default class Countries extends Component {
             currentPage: 1,
             totalpage: 0
         }
-        this.countryValidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
+        this.leaveTypeValidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
     }
     //Dropdown pagination
     showhandle(event) {
@@ -47,43 +46,37 @@ export default class Countries extends Component {
             this.getCountryData();
         });
     }
-    addcountry(e) {
+    addLeaveType(e) {
         e.preventDefault();
         const self = this;
-        let { countryname, countrycode } = this.state;
-        if (self.countryValidator.allValid()) {
-            if (this.state.button == true) {
-                Meteor.call('updatecountry', countryname, countrycode, this.state.countryid, function (err, result) {
-                    if (!err) {
-                        toast.success("Record updates..." + result);
-                        $("#add-panel").modal("hide");
-                        self.setState({
-                            countryname: "",
-                            countrycode: "",
-                            countryid: "",
-                            button: false
-                        })
-                        self.getCountryData();
-                    } else {
-                        toast.error("Error ::" + err);
-                        
-                    }
-                })
-            } else {
-                Meteor.call('addcountry', countryname, countrycode, function (err, result) {
-                    if (!err) {
-                        toast.success("Record Inserted..." + result);
-                        $("#add-panel").modal("hide");
-                        self.getCountryData();
-                    } else {
-                        toast.error("Error ::" + err);
-                    }
-                })
-            }
+        let { typename, noofday, leaveTypeId } = this.state;
+        if (this.state.button == true) {
+            Meteor.call('updateLeaveType', typename, noofday, leaveTypeId, function (err, result) {
+                if (!err) {
+                    toast.success("Record updates..." + result);
+                    $("#add-panel").modal("hide");
+                    self.setState({
+                        typename: "",
+                        noofday: "",
+                        leaveTypeId: "",
+                        button: false
+                    })
+                    // window.location.reload(false);
+                } else {
+                    toast.error("Error ::" + err);
+                }
+            })
         } else {
-            self.countryValidator.showMessages();
+            Meteor.call('addleaveType', typename, noofday, function (err, result) {
+                if (!err) {
+                    toast.success("Record Inserted..." + result);
+                    $("#add-panel").modal("hide");
+                    // window.location.reload(false);
+                } else {
+                    toast.error("Error ::" + err);
+                }
+            })
         }
-
 
     }
     //Delete Model
@@ -94,12 +87,10 @@ export default class Countries extends Component {
     }
     deletrecord(e) {
         e.preventDefault();
-        const self = this;
-        Meteor.call('deletecountry', this.state.countryid, function (err, res) {
+        Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
             if (!err) {
                 $("#deletemodel").modal("hide");
                 toast.success("Record Deleted.." + res)
-                self.getCountryData();
             } else {
                 toast.error(err)
             }
@@ -111,8 +102,11 @@ export default class Countries extends Component {
         $("#add-panel").modal("show");
     }
     updaterecord(e, id) {
-        let cou = this.state.displayedCountries.find(cou => cou._id == id);
-        this.setState({ countryname: cou.countryname, countrycode: cou.countrycode, button: true, countryid: id })
+        this.state.displayedLeaveType.map((le, i) => {
+            if (le._id == id) {
+                this.setState({ typename: le.leaveTypeName, noofday: le.noOfDay, button: true, leaveTypeId: id })
+            }
+        })
         $("#add-panel").modal("show");
     }
     cancel(e) {
@@ -138,8 +132,8 @@ export default class Countries extends Component {
             {
                 "$match": {
                     "$or": [
-                        { countryname: { $regex: this.state.searchStr, $options: 'i' } },
-                        { countrycode: { $regex: this.state.searchStr, $options: 'i' } }
+                        { leaveTypeName: { $regex: this.state.searchStr, $options: 'i' } },
+                        { noOfDay: { $regex: this.state.searchStr, $options: 'i' } }
                     ]
                 }
             },
@@ -147,14 +141,14 @@ export default class Countries extends Component {
             { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
             { "$limit": this.state.pageLength },
         ];
-        Meteor.call("searchcountry", pipeline, function (err, res) {
+        Meteor.call("searchLeaveType", pipeline, function (err, res) {
             if (!err) {
-                Meteor.call("countCountrydata", res, function (err1, res1) {
+                Meteor.call("countLeaveTypeData", res, function (err1, res1) {
                     if (!err) {
                         self.setState({ totalpage: res1 });
                     }
                 })
-                self.setState({ displayedCountries: res });
+                self.setState({ displayedLeaveType: res });
             } else {
                 toast.error(err);
             }
@@ -188,12 +182,12 @@ export default class Countries extends Component {
                 <div className="wrapper wrapper-content animated fadeInRight" >
                     <div className="ibox ">
                         <div className="ibox-title">
-                            <h5>Country List</h5>
+                            <h5>Leave Type List</h5>
                             <IboxTools />
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add country</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add Leave Type</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
@@ -218,32 +212,27 @@ export default class Countries extends Component {
                                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                <th onClick={(e) => this.ascDesc(e, "countryname")}>Country Name  <i className={`fa fa-sort mr-10 ${sortKey === 'countryname' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
-                                                <th onClick={(e) => this.ascDesc(e, "countrycode")}>Country Code  <i className={`fa fa-sort mr-10 ${sortKey === 'countrycode' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "leaveTypeName")}>Leave Type Name  <i className={`fa fa-sort mr-10 ${sortKey === 'leaveTypeName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "noOfDay")}>No Of Day<i className={`fa fa-sort mr-10 ${sortKey === 'noOfDay' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {this.state.displayedCountries.map((cou, i) => {
+                                            {this.state.displayedLeaveType.map((lev, i) => {
                                                 return (
                                                     <tr key={i}>
-                                                        <td>{cou.countryname}</td>
-                                                        <td>{cou.countrycode}</td>
-                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, cou._id)}> <i className="fa fa-trash-o"></i></a>
-                                                            <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, cou._id)}><i className="fa fa-edit"></i></a>
+                                                        <td>{lev.leaveTypeName}</td>
+                                                        <td>{lev.noOfDay}</td>
+                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
+                                                            <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, lev._id)}><i className="fa fa-edit"></i></a>
                                                         </td>
-                                                    </tr>)
-                                            })
+                                                    </tr>) })
                                             }
                                         </tbody>
                                     </table>
                                     <div style={{ textAlign: "right" }}>
-                                        <Pagination
-                                            activePage={this.state.currentPage}
-                                            itemsCountPerPage={this.state.pageLength}
-                                            totalItemsCount={this.state.totalpage}
-                                            pageRangeDisplayed={5}
-                                            onChange={this.handlePageChange.bind(this)} />
+                                        <Pagination  activePage={this.state.currentPage}  itemsCountPerPage={this.state.pageLength}  
+                                        totalItemsCount={this.state.totalpage} pageRangeDisplayed={5} onChange={this.handlePageChange.bind(this)} />
                                     </div>
                                 </div>
                             </div>
@@ -256,38 +245,44 @@ export default class Countries extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title">Add Country Data</h4>
+                                <h4 className="modal-title">Add Leave Type</h4>
                             </div>
                             <div className="modal-body">
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
-                                            <div className="col-md-6">
-                                                <label>Country Name</label>
-                                                <input type="text" className="form-control" value={this.state.countryname} onChange={(e) => this.setState({ countryname: e.target.value })}
-                                                />
-                                                {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
+                                            <label>Leave Type Name</label><br/>
+                                            <input type="text" className="form-control" value={this.state.typename} onChange={(e) => this.setState({ typename: e.target.value })}
+                                            /><br/>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label>No Of Day</label><br/>
+                                            <input type="text" className="form-control" value={this.state.noofday} onChange={(e) => this.setState({ noofday: e.target.value })}
+                                            /><br/>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label>Is Paid </label><br/>
+                                            <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1" />
+                                                <label class="form-check-label" for="inlineCheckbox2"> Paid </label>
                                             </div>
-
-                                            <div className="col-md-6">
-                                                <label>Country Code</label>
-                                                <input type="text" className="form-control" value={this.state.countrycode} onChange={(e) => this.setState({ countrycode: e.target.value })}
-                                                />
-                                                {this.countryValidator.message('Country Name', this.state.countrycode, 'required|numeric')}
+                                            <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option2" />
+                                                <label class="form-check-label" for="inlineCheckbox1"> UnPaid </label>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" id="cancel-button" onClick={(e) => this.cancel(e)}>Cancel</button>
-                                {this.state.button ? <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Update Country</button>
-                                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Add Country</button>}
+                                {this.state.button ? <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addLeaveType(e) }}>Update LeaveType</button>
+                                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addLeaveType(e) }}>Add LeaveType</button>}
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -311,5 +306,3 @@ export default class Countries extends Component {
         )
     }
 }
-
-

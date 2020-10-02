@@ -40,9 +40,6 @@ class Header extends Component {
 			});
 		}
 	}
-
-
-
 	toggleNavigation(e) {
 		e.preventDefault();
 		$("body").toggleClass("mini-navbar");
@@ -60,6 +57,7 @@ class Header extends Component {
 	logout(e) {
 		e.preventDefault();
 		Meteor.logout(() => {
+			localStorage.removeItem('user');
 			FlowRouter.go('/');
 		});
 	}

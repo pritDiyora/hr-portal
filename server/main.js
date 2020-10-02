@@ -29,17 +29,4 @@ Meteor.startup(async () => {
         region: 'ap-south-1',
     };
 
-    let countryIndexes = {
-        countrycode: "text",
-        countryname:"text"
-    }
-    let stateIndexes = {
-        countryId: "text",
-        stateName:"text"
-    }
-    await Country.rawCollection().dropIndexes();
-    await State.rawCollection().dropIndexes();
-    Country.rawCollection().createIndex(countryIndexes);
-    State.rawCollection().createIndex(stateIndexes);
-
 });
