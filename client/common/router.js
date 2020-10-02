@@ -156,45 +156,32 @@ FlowRouter.route('/insertuser', {
 FlowRouter.route('/updateuser/:_id', {
     name: 'updateuser',
     action: function (params) {
-        // if(AccessPermission()){
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <UpdateUser />
                 }
             })
         }
-        // }else{
-        //     FlowRouter.go('/accesspermission')
-        // }
     }
 })
 FlowRouter.route('/country', {
     name: 'country',
     action() {
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
-            // if (AccessPermission()) {
+
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <Countries />
                 }
             })
-            // } else {
-            //     FlowRouter.go('/accesspermission')
-            // }
         }
     }
 })
-FlowRouter.route('/employeeAttendance', {
+FlowRouter.route('/employeeAttendance/:id', {
     name: 'EmployeeAttendance',
     action() {
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <EmployeeAttendance />
@@ -206,54 +193,37 @@ FlowRouter.route('/employeeAttendance', {
 FlowRouter.route('/state', {
     name: 'state',
     action() {
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
-            // if (AccessPermission()) {
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <State />
                 }
             })
-            // } else {
-            //     FlowRouter.go('/accesspermission')
-            // }
+
         }
     }
 })
 FlowRouter.route('/city', {
     name: 'city',
     action() {
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
-            // if (AccessPermission()) {
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <City />
                 }
             })
-            // } else {
-            //     FlowRouter.go('/accesspermission')
-            // }
         }
     }
 })
 FlowRouter.route('/leaveType', {
     name: 'leaveType',
     action() {
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
-            // if (AccessPermission()) {
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <LeaveType />
                 }
             })
-            // } else {
-            //     FlowRouter.go('/accesspermission')
-            // }
         }
 
     }
@@ -261,18 +231,12 @@ FlowRouter.route('/leaveType', {
 FlowRouter.route('/leave', {
     name: 'leave',
     action() {
-        if (!Meteor.userId()) {
-            FlowRouter.go('/')
-        } else {
-            // if (AccessPermission()) {
+        if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <Leave />
                 }
             })
-            // } else {
-            //     FlowRouter.go('/accesspermission')
-            // }
         }
 
     }
@@ -302,7 +266,7 @@ this.AccessPermission = function (routeName) {
     if (!accessRouteItem) {
         return true;
     }
-    let user=JSON.parse(localStorage.getItem('user')) || {};
+    let user = JSON.parse(localStorage.getItem('user')) || {};
     if (!user || !user.profile || !user.profile.userType) {
         return false;
     }

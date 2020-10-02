@@ -29,14 +29,14 @@ class State extends Component {
         }
     }
     componentDidMount() {
-        this.getCountryData();
+        this.getStateData();
     }
     showhandle(event) {
         this.setState({
             currentPage: 1,
             pageLength: parseInt(event.target.value)
         }, () => {
-            this.getCountryData();
+            this.getStateData();
         })
     }
     handlePageChange(pageNumber) {
@@ -45,7 +45,7 @@ class State extends Component {
         this.setState({
             currentPage, totalpage
         }, () => {
-            this.getCountryData();
+            this.getStateData();
         });
     }
     search(e) {
@@ -53,10 +53,10 @@ class State extends Component {
             currentPage: 1,
             searchStr: e.target.value
         }, () => {
-            this.getCountryData();
+            this.getStateData();
         })
     }
-    getCountryData() {
+    getStateData() {
         const self = this;
         let pipeline = [
             {
@@ -102,7 +102,7 @@ class State extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getStateData();
             })
         } else {
             this.setState({
@@ -110,18 +110,19 @@ class State extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getStateData();
             })
         }
     }
     addstate(e) {
         e.preventDefault();
-        let { countryid, statename } = this.state;
+        let { countryid, statename } = this.state, self = this;
         if (this.state.button == true) {
             Meteor.call('updatestatedata', countryid, statename, this.state.stateid, function (err, result) {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -133,6 +134,7 @@ class State extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -150,10 +152,12 @@ class State extends Component {
     }
     deletrecord(e) {
         e.preventDefault();
+        const self = this;
         Meteor.call('deletestate', this.state.stateid, function (err, res) {
             if (!err) {
                 $("#deletemodel").modal("hide");
                 toast.success("Record Deleted.." + res)
+                self.getCountryData()
             } else {
                 toast.error(err)
             }
@@ -327,7 +331,6 @@ class State extends Component {
 
         )
     }
-
 }
 export default withTracker(() => {
     Meteor.subscribe('CountryData');

@@ -27,14 +27,14 @@ class ListUser extends Component {
         }
     }
     componentDidMount() {
-        this.getCountryData();
+        this.getUserData();
     }
     showhandle(event) {
         this.setState({
             currentPage: 1,
             pageLength: parseInt(event.target.value)
         }, () => {
-            this.getCountryData();
+            this.getUserData();
         })
     }
     handlePageChange(pageNumber) {
@@ -43,7 +43,7 @@ class ListUser extends Component {
         this.setState({
             currentPage, totalpage
         }, () => {
-            this.getCountryData();
+            this.getUserData();
         });
     }
     search(e) {
@@ -51,10 +51,10 @@ class ListUser extends Component {
             currentPage: 1,
             searchStr: e.target.value
         }, () => {
-            this.getCountryData();
+            this.getUserData();
         })
     }
-    getCountryData() {
+    getUserData() {
         const self = this;
         let pipeline = [
             {
@@ -106,7 +106,6 @@ class ListUser extends Component {
         ];
         Meteor.call("searchUser", pipeline, function (err, res) {
             if (!err) {
-                console.log(res);
                 Meteor.call("countUserdata", res, function (err1, res1) {
                     if (!err) {
                         self.setState({ totalpage: res1 });
@@ -127,7 +126,7 @@ class ListUser extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getUserData();
             })
         } else {
             this.setState({
@@ -135,7 +134,7 @@ class ListUser extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getUserData();
             })
         }
     }
@@ -146,10 +145,12 @@ class ListUser extends Component {
     }
     deletrecord(e) {
         e.preventDefault();
+        const self = this;
         Meteor.call('deleteuser', this.state.userid, function (err, res) {
             if (!err) {
                 $("#deletemodel").modal("hide");
                 toast.success("Record Deleted.." + res)
+                self.getUserData();
             } else {
                 toast.error(err)
             }
@@ -261,8 +262,6 @@ class ListUser extends Component {
                                                 </thead>
                                                 <tbody>
                                                     {this.state.displayedUser.map((event, i) => {
-                                                        console.log("event :: " , event);
-                                                        
                                                         let name = event.profile.firstName + " " + event.profile.lastName;
                                                         let experiances = this.experiance(event.experiance)
                                                         let location = event.countryname.countryname + "," + event.statename.stateName + "," + event.cityname.cityName;
@@ -282,6 +281,7 @@ class ListUser extends Component {
                                                                 <td>
                                                                     <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, event._id)}> <i className="fa fa-trash-o"></i></a>
                                                                     <a href={`updateuser/${event._id}`} className="btn btn-xs  btn-primary "><i className="fa fa-edit"></i></a>
+                                                                    <a href={`employeeAttendance/${event._id}`} class="label label-warning" style={{ marginLeft: '5px' }}>Attendance</a>
                                                                 </td>
                                                             </tr>
                                                         )

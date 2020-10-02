@@ -9056,3 +9056,6 @@ input {
     height: 40px;
   }
 
+  .form-check-inline .form-check-input{
+    height: 25px;
+  }

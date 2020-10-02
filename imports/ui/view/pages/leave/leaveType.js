@@ -13,6 +13,7 @@ export default class LeaveType extends Component {
             noofday: undefined,
             leaveTypeId: "",
             button: false,
+            paid:'',
             displayedLeaveType: [],
             //table (sorting,seraching,pagination)
             pageLength: 10,
@@ -48,7 +49,7 @@ export default class LeaveType extends Component {
     addLeaveType(e) {
         e.preventDefault();
         const self = this;
-        let { typename, noofday ,leaveTypeId} = this.state;
+        let { typename, noofday, leaveTypeId } = this.state;
         if (this.state.button == true) {
             Meteor.call('updateLeaveType', typename, noofday, leaveTypeId, function (err, result) {
                 if (!err) {
@@ -225,18 +226,13 @@ export default class LeaveType extends Component {
                                                         <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
                                                             <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, lev._id)}><i className="fa fa-edit"></i></a>
                                                         </td>
-                                                    </tr>)
-                                            })
+                                                    </tr>) })
                                             }
                                         </tbody>
                                     </table>
                                     <div style={{ textAlign: "right" }}>
-                                        <Pagination
-                                            activePage={this.state.currentPage}
-                                            itemsCountPerPage={this.state.pageLength}
-                                            totalItemsCount={this.state.totalpage}
-                                            pageRangeDisplayed={5}
-                                            onChange={this.handlePageChange.bind(this)} />
+                                        <Pagination  activePage={this.state.currentPage}  itemsCountPerPage={this.state.pageLength}  
+                                        totalItemsCount={this.state.totalpage} pageRangeDisplayed={5} onChange={this.handlePageChange.bind(this)} />
                                     </div>
                                 </div>
                             </div>
@@ -249,23 +245,33 @@ export default class LeaveType extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title">Add Country Data</h4>
+                                <h4 className="modal-title">Add Leave Type</h4>
                             </div>
                             <div className="modal-body">
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
-                                            <div className="col-md-6">
-                                                <label>Leave Type Name</label>
-                                                <input type="text" className="form-control" value={this.state.typename} onChange={(e) => this.setState({ typename: e.target.value })}
-                                                />
+                                            <label>Leave Type Name</label><br/>
+                                            <input type="text" className="form-control" value={this.state.typename} onChange={(e) => this.setState({ typename: e.target.value })}
+                                            /><br/>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label>No Of Day</label><br/>
+                                            <input type="text" className="form-control" value={this.state.noofday} onChange={(e) => this.setState({ noofday: e.target.value })}
+                                            /><br/>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label>Is Paid </label><br/>
+                                            <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1" />
+                                                <label class="form-check-label" for="inlineCheckbox2"> Paid </label>
                                             </div>
-                                            <div className="col-md-6">
-                                                <label>No Of Day</label>
-                                                <input type="text" className="form-control" value={this.state.noofday} onChange={(e) => this.setState({ noofday: e.target.value })}
-                                                />
+                                            <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option2" />
+                                                <label class="form-check-label" for="inlineCheckbox1"> UnPaid </label>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>

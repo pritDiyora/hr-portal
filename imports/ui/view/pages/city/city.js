@@ -33,12 +33,13 @@ class City extends Component {
 
     addcity(e) {
         e.preventDefault();
-        let { countryid, stateid, cityname } = this.state;
+        let { countryid, stateid, cityname } = this.state,self=this;
         if (this.state.button == true) {
             Meteor.call('updatecitydata', countryid, stateid, cityname, this.state.cityid, function (err, result) {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.getCityData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -50,6 +51,7 @@ class City extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.getCityData();
                 } else {
                     toast.error("Error ::" + err);
 
@@ -58,14 +60,14 @@ class City extends Component {
         }
     }
     componentDidMount() {
-        this.getCountryData();
+        this.getCityData();
     }
     showhandle(event) {
         this.setState({
             currentPage: 1,
             pageLength: parseInt(event.target.value)
         }, () => {
-            this.getCountryData();
+            this.getCityData();
         })
     }
     handlePageChange(pageNumber) {
@@ -74,7 +76,7 @@ class City extends Component {
         this.setState({
             currentPage, totalpage
         }, () => {
-            this.getCountryData();
+            this.getCityData();
         });
     }
     search(e) {
@@ -82,10 +84,10 @@ class City extends Component {
             currentPage: 1,
             searchStr: e.target.value
         }, () => {
-            this.getCountryData();
+            this.getCityData();
         })
     }
-    getCountryData() {
+    getCityData() {
         const self = this;
         let pipeline = [
             {
@@ -142,7 +144,7 @@ class City extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getCityData();
             })
         } else {
             this.setState({
@@ -150,7 +152,7 @@ class City extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getCityData();
             })
         }
     }

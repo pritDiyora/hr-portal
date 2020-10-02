@@ -63,9 +63,10 @@ export default class Countries extends Component {
                             countryid: "",
                             button: false
                         })
-                        // window.location.reload(false);
+                        self.getCountryData();
                     } else {
                         toast.error("Error ::" + err);
+                        
                     }
                 })
             } else {
@@ -73,7 +74,7 @@ export default class Countries extends Component {
                     if (!err) {
                         toast.success("Record Inserted..." + result);
                         $("#add-panel").modal("hide");
-                        // window.location.reload(false);
+                        self.getCountryData();
                     } else {
                         toast.error("Error ::" + err);
                     }
@@ -93,10 +94,12 @@ export default class Countries extends Component {
     }
     deletrecord(e) {
         e.preventDefault();
+        const self = this;
         Meteor.call('deletecountry', this.state.countryid, function (err, res) {
             if (!err) {
                 $("#deletemodel").modal("hide");
                 toast.success("Record Deleted.." + res)
+                self.getCountryData();
             } else {
                 toast.error(err)
             }
@@ -108,11 +111,8 @@ export default class Countries extends Component {
         $("#add-panel").modal("show");
     }
     updaterecord(e, id) {
-        this.state.displayedCountries.map((cou, i) => {
-            if (cou._id == id) {
-                this.setState({ countryname: cou.countryname, countrycode: cou.countrycode, button: true, countryid: id })
-            }
-        })
+        let cou = this.state.displayedCountries.find(cou => cou._id == id);
+        this.setState({ countryname: cou.countryname, countrycode: cou.countrycode, button: true, countryid: id })
         $("#add-panel").modal("show");
     }
     cancel(e) {
@@ -266,14 +266,14 @@ export default class Countries extends Component {
                                                 <label>Country Name</label>
                                                 <input type="text" className="form-control" value={this.state.countryname} onChange={(e) => this.setState({ countryname: e.target.value })}
                                                 />
-                                                 {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
+                                                {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
                                             </div>
-                                           
+
                                             <div className="col-md-6">
                                                 <label>Country Code</label>
                                                 <input type="text" className="form-control" value={this.state.countrycode} onChange={(e) => this.setState({ countrycode: e.target.value })}
                                                 />
-                                                  {this.countryValidator.message('Country Name', this.state.countrycode, 'required|numeric')}
+                                                {this.countryValidator.message('Country Name', this.state.countrycode, 'required|numeric')}
                                             </div>
                                         </div>
                                     </div>

@@ -46,11 +46,12 @@ class AddHR extends React.Component {
         this.reactTags = React.createRef();
         this.EmailChangeHandler = this.EmailChangeHandler.bind(this);
         this.Profilevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
-        this.Educationvalidator = new SimpleReactValidator({autoForceUpdate: this, className: "text-danger"});
-        this.Experiencevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger"});
+        this.Educationvalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
+        this.Experiencevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
     }
 
     componentWillReceiveProps(nextProps) {
+        // debugger
         let self = this, countrie = [], states = [], city = [];
         nextProps.countries.length > 0 && nextProps.countries.map((country) => countrie.push({ value: country._id, label: country.countryname }));
         nextProps.state.length > 0 && nextProps.state.map((state) => states.push({ value: state._id, label: state.stateName }));
@@ -77,44 +78,21 @@ class AddHR extends React.Component {
             profile[`userType`] = nextProps.userdata.profile.userType;
             profile[`phone`] = nextProps.userdata.profile.phone;
             profile[`joiningDate`] = nextProps.userdata.profile.joiningDate;
-            self.setState({
-                email: nextProps.userdata.emails[0].address,
-                profile
-            });
+            self.setState({email: nextProps.userdata.emails[0].address,profile });
             //set User Address
             userAddress.map((addresses) => {
-                nextProps.countries.map((c) => {
-                    if (addresses.country == c._id) {
-                        let couobj = { value: addresses.country, label: c.countryname };
-                        self.setState({ CountryOption: couobj });
-                    }
-                });
-                self.props.statedata.map((s) => {
-                    if (addresses.state == s._id) {
-                        let stateobj = { value: addresses.state, label: s.stateName };
-                        self.setState({ StateOption: stateobj });
-                    }
-                });
-                self.props.citiesdata.map((ci) => {
-                    if (addresses.city == ci._id) {
-                        let cityobj = { value: addresses.city, label: ci.cityName };
-                        self.setState({ CityOption: cityobj });
-                    }
-                });
-                self.setState({
-                    addressline1: addresses.addressline1,
-                    addressline2: addresses.addressline2,
-                    zipcode: addresses.zipcode,
-                });
-
+                let couobj = countrie.find(cou => cou.value == addresses.country);
+                self.setState({ CountryOption: couobj });
+                let stateobj = states.find(state => state.value == addresses.state);
+                self.setState({ StateOption: stateobj });
+                let cityobj = city.find(ci => ci.value == addresses.city);
+                self.setState({ CityOption: cityobj });
+                self.setState({addressline1: addresses.addressline1, addressline2: addresses.addressline2,zipcode: addresses.zipcode});
             });
             //set User Education
             let education = []
             userEducation.map((edu, i) => {
-                let value = {
-                    key: Random.id(),
-                    index: i
-                };
+                let value = {key: Random.id(),index: i };
                 education.push(value)
                 this.setState({
                     [`education.coursename_${value.key}`]: edu.cousrseName,
@@ -125,14 +103,10 @@ class AddHR extends React.Component {
                     education
                 });
             });
-
             //set User Excperiance
             let experiance = [];
             userExperiance.map((exp, i) => {
-                let value = {
-                    key: Random.id(),
-                    index: i
-                };
+                let value = { key: Random.id(),index: i};
                 experiance.push(value)
                 self.setState({
                     [`experiance.companyname_${value.key}`]: exp.companyName,
@@ -147,7 +121,6 @@ class AddHR extends React.Component {
         } else {
             self.setState({ flag: this.props.flag });
         }
-
     }
     componentDidMount() {
         //datepicker
@@ -206,7 +179,6 @@ class AddHR extends React.Component {
                 certificate={this.state[`education.certificate_${el.key}`] || ''}
             />)
         })
-
     }
     //tag
     TaghandleChange(tag, key) {
@@ -225,12 +197,12 @@ class AddHR extends React.Component {
     }
     BirthDateChangeHandler(date) {
         let { profile } = this.state;
-        profile[`birthDate`] =date;
+        profile[`birthDate`] = date;
         this.setState({
             profile
-        },()=>{
+        }, () => {
             console.log(this.state);
-            
+
         });
     }
     JoinDateChangeHandler(date) {
@@ -324,7 +296,6 @@ class AddHR extends React.Component {
         });
         this.setState(this.refs.experience.showFromMonth())
     }
-
     AddressChangeHandler(event) {
         const { name, value } = event.target;
         this.setState({
