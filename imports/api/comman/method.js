@@ -4,6 +4,8 @@ import State from '../states/states';
 import Cities from '../cites/cites';
 var Sugar = require('sugar');
 import LeaveType from '../leave/leaveTypeSchema';
+import User from '../user/users';
+import Attendance from '../attendance/attendance';
 if (Meteor.isServer) {
 
     Meteor.methods({
@@ -75,6 +77,13 @@ if (Meteor.isServer) {
         },
         'countLeaveTypeData': () => {
             return LeaveType.find({}).count();
-        }
+        },
+        'searchAttendanceDate': (pipeline) => {
+            return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
+            // delete pipeline['$skip']
+            // delete pipeline['$limit'] // count()
+            // return [ data, count]
+        },
+        
     })
 }

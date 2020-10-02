@@ -19,6 +19,7 @@ class LeftSidemenu extends Component {
   logout(e) {
     e.preventDefault();
     Meteor.logout(() => {
+      localStorage.removeItem('user');
       FlowRouter.go('/');
     });
   }

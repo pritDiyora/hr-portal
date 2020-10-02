@@ -60,12 +60,12 @@ if (Meteor.isServer) {
         'searchUser': (pipeline) => {
             return Promise.await(User.rawCollection().aggregate(pipeline).toArray());
         },
+        'deleteuser': (id) => {
+            return User.remove({ _id: id });
+        },
         'countUserdata': () => {
             return User.find({}).count();
         },
-        'deleteuser': (id) => {
-            return User.remove({ _id: id });
-        }
     })
 }
 

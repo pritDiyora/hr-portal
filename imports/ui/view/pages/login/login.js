@@ -18,6 +18,7 @@ export default class Login extends Component {
         Meteor.loginWithPassword(email, password, (err, res) => {
             if (!err) {
                 let user = Meteor.user();
+                localStorage.setItem('user',JSON.stringify(user) );
                 FlowRouter.go('/dashboard');
                 // $('#btnModal').click();
             }else

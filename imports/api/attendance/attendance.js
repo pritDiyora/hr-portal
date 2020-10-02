@@ -10,6 +10,9 @@ Schemas.Attendance =  new SimpleSchema({
   isCheckIn: {
     type: Boolean
   },
+  date: {
+    type: Date
+  },
   dateTime: {
     type: Date
   },

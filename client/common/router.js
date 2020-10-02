@@ -22,6 +22,7 @@ import NotFoundPage from '../../imports/ui/view/pages/notFoundPage/NotFoundPage'
 import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPage/AccessPermissionPage';
 import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
 import Leave from '../../imports/ui/view/pages/leave/leave';
+import { de } from 'date-fns/locale';
 
 const accessRoute = [
     { routeName: 'listuser', roles: ['superadmin', 'admin'] },
@@ -276,7 +277,7 @@ FlowRouter.route('/leave', {
 
     }
 });
-FlowRouter.triggers.event()
+
 // 400 Access Permission
 FlowRouter.route('/accesspermission', {
     name: 'accesspermission',
@@ -301,10 +302,11 @@ this.AccessPermission = function (routeName) {
     if (!accessRouteItem) {
         return true;
     }
-    if (!Meteor.user() || !Meteor.user().profile.userType) {
+    let user=JSON.parse(localStorage.getItem('user')) || {};
+    if (!user || !user.profile || !user.profile.userType) {
         return false;
     }
-    var usertype = Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType;
+    var usertype = user && user.profile && user.profile.userType;
 
     var allowRoles = accessRouteItem.roles;
     var granted = _.intersection(allowRoles, [usertype])
@@ -317,7 +319,7 @@ this.AccessPermission = function (routeName) {
 
 function requiredLogin() {
     if (Meteor.userId()) {
-        if (AccessPermission(this.FlowRouter.getRouteName())) {
+        if (AccessPermission(FlowRouter.current().route.name)) {
             return true;
         } else {
             FlowRouter.go('/accesspermission')
@@ -328,7 +330,6 @@ function requiredLogin() {
 }
 
 //404 Not Found Page
-
 FlowRouter.notFound = {
     name: 'NotFoundPage',
     action() {
