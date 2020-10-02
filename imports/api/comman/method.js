@@ -91,9 +91,6 @@ if (Meteor.isServer) {
         'countAttendancedata': () => {
             return Attendance.find({}).count();
         },
-        'deleteuser': (id) => {
-            return User.remove({ _id: id });
-        },
 
         //general setting
         'addHours': (todayHrs, weekHrs, monthHrs, overHrs) => {

@@ -63,9 +63,6 @@ if (Meteor.isServer) {
         'deleteuser': (id) => {
             return User.remove({ _id: id });
         },
-        'countUserdata': () => {
-            return User.find({}).count();
-        },
     })
 }
 
