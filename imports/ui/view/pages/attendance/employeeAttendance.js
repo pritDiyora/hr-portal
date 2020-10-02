@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import moment from 'moment';
 import IboxTools from '../../layout/iboxTools';
 import { Meteor } from 'meteor/meteor';
+import { toast } from 'react-toastify';
 import { withTracker } from 'meteor/react-meteor-data';
 import Attendance from '../../../../api/attendance/attendance'
-import Pagination from "react-js-pagination";
+import GeneralSetting from '../../../../api/generalsetting/generalsetting'
 var Sugar = require('sugar');
+import Pagination from "react-js-pagination";
+
 class EmployeeAttendance extends Component {
   constructor(props) {
     super(props);
@@ -18,94 +21,107 @@ class EmployeeAttendance extends Component {
       breakTime: 0,
       firstTime: 0,
       lastTime: 0,
+      pageLength: 10,
+      searchStr: "",
+      sortValue: 1,
+      currentPage: 1,
+      totalpage: 0
     }
   }
   componentDidMount() {
     this.getDateList()
     this.interval = setInterval(() => {
-      this.setProgress()
+
+      this.setTodayProgress()
+      this.setWeekProgress()
+      this.setMonthProgress()
       this.setOverTimeProgress()
       this.setBreakTime()
-
+      this.progress()
     }, 1000);
 
   }
   componentWillReceiveProps(nextProps) {
-    this.setProgress()
+
+    this.setTodayProgress()
+    this.setWeekProgress()
+    this.setMonthProgress()
     this.setOverTimeProgress()
     this.setBreakTime()
-
+    this.progress()
   }
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
-  setProgress() {
-    if (this.props.todayInOutList.length > 0 && this.props.weekInOutList.length > 0 && this.props.monthInOutList.length > 0) {
-      let diffs = [], diffs1 = [], diffs2 = [];
-      let getisPunchIn = this.props.todayInOutList.filter((a) => a.isCheckIn)
-      let getisPunchOut = this.props.todayInOutList.filter((a) => !a.isCheckIn)
-      let getisPunchIn1 = this.props.weekInOutList.filter((a) => a.isCheckIn)
-      let getisPunchOut1 = this.props.weekInOutList.filter((a) => !a.isCheckIn)
-      let getisPunchIn2 = this.props.monthInOutList.filter((a) => a.isCheckIn)
-      let getisPunchOut2 = this.props.monthInOutList.filter((a) => !a.isCheckIn)
+  progress(data, hoursKey) {
+    let getdata = this.props && this.props[data] || [];
+    let hours = this.props && this.props.hoursData && this.props.hoursData[hoursKey] || 0;
+    if (getdata.length > 0) {
+      let diffs = []
+      let getisPunchIn = getdata.filter((a) => a.isCheckIn);
+      let getisPunchOut = getdata.filter((a) => !a.isCheckIn)
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
-      let getPunchInTime1 = _.pluck(getisPunchIn1, 'dateTime');
-      let getPunchOutTime1 = _.pluck(getisPunchOut1, 'dateTime');
-      let getPunchInTime2 = _.pluck(getisPunchIn2, 'dateTime');
-      let getPunchOutTime2 = _.pluck(getisPunchOut2, 'dateTime');
       getPunchInTime.map((t, index) => {
         let getInTime = moment(t);
         let getOutTime = getPunchOutTime && getPunchOutTime[index] ? moment(getPunchOutTime[index]) : moment();
         let getDiff = getOutTime.diff(getInTime, "minutes");
         diffs.push(getDiff);
       })
-      getPunchInTime1.map((t, index) => {
-        let getInTime1 = moment(t);
-        let getOutTime1 = getPunchOutTime1 && getPunchOutTime1[index] ? moment(getPunchOutTime1[index]) : moment();
-        let getDiff1 = getOutTime1.diff(getInTime1, "minutes");
-        diffs1.push(getDiff1);
-      })
-      getPunchInTime2.map((t, index) => {
-        let getInTime2 = moment(t);
-        let getOutTime2 = getPunchOutTime2 && getPunchOutTime2[index] ? moment(getPunchOutTime2[index]) : moment();
-        let getDiff2 = getOutTime2.diff(getInTime2, "minutes");
-        diffs2.push(getDiff2);
-      })
+      let value = {
+        CountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
+        Progress: ((Sugar.Array.sum(diffs) / 60) * 100 / hours).toFixed(2),
+      }
+      return value;
+    } else {
+      // console.log("no...")
+    }
+  }
+  setTodayProgress() {
+    let data = this.progress('todayInOutList', 'todayHrs');
+    if (data) {
       this.setState({
-        toDayCountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
-        toDayProgress: ((Sugar.Array.sum(diffs) / 60) * 100 / 8).toFixed(2),
-        weekCountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs1) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs1) % 60)).format("HH:mm"),
-        weekProgress: ((Sugar.Array.sum(diffs1) / 60) * 100 / 44).toFixed(2),
-        monthCountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs2) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs2) % 60)).format("HH:mm"),
-        monthProgress: ((Sugar.Array.sum(diffs2) / 60) * 100 / 176).toFixed(2)
+        toDayCountHrs: data.CountHrs,
+        toDayProgress: data.Progress
+      })
+    }
+  }
+  setWeekProgress() {
+    let data = this.progress('weekInOutList', 'weekHrs');
+    if (data) {
+      this.setState({
+        weekCountHrs: data.CountHrs,
+        weekProgress: data.Progress
+      })
+    }
+  }
+  setMonthProgress() {
+    let data = this.progress('monthInOutList', 'monthHrs');
+    if (data) {
+      this.setState({
+        monthCountHrs: data.CountHrs,
+        monthProgress: data.Progress
       })
     }
   }
 
   setOverTimeProgress() {
     if (this.props.todayBreakList.length > 0) {
-      let regHrs = 480
+      let regHrs = this.props.hoursData && this.props.hoursData.todayHrs * 60
       let diffs = [];
       let getisPunchIn = this.props.todayBreakList.filter((a) => a.isCheckIn)
       let getisPunchOut = this.props.todayBreakList.filter((a) => !a.isCheckIn)
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
-
       let first = moment(getPunchInTime[0]);
-      // console.log("first :: " , first);
       let last = moment(getPunchOutTime[getPunchOutTime.length - 1])
-      // console.log("last :: " ,  last);
       let total = moment(last.diff(first, "minutes"));
-      console.log("total :: " , total);
       let getoverTime = total.diff(regHrs, "minutes");
-      console.log("getoverTime :: ", getoverTime);
-      diffs.push(getoverTime);
-
+      diffs.push(total);
       this.setState({
-        overTimeProgress: diffs
-        // overTimeProgress: moment.utc().hours(diffs / 60).minutes(diffs % 60).format("HH:mm")
+        overCountHrs: moment.utc().hours(diffs / 60).minutes(diffs % 60).format("HH:mm"),
+        overTimeProgress: ((diffs / 60) * 100)
       })
     }
   }
@@ -120,9 +136,9 @@ class EmployeeAttendance extends Component {
       let first = moment(getPunchInTime[0]);
       let last = getPunchOutTime[getPunchOutTime.length - 1]
       getPunchInTime.shift();
+      
       getPunchOutTime.map((t, index) => {
         let getInTime = moment(getPunchInTime[index]);
-
         let getOutTime = moment(t);
         let getDiff = getInTime.diff(getOutTime, "minutes");
         diffs.push(getDiff);
@@ -135,17 +151,54 @@ class EmployeeAttendance extends Component {
     }
   }
 
+  showhandle(event) {
+    this.setState({
+      currentPage: 1,
+      pageLength: parseInt(event.target.value)
+    }, () => {
+      this.getDateList();
+    })
+  }
+  handlePageChange(pageNumber) {
+    const currentPage = pageNumber;
+    const totalpage = pageNumber;
+    this.setState({
+      currentPage, totalpage
+    }, () => {
+      this.getDateList();
+    });
+  }
+  search(e) {
+    this.setState({
+      currentPage: 1,
+      searchStr: e.target.value
+    }, () => {
+      this.getDateList();
+    })
+  }
+
   getDateList() {
     const self = this;
     let pipeline = [
       {
         $group: {
-          _id: "$date"
+          _id: "$date",
+          items: {
+            $push: '$$ROOT'
+          }
         }
       },
+
+      { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
+      { "$limit": this.state.pageLength },
     ];
     Meteor.call("searchAttendanceDate", pipeline, function (err, res) {
       if (!err) {
+        Meteor.call("countAttendancedata", res, function (err1, res1) {
+          if (!err) {
+            self.setState({ totalpage: res1 });
+          }
+        })
         self.setState({ attendanceData: res });
       } else {
         toast.error(err);
@@ -154,8 +207,9 @@ class EmployeeAttendance extends Component {
   }
 
   render() {
-    let { todayInOutList } = this.props;
+    let { todayInOutList, hoursData } = this.props;
     let { attendanceData } = this.state
+
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -183,7 +237,7 @@ class EmployeeAttendance extends Component {
                       </div>
                       <div className="col-lg-6">
                         <h4>Overtime</h4>
-                        <p>{this.state.overTimeProgress} hrs</p>
+                        <p>{this.state.overCountHrs} hrs</p>
                       </div>
                     </div>
                   </li>
@@ -200,7 +254,7 @@ class EmployeeAttendance extends Component {
               <div className="ibox-content no-padding">
                 <ul className="list-group">
                   <li className="list-group-item">
-                    <p>Today: <strong>{this.state.toDayCountHrs} hrs / 8 hrs</strong></p>
+                    <p>Today: <strong>{this.state.toDayCountHrs} hrs / {hoursData && hoursData.todayHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-primary"
                         style={{ width: this.state.toDayProgress + "%" }}
@@ -212,7 +266,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>This Week: <strong>{this.state.weekCountHrs} hrs / 44 hrs</strong></p>
+                    <p>This Week: <strong>{this.state.weekCountHrs} hrs / {hoursData && hoursData.weekHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-warning"
                         style={{ width: this.state.weekProgress + "%" }}
@@ -224,7 +278,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>This Month: <strong>{this.state.monthCountHrs} hrs / 176 hrs</strong></p>
+                    <p>This Month: <strong>{this.state.monthCountHrs} hrs / {hoursData && hoursData.monthHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-success"
                         style={{ width: this.state.monthProgress + "%" }}
@@ -236,7 +290,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>Overtime: <strong>{this.state.overTimeProgress}</strong></p>
+                    <p>Overtime: <strong>{this.state.overCountHrs}</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-info"
                         style={{ width: this.state.overTimeProgress + "%" }}
@@ -287,7 +341,31 @@ class EmployeeAttendance extends Component {
               </div>
               <div className="ibox-content">
                 <div className="row text-center">
+                  <div className="col-sm-12" style={{ marginBottom: "15px" }}>
+                    <div className="col-sm-6" >
+                      <div className="dataTables_length" id="example_length">
+                        <label className="dataTables_length text">Show <select name="example_length"
+                          className="form-control" onChange={this.showhandle.bind(this)}>
+                          <option>5</option>
+                          <option>10</option>
+                          <option>25</option>
+                          <option>50</option>
+                          <option>100</option>
+                        </select> entries</label>
+                      </div>
+                    </div>
+                    <div className="col-sm-6" >
+                      <div className="page1" id="example_length">
+                        <label className="dataTables_length1 text">Search :
+                            <input type="text" name="example_length" onChange={this.search.bind(this)}
+                            className="form-control" style={{ width: "200px" }} />
+                        </label>
+                      </div>
+
+                    </div>
+                  </div>
                   <div className="container-fluid">
+
                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                       <thead>
                         <tr>
@@ -301,16 +379,35 @@ class EmployeeAttendance extends Component {
                       </thead>
                       <tbody>
                         {attendanceData.map((attendance) => {
-                          let total = moment.utc(moment(this.state.lastTime, "HH:mm:ss").diff(moment(this.state.firstTime, "HH:mm:ss"))).format("HH:mm:ss")
-                          let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(this.state.breakTime, "HH:mm:ss"))).format("HH:mm:ss")
+                          // console.log("attendance :: " , );
+                          let diffs = []
+                          let getisPunchIn = attendance && attendance.items.filter((a) => a.isCheckIn)
+                          let getisPunchOut = attendance && attendance.items.filter((a) => !a.isCheckIn)
+                          let getPunchInTime = _.pluck(getisPunchIn, 'dateTime')
+                          let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime')
+                          let first = moment(getPunchInTime[0])
+                          let last = getPunchOutTime[getPunchOutTime.length - 1]
+                          getPunchInTime.shift()
+                          getPunchOutTime.splice(-1,1)
+                          getPunchOutTime.map((t, index) => {
+                            let getInTime = moment(getPunchInTime[index]);
+                            let getOutTime = moment(t);
+                            let getDiff = getInTime.diff(getOutTime, "minutes");
+                            diffs.push(getDiff);
+                          })
+                          let breakTime = moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes((Sugar.Array.sum(diffs) % 60)).format("HH:mm")
+                          let firstTime = moment(first).format("HH:mm:ss")
+                          let lastTime  = moment(last).format("HH:mm:ss")
+                          let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
+                          let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(breakTime, "HH:mm:ss"))).format("HH:mm:ss")
                           return (
                             <tr key={attendance._id}>
                               <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
-                              <td>{this.state.firstTime}</td>
-                              <td>{this.state.lastTime}</td>
+                              <td>{firstTime}</td>
+                              <td>{lastTime}</td>
                               <td>{total}</td>
                               <td>{workHrs}</td>
-                              <td>{this.state.breakTime}</td>
+                              <td>{breakTime}</td>
                             </tr>
                           )
                         })}
@@ -326,7 +423,16 @@ class EmployeeAttendance extends Component {
                         </tr>
                       </tfoot>
                     </table>
+                    <div style={{ textAlign: "right" }}>
+                      <Pagination
+                        activePage={this.state.currentPage}
+                        itemsCountPerPage={this.state.pageLength}
+                        totalItemsCount={this.state.totalpage}
+                        pageRangeDisplayed={5}
+                        onChange={this.handlePageChange.bind(this)}
 
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -339,23 +445,34 @@ class EmployeeAttendance extends Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('checkInOutList');
+  Meteor.subscribe('hoursData')
+  //today
   var start = new Date();
   start.setHours(0, 0, 0, 0);
   var end = new Date();
   end.setHours(23, 59, 59, 999);
 
+  //week
   let curr = new Date()
-  let first = curr.getDate() - curr.getDay()
-  let last = first + 6
-  let firstDay = new Date(curr.setDate(first))
-  let lastDay = new Date(curr.setDate(last))
+  let first = curr.setDate(curr.getDate() - curr.getDay())
+  let last = curr.setDate(curr.getDate() + 6)
+  let firstDay = new Date(first)
+  let lastDay = new Date(last)
 
+  //month
   let monthData = new Date()
   monthData.setMonth(monthData.getMonth())
+
+  //let user 
+    let userId = Meteor.userId();
+    if (FlowRouter.current().params._id) {
+      userId = FlowRouter.current().params._id;
+    }
   return {
-    todayInOutList: Attendance.find({ "userId": Meteor.userId(), "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": -1 } }).fetch(),
-    todayBreakList: Attendance.find({ "userId": Meteor.userId(), "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": +1 } }).fetch(),
-    weekInOutList: Attendance.find({ "userId": Meteor.userId(), "dateTime": { $gte: firstDay, $lt: lastDay } }).fetch(),
-    monthInOutList: Attendance.find({ "userId": Meteor.userId(), "dateTime": { $lte: monthData } }).fetch()
+    todayInOutList: Attendance.find({ "userId": userId, "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": -1 } }).fetch(),
+    todayBreakList: Attendance.find({ "userId": userId, "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": +1 } }).fetch(),
+    weekInOutList: Attendance.find({ "userId": userId, "dateTime": { $gte: firstDay, $lt: lastDay } }).fetch(),
+    monthInOutList: Attendance.find({ "userId": userId, "dateTime": { $lte: monthData } }).fetch(),
+    hoursData: GeneralSetting.findOne({})
   }
 })(EmployeeAttendance); 

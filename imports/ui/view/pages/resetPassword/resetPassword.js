@@ -23,7 +23,7 @@ export default class ResetPassword extends Component {
         let { newpassword, confirmpassword } = this.state;
         if (newpassword.length >= 8) {
             if (newpassword === confirmpassword) {
-                Accounts.resetPassword(Session.get('resetpassword'), newpassword, function (err) {
+                Accounts.resetPassword(FlowRouter.current().params.token, newpassword, function (err) {
                     if (err) {
                         toast.error(err.message)
                     } else {

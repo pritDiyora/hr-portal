@@ -1,18 +1,19 @@
-import {Meteor} from 'meteor/meteor';
-import Attendance from '../../attendance/attendance';
-
-Meteor.publish('user', function(){
-    return Meteor.users.find({_id: this.userId});
-})
-
-Meteor.publish('checkInOutList', function(){
-    return Attendance.find();
-})
+import { Meteor } from 'meteor/meteor';
 import Country from '../../country/country';
 import State from '../../states/states';
 import Cities from '../../cites/cites';
 import User from '../users';
+import Attendance from '../../attendance/attendance';
+import GeneralSetting from '../../generalsetting/generalsetting';
 if (Meteor.isServer) {
+
+  Meteor.publish('user', function () {
+    return Meteor.users.find({ _id: this.userId });
+  })
+
+  Meteor.publish('checkInOutList', function () {
+    return Attendance.find();
+  })
 
   //all country data
   Meteor.publish('CountryData', function () {
@@ -45,7 +46,9 @@ if (Meteor.isServer) {
   })
 
 
-
+  Meteor.publish('hoursData', function (id) {
+    return GeneralSetting.find();
+  })
 
 
 }

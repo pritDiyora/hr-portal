@@ -18,6 +18,7 @@ import EmployeeAttendance from '../../imports/ui/view/pages/attendance/employeeA
 import Countries from '../../imports/ui/view/pages/countries/countries';
 import State from '../../imports/ui/view/pages/states/addstate';
 import City from '../../imports/ui/view/pages/city/city';
+import GeneralSetting from '../../imports/ui/view/pages/generalsetting/generalSetting.js';
 
 // Accounts
 FlowRouter.route('/register', {
@@ -178,6 +179,17 @@ FlowRouter.route('/city', {
         mount(MainLayout, {
             content() {
                 return <City />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/generalSetting', {
+    name: 'GeneralSetting',
+    action(){
+        mount(MainLayout, {
+            content() {
+                return <GeneralSetting />
             }
         })
     }

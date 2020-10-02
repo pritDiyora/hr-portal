@@ -4,6 +4,7 @@ import State from '../states/states';
 import Cities from '../cites/cites';
 import User from '../user/users';
 import Attendance from '../attendance/attendance';
+import GeneralSetting from '../generalsetting/generalsetting';
 if (Meteor.isServer) {
     Meteor.methods({
         //Country state and city 
@@ -70,9 +71,25 @@ if (Meteor.isServer) {
         'countUserdata': () => {
             return User.find({}).count();
         },
-        
+        'countAttendancedata': () => {
+            return Attendance.find({}).count();
+        },
         'deleteuser': (id) => {
             return User.remove({ _id: id });
+        },
+
+        //general setting
+        'addHours': (todayHrs, weekHrs, monthHrs, overHrs) => {
+            return GeneralSetting.insert(
+                {todayHrs: todayHrs,
+                 weekHrs: weekHrs, 
+                 monthHrs: monthHrs, 
+                 overHrs: overHrs}
+            );
+        },
+        'updateHours': (todayHrs, weekHrs, monthHrs, overHrs, id) => {
+            return GeneralSetting.update({_id: id}, {$set: {todayHrs: todayHrs, weekHrs: weekHrs, monthHrs: monthHrs, overHrs: overHrs}})
         }
+
     })
 }

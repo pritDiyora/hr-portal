@@ -77,6 +77,9 @@ class LeftSidemenu extends Component {
             <li>
               <a href="/employeeAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
             </li>
+            <li>
+              <a href="/generalSetting"><i className="fa fa-diamond"></i> <span className="nav-label">General Setting</span></a>
+            </li>
             {/* <li>
                   <a href="#"><i className="fa fa-bar-chart-o"></i> <span className="nav-label">Graphs</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">
