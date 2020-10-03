@@ -164,11 +164,8 @@ class State extends Component {
         })
     }
     updaterecord(e, id) {
-        this.state.displayedState.map((state, i) => {
-            if (state._id == id) {
-                this.setState({ countryid: state.countryId, statename: state.stateName, button: true, stateid: id })
-            }
-        })
+        let state = this.state.displayedState.find(state => state._id == id);
+        this.setState({ countryid: state.countryId, statename: state.stateName, button: true, stateid: id })
         $("#add-panel").modal("show");
     }
     cancel(e) {

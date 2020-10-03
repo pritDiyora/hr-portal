@@ -62,7 +62,12 @@ Schemas.Leave = new SimpleSchema({
         }
     },
     approveBy: {
-        type: String
+        type: String,
+        autoValue() {
+            if (this.isInsert) {
+                return this.userId;
+            }
+        }
     },
 })
 

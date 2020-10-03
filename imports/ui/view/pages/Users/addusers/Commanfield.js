@@ -43,7 +43,7 @@ class AddHR extends React.Component {
         this.AddressChangeHandler = this.AddressChangeHandler.bind(this);
         this.BirthDateChangeHandler = this.BirthDateChangeHandler.bind(this);
         this.JoinDateChangeHandler = this.JoinDateChangeHandler.bind(this);
-        this.reactTags = React.createRef();
+        this.reactTags = React.createRef(); this.child = React.createRef();
         this.EmailChangeHandler = this.EmailChangeHandler.bind(this);
         this.Profilevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
         this.Educationvalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
@@ -290,12 +290,14 @@ class AddHR extends React.Component {
             [`experiance.startdate_${key}`]: from
         });
     }
+    
     handleToChange(to, key) {
         this.setState({
-            [`experiance.enddate_${key}`]: to
-        });
-        this.setState(this.refs.experience.showFromMonth())
+            [`experiance.enddate_${key}`]: to},  this.child.current.showFromMonth());
     }
+
+
+
     AddressChangeHandler(event) {
         const { name, value } = event.target;
         this.setState({
@@ -510,7 +512,7 @@ class AddHR extends React.Component {
                         <div role="tabpanel" id="tab-3" className="tab-pane">
                             {this.state.experiance.map((el, i) => {
                                 return (<ExperieanceComponent
-                                    ref="experience"
+                                    ref={this.child}
                                     rowData={el}
                                     id={i}
                                     experiance={this.state.experiance}

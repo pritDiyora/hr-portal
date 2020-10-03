@@ -21,8 +21,6 @@ class GeneralSettings extends Component {
   componentWillReceiveProps(nextpops) {
     this.setState({
       id: nextpops.hoursData._id
-    }, () => {
-      console.log(this.state.id);
     })
   }
 
@@ -97,7 +95,7 @@ class GeneralSettings extends Component {
 
                 <div className="form-group row">
                   <div className="col-md-6" style={{ textAlign: "right" }}>
-                    <input type="button" className="btn btn-primary" value="Save" onClick={(e) => { this.addHours(e) }} />
+                    <button type="button" className="btn btn-primary" value="Save" onClick={(e) => { this.addHours(e) }} >Save</button>
                   </div>
                 </div>
               </div>

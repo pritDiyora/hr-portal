@@ -179,7 +179,7 @@ FlowRouter.route('/country', {
         }
     }
 })
-FlowRouter.route('/employeeAttendance/:id', {
+FlowRouter.route('/employeeAttendance', {
     name: 'EmployeeAttendance',
     action() {
         if (requiredLogin()) {
@@ -242,7 +242,6 @@ FlowRouter.route('/leave', {
 
     }
 });
-
 // 400 Access Permission
 FlowRouter.route('/accesspermission', {
     name: 'accesspermission',

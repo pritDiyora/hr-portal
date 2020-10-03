@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/index';
-import Country from '../imports/api/country/country';
-import State from '../imports/api/states/states';
-// import S3 from 'aws-sdk/clients/s3';
+import GeneralSetting from '../imports/api/generalsetting/generalsetting';
 Meteor.startup(async () => {
     process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
 
@@ -21,12 +19,19 @@ Meteor.startup(async () => {
         };
         Accounts.createUser(options);
     }
-    
+
     S3.config = {
         key: 'AKIAIQZEI4RO6OSIZGQQ',
         secret: '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',
         bucket: 'apex-hr-portal',
         region: 'ap-south-1',
     };
-
+    if (GeneralSetting.find().count() === 0) {
+        GeneralSetting.insert({
+            todayHrs: '8',
+            weekHrs: '44',
+            monthHrs: '176',
+            overHrs: '4'
+        });
+    }
 });

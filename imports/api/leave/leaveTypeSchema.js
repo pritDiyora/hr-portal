@@ -13,7 +13,7 @@ Schemas.LeaveType =  new SimpleSchema({
   },
   isPaid: {
     type: Boolean,
-    defaultValue: true
+    defaultValue: false
   },
   createdAt: {
     type: Date,
