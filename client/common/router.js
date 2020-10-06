@@ -179,16 +179,16 @@ FlowRouter.route('/country', {
         }
     }
 })
-FlowRouter.route('/employeeAttendance/:id', {
+FlowRouter.route('/employeeAttendance', {
     name: 'EmployeeAttendance',
     action() {
-        if (requiredLogin()) {
+        // if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
                     return <EmployeeAttendance />
                 }
             })
-        }
+        // }
     }
 })
 FlowRouter.route('/state', {
