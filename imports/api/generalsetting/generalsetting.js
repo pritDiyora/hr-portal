@@ -24,7 +24,8 @@ Schemas.GeneralSetting = new SimpleSchema({
     type: Date,
     autoValue() {
       return new Date();
-    }
+    },
+    optional:true
   },
   createdBy: {
     type: String,
@@ -32,19 +33,22 @@ Schemas.GeneralSetting = new SimpleSchema({
       if(this.isInsert){
         return this.userId;
       }
-    }
+    },
+    optional:true
   },
   modifiedAt: {
     type: Date,
     autoValue() {
       return new Date()
-    }
+    },
+    optional:true
   },
   modifiedBy: {
     type: String,
     autoValue() {
       return this.userId;
-    }
+    },
+    optional:true
   }
 });
 

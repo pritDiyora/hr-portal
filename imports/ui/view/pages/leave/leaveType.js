@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import SimpleReactValidator from 'simple-react-validator';
+import { tr } from 'date-fns/locale';
 export default class LeaveType extends Component {
     constructor(props) {
         super(props);
@@ -13,7 +14,7 @@ export default class LeaveType extends Component {
             noofday: undefined,
             leaveTypeId: "",
             button: false,
-            paid:'',
+            paidChecked: false,
             displayedLeaveType: [],
             //table (sorting,seraching,pagination)
             pageLength: 10,
@@ -31,11 +32,11 @@ export default class LeaveType extends Component {
             currentPage: 1,
             pageLength: parseInt(event.target.value)
         }, () => {
-            this.getCountryData();
+            this.getLeaveTypeData();
         })
     }
     componentDidMount() {
-        this.getCountryData();
+        this.getLeaveTypeData();
     }
     handlePageChange(pageNumber) {
         const currentPage = pageNumber;
@@ -43,15 +44,15 @@ export default class LeaveType extends Component {
         this.setState({
             currentPage, totalpage
         }, () => {
-            this.getCountryData();
+            this.getLeaveTypeData();
         });
     }
     addLeaveType(e) {
         e.preventDefault();
         const self = this;
-        let { typename, noofday, leaveTypeId } = this.state;
+        let { typename, noofday, leaveTypeId, paidChecked } = this.state;
         if (this.state.button == true) {
-            Meteor.call('updateLeaveType', typename, noofday, leaveTypeId, function (err, result) {
+            Meteor.call('updateLeaveType', typename, noofday, leaveTypeId, paidChecked, function (err, result) {
                 if (!err) {
                     toast.success("Record updates..." + result);
                     $("#add-panel").modal("hide");
@@ -61,17 +62,17 @@ export default class LeaveType extends Component {
                         leaveTypeId: "",
                         button: false
                     })
-                    // window.location.reload(false);
+                    self.getLeaveTypeData();
                 } else {
                     toast.error("Error ::" + err);
                 }
             })
         } else {
-            Meteor.call('addleaveType', typename, noofday, function (err, result) {
+            Meteor.call('addleaveType', typename, noofday, paidChecked, function (err, result) {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
-                    // window.location.reload(false);
+                    self.getLeaveTypeData();
                 } else {
                     toast.error("Error ::" + err);
                 }
@@ -83,14 +84,16 @@ export default class LeaveType extends Component {
     deletemodel(e, id) {
         e.preventDefault();
         $("#deletemodel").modal("show");
-        this.setState({ countryid: id })
+        this.setState({ leaveTypeId: id })
     }
     deletrecord(e) {
         e.preventDefault();
+        const self = this;
         Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
             if (!err) {
                 $("#deletemodel").modal("hide");
                 toast.success("Record Deleted.." + res)
+                self.getLeaveTypeData();
             } else {
                 toast.error(err)
             }
@@ -104,7 +107,7 @@ export default class LeaveType extends Component {
     updaterecord(e, id) {
         this.state.displayedLeaveType.map((le, i) => {
             if (le._id == id) {
-                this.setState({ typename: le.leaveTypeName, noofday: le.noOfDay, button: true, leaveTypeId: id })
+                this.setState({ typename: le.leaveTypeName, noofday: le.noOfDay, button: true, leaveTypeId: id, paidChecked: le.isPaid })
             }
         })
         $("#add-panel").modal("show");
@@ -123,10 +126,10 @@ export default class LeaveType extends Component {
             currentPage: 1,
             searchStr: e.target.value
         }, () => {
-            this.getCountryData();
+            this.getLeaveTypeData();
         })
     }
-    getCountryData() {
+    getLeaveTypeData() {
         const self = this;
         let pipeline = [
             {
@@ -163,7 +166,7 @@ export default class LeaveType extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getLeaveTypeData();
             })
         } else {
             this.setState({
@@ -171,9 +174,12 @@ export default class LeaveType extends Component {
                 sortKey: keyName,
                 currentPage: 1
             }, () => {
-                this.getCountryData();
+                this.getLeaveTypeData();
             })
         }
+    }
+    paidCheckedHandlar(e) {
+        this.setState({ paidChecked: !this.state.paidChecked });
     }
     render() {
         let { sortKey, sortValue } = this.state;
@@ -226,13 +232,14 @@ export default class LeaveType extends Component {
                                                         <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
                                                             <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, lev._id)}><i className="fa fa-edit"></i></a>
                                                         </td>
-                                                    </tr>) })
+                                                    </tr>)
+                                            })
                                             }
                                         </tbody>
                                     </table>
                                     <div style={{ textAlign: "right" }}>
-                                        <Pagination  activePage={this.state.currentPage}  itemsCountPerPage={this.state.pageLength}  
-                                        totalItemsCount={this.state.totalpage} pageRangeDisplayed={5} onChange={this.handlePageChange.bind(this)} />
+                                        <Pagination activePage={this.state.currentPage} itemsCountPerPage={this.state.pageLength}
+                                            totalItemsCount={this.state.totalpage} pageRangeDisplayed={5} onChange={this.handlePageChange.bind(this)} />
                                     </div>
                                 </div>
                             </div>
@@ -251,24 +258,25 @@ export default class LeaveType extends Component {
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
-                                            <label>Leave Type Name</label><br/>
+                                            <label>Leave Type Name</label><br />
                                             <input type="text" className="form-control" value={this.state.typename} onChange={(e) => this.setState({ typename: e.target.value })}
-                                            /><br/>
+                                            /><br />
                                         </div>
                                         <div className="col-md-12">
-                                            <label>No Of Day</label><br/>
+                                            <label>No Of Day</label><br />
                                             <input type="text" className="form-control" value={this.state.noofday} onChange={(e) => this.setState({ noofday: e.target.value })}
-                                            /><br/>
+                                            /><br />
                                         </div>
-                                        <div className="col-md-12">
-                                            <label>Is Paid </label><br/>
+                                        <div className="col-md-12" style={{ paddingLeft: '7px' }}>
+
                                             <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1" />
-                                                <label class="form-check-label" for="inlineCheckbox2"> Paid </label>
-                                            </div>
-                                            <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option2" />
-                                                <label class="form-check-label" for="inlineCheckbox1"> UnPaid </label>
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
+                                                    value="option1"
+                                                    checked={this.state.paidChecked === true}
+                                                    value={this.state.paidChecked}
+                                                    onChange={(e) => this.paidCheckedHandlar(e)}
+                                                />
+                                                <label class="form-check-label" style={{ paddingLeft: '15px' }} for="inlineCheckbox2"> Is Paid  </label>
                                             </div>
                                         </div>
 

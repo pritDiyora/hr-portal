@@ -55,35 +55,54 @@ export default class Leave extends Component {
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 className="modal-title">Add Country Data</h4>
+                            <h4 className="modal-title">Add Leave</h4>
                         </div>
                         <div className="modal-body">
-                            <div className="container-fluid">
-                                <div className="form-group row">
-                                    <div className="col-md-12">
-                                        <div className="col-md-6">
-                                            <label>Country Name</label>
-                                            <input type="text" className="form-control" value={this.state.countryname} onChange={(e) => this.setState({ countryname: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label>Country Code</label>
-                                            <input type="text" className="form-control" value={this.state.countrycode} onChange={(e) => this.setState({ countrycode: e.target.value })}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="content container-fluid">
+                            <form>
+									<div class="form-group">
+										<label>Leave Type <span class="text-danger">*</span></label>
+										<select class="form-control" >
+											<option data-select2-id="3">Select Leave Type</option>
+											<option>Casual Leave 12 Days</option>
+											<option>Medical Leave</option>
+											<option>Loss of Pay</option>
+                                        </select>
+									</div>
+									<div class="form-group">
+										<label>From <span class="text-danger">*</span></label>
+										<div class="cal-icon">
+											<input class="form-control datetimepicker" type="text" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label>To <span class="text-danger">*</span></label>
+										<div class="cal-icon">
+											<input class="form-control datetimepicker" type="text" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label>Remaining Leaves <span class="text-danger">*</span></label>
+										<input class="form-control" readonly="" value="12" type="text" />
+									</div>
+									<div class="form-group">
+										<label>Leave Reason <span class="text-danger">*</span></label>
+										<textarea rows="4" class="form-control"></textarea>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Submit</button>
+									</div>
+								</form>
                             </div>
                         </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-default" id="cancel-button" onClick={(e) => this.cancel(e)}>Cancel</button>
+                        {/* <div className="modal-footer submit-section">
                             {this.state.button ? <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Update Country</button>
-                                : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Add Country</button>}
-                        </div>
+                                : <button type="button" className="btn btn-primary submit-btn" id="confirm-button" onClick={(e) => { this.addcountry(e) }}>Add Country</button>}
+                        </div> */}
                     </div>
                 </div>
             </div>
-         </div>
+     </div>
         )
     }
 

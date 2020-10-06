@@ -9,15 +9,17 @@ import { formatDate, parseDate } from 'react-day-picker/moment';
 class ExperieanceComponent extends Component {
     constructor(props) {
         super(props);
+        this.showFromMonth = this.showFromMonth.bind(this);
     }
 
     showFromMonth() {
-        const { startdate, enddate } = this.props;
+        const { startdate, enddate } = this.props;        
         if (!startdate) {
             return;
         }
         if (moment(enddate).diff(moment(startdate), 'months') < 2) {
-            return this.enddate.getDayPicker().showMonth(startdate);
+          return this.enddate.getDayPicker().showMonth(startdate);
+           
         }
     }
     render() {

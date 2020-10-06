@@ -8,6 +8,7 @@ import User from '../user/users';
 import Attendance from '../attendance/attendance';
 import GeneralSetting from '../generalsetting/generalsetting';
 if (Meteor.isServer) {
+ 
 
     Meteor.methods({
         //Add Country state and city 
@@ -64,11 +65,11 @@ if (Meteor.isServer) {
             return Cities.find({}).count();
         },
         //Leave type
-        'addleaveType': (leaveTypeName, noOfDay) => {
-            return LeaveType.insert({ leaveTypeName: leaveTypeName, noOfDay: noOfDay })
+        'addleaveType': (leaveTypeName, noOfDay, ispaid) => {
+            return LeaveType.insert({ leaveTypeName: leaveTypeName, noOfDay: noOfDay, isPaid: ispaid })
         },
-        'updateLeaveType': (leaveTypeName, noofday,lid) => {
-            return LeaveType.update({ _id: lid }, { $set: { leaveTypeName: leaveTypeName, noOfDay: noofday } })
+        'updateLeaveType': (leaveTypeName, noofday, lid, ispaid) => {
+            return LeaveType.update({ _id: lid }, { $set: { leaveTypeName: leaveTypeName, noOfDay: noofday, isPaid: ispaid } })
         },
         'deleteLeaveType': (lid) => {
             return LeaveType.remove({ _id: lid });
@@ -91,20 +92,11 @@ if (Meteor.isServer) {
         'countAttendancedata': () => {
             return Attendance.find({}).count();
         },
-
         //general setting
-        'addHours': (todayHrs, weekHrs, monthHrs, overHrs) => {
-            return GeneralSetting.insert(
-                {todayHrs: todayHrs,
-                 weekHrs: weekHrs, 
-                 monthHrs: monthHrs, 
-                 overHrs: overHrs}
-            );
-        },
         'updateHours': (todayHrs, weekHrs, monthHrs, overHrs, id) => {
-            return GeneralSetting.update({_id: id}, {$set: {todayHrs: todayHrs, weekHrs: weekHrs, monthHrs: monthHrs, overHrs: overHrs}})
+            return GeneralSetting.update({ _id: id }, { $set: { todayHrs: todayHrs, weekHrs: weekHrs, monthHrs: monthHrs, overHrs: overHrs } })
         }
 
-        
+
     })
 }

@@ -242,7 +242,6 @@ FlowRouter.route('/leave', {
 
     }
 });
-
 // 400 Access Permission
 FlowRouter.route('/accesspermission', {
     name: 'accesspermission',
