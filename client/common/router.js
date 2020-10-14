@@ -22,17 +22,17 @@ import GeneralSetting from '../../imports/ui/view/pages/generalsetting/generalSe
 import NotFoundPage from '../../imports/ui/view/pages/notFoundPage/NotFoundPage';
 import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPage/AccessPermissionPage';
 import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
-import Leave from '../../imports/ui/view/pages/leave/leave';
-import { de } from 'date-fns/locale';
-
+import ApplyLeave from '../../imports/ui/view/pages/leave/leave';
+import WrapperDate from '../../imports/ui/view/layout/wrapperDate';
+import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveListing';
 const accessRoute = [
     { routeName: 'listuser', roles: ['superadmin', 'admin'] },
     { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
     { routeName: 'country', roles: ['superadmin', 'admin'] },
     { routeName: 'state', roles: ['superadmin', 'admin'] },
     { routeName: 'city', roles: ['superadmin', 'admin'] },
-    { routeName: 'leave', roles: ['superadmin', 'admin'] },
     { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
+    { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] }
 ]
 
 // Accounts
@@ -235,7 +235,20 @@ FlowRouter.route('/leave', {
         if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
-                    return <Leave />
+                    return <ApplyLeave />
+                }
+            })
+        }
+
+    }
+});
+FlowRouter.route('/leaveApproveList', {
+    name: 'leaveApproveList',
+    action() {
+        if (requiredLogin()) {
+            mount(MainLayout, {
+                content() {
+                    return <LeaveApproveList />
                 }
             })
         }
@@ -307,7 +320,7 @@ FlowRouter.notFound = {
 
 FlowRouter.route('/generalSetting', {
     name: 'GeneralSetting',
-    action(){
+    action() {
         mount(MainLayout, {
             content() {
                 return <GeneralSetting />
@@ -316,3 +329,13 @@ FlowRouter.route('/generalSetting', {
     }
 })
 
+FlowRouter.route('/WrapperDate', {
+    name: 'Date',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <WrapperDate />
+            }
+        })
+    }
+})

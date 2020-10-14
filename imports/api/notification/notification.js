@@ -1,36 +1,35 @@
 import { Mongo } from 'meteor/mongo'
-import { tr } from 'date-fns/locale';
 Schemas = {};
 
-const Leave = new Mongo.Collection('leave');
+const Notification = new Mongo.Collection('notification');
 
-Schemas.Leave = new SimpleSchema({
-    userId: {
+Schemas.Notification = new SimpleSchema({
+    title: {
         type: String
     },
-    leaveType: {
+    description: {
         type: String
     },
-    startDate: {
-        type: String
-    },
-    endDate: {
-        type: String
-    },
-    reason: {
-        type: String
-    },
-    idHalf: {
-        type: Boolean,
-        defaultValue: false
-    },
-    isApprove: {
-        type: Boolean,
-        defaultValue: false
-    },
-    declineReason: {
+    sendId: {
         type: String,
-        optional: true
+        autoValue() {
+            if (this.isInsert) {
+                return this.userId;
+            }
+        }
+    },
+    receiverId: {
+        type: String
+    },
+    type: {
+        type: String
+    },
+    isRead: {
+        type: Boolean,
+        defaultValue: false
+    },
+    createdAtDate: {
+        type: String
     },
     isActive: {
         type: Boolean,
@@ -74,6 +73,6 @@ Schemas.Leave = new SimpleSchema({
     },
 })
 
-Leave.attachSchema(Schemas.Leave);
+Notification.attachSchema(Schemas.Notification);
 
-export default Leave;
+export default Notification;

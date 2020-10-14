@@ -3,7 +3,6 @@ import { Meteor } from 'meteor/meteor';
 import IboxTools from '../../layout/iboxTools';
 import Country from '../../../../api/country/country';
 import { withTracker } from 'meteor/react-meteor-data';
-import States from '../../../../api/states/states';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";

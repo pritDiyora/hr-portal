@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import TagsInput from 'react-tagsinput';
-
-import Helmet from 'react-helmet';
 import moment from 'moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import { formatDate, parseDate } from 'react-day-picker/moment';
@@ -79,7 +77,7 @@ class ExperieanceComponent extends Component {
                                     parseDate={parseDate}
                                     dayPickerProps={{
                                         selectedDays: [startdate, { startdate, enddate }],
-                                        disabledDays: { after: enddate },
+                                        disabledDays: { after: new Date() },
                                         toMonth: enddate,
                                         modifiers,
                                         numberOfMonths: 2,
@@ -102,7 +100,7 @@ class ExperieanceComponent extends Component {
                                         max={new Date()}
                                         dayPickerProps={{
                                             selectedDays: [startdate, { startdate, enddate }],
-                                            disabledDays: { after: new Date(), before: startdate },
+                                            disabledDays: { after: new Date()},
                                             modifiers,
                                             month: startdate,
                                             fromMonth: startdate,
@@ -112,31 +110,6 @@ class ExperieanceComponent extends Component {
                                     />
                                 </span>
                             </div>
-                            <Helmet>
-                                <style>{`
-                               .InputFromTo .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
-                                background-color: #f0f8ff !important;
-                                color: #4a90e2;
-                            }
-                            .InputFromTo .DayPicker-Day {
-                                border-radius: 0 !important;
-                            }
-                            .InputFromTo .DayPicker-Day--start {
-                                border-top-left-radius: 50% !important;
-                                border-bottom-left-radius: 50% !important;
-                            }
-                            .InputFromTo .DayPicker-Day--end {
-                                border-top-right-radius: 50% !important;
-                                border-bottom-right-radius: 50% !important;
-                            }
-                            .InputFromTo .DayPickerInput-Overlay {
-                                width: 350px;
-                            }
-                            .InputFromTo-to .DayPickerInput-Overlay {
-                                margin-left: -198px;
-                            }
-                                `}</style>
-                            </Helmet>
                         </div>
                     </div>
                 </div>

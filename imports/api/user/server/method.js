@@ -63,6 +63,11 @@ if (Meteor.isServer) {
         'deleteuser': (id) => {
             return User.remove({ _id: id });
         },
+        'profileImageUploade': (profileImageUrl, userid) => {
+            return User.update({ _id: userid }, { $set: { profile: { profilePic: profileImageUrl } } });
+        },
+    
+
     })
 }
 

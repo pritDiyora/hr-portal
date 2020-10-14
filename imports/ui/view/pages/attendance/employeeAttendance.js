@@ -441,7 +441,7 @@ class EmployeeAttendance extends Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('checkInOutList');
-  Meteor.subscribe('hoursData')
+  Meteor.subscribe('generaleSetting')
   //today
   var start = new Date();
   start.setHours(0, 0, 0, 0);

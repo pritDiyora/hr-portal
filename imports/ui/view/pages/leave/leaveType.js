@@ -16,6 +16,7 @@ export default class LeaveType extends Component {
             button: false,
             paidChecked: false,
             displayedLeaveType: [],
+            paidButton: false,
             //table (sorting,seraching,pagination)
             pageLength: 10,
             searchStr: "",
@@ -97,7 +98,7 @@ export default class LeaveType extends Component {
             } else {
                 toast.error(err)
             }
-        })
+        });
     }
     //Insert and Edit Model
     modelclick(event, id) {
@@ -105,11 +106,8 @@ export default class LeaveType extends Component {
         $("#add-panel").modal("show");
     }
     updaterecord(e, id) {
-        this.state.displayedLeaveType.map((le, i) => {
-            if (le._id == id) {
-                this.setState({ typename: le.leaveTypeName, noofday: le.noOfDay, button: true, leaveTypeId: id, paidChecked: le.isPaid })
-            }
-        })
+        let le = this.state.displayedLeaveType.find(le => le._id == id);
+        this.setState({ typename: le.leaveTypeName, noofday: le.noOfDay, button: true, leaveTypeId: id, paidChecked: le.isPaid })
         $("#add-panel").modal("show");
     }
     cancel(e) {
@@ -127,6 +125,15 @@ export default class LeaveType extends Component {
             searchStr: e.target.value
         }, () => {
             this.getLeaveTypeData();
+        })
+    }
+    pasidStatusChangeHandlar(e, id, paid) {
+        e.preventDefault();
+        const self = this;
+        Meteor.call('updateIsPaid', id, paid, function (err, res) {
+            if (!err) {
+                self.getLeaveTypeData();
+            }
         })
     }
     getLeaveTypeData() {
@@ -156,7 +163,6 @@ export default class LeaveType extends Component {
                 toast.error(err);
             }
         });
-
     }
     ascDesc(e, keyName) {
         let { sortKey, sortValue } = this.state;
@@ -182,7 +188,7 @@ export default class LeaveType extends Component {
         this.setState({ paidChecked: !this.state.paidChecked });
     }
     render() {
-        let { sortKey, sortValue } = this.state;
+        let { sortKey, sortValue, paidButton } = this.state;
         return (
             <div>
                 <div className="wrapper wrapper-content animated fadeInRight" >
@@ -197,7 +203,8 @@ export default class LeaveType extends Component {
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
-                                            <label className="dataTables_length text">Show <select name="example_length" value={this.state.pageLength}
+                                            <label className="dataTables_length text">Show <select name="example_length"
+                                                value={this.state.pageLength}
                                                 className="form-control" onChange={this.showhandle.bind(this)}>
                                                 <option value="5">5</option>
                                                 <option value="10">10</option>
@@ -220,6 +227,7 @@ export default class LeaveType extends Component {
                                             <tr>
                                                 <th onClick={(e) => this.ascDesc(e, "leaveTypeName")}>Leave Type Name  <i className={`fa fa-sort mr-10 ${sortKey === 'leaveTypeName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th onClick={(e) => this.ascDesc(e, "noOfDay")}>No Of Day<i className={`fa fa-sort mr-10 ${sortKey === 'noOfDay' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                                                <th onClick={(e) => this.ascDesc(e, "isPaid")}>Status<i className={`fa fa-sort mr-10 ${sortKey === 'isPaid' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -229,7 +237,12 @@ export default class LeaveType extends Component {
                                                     <tr key={i}>
                                                         <td>{lev.leaveTypeName}</td>
                                                         <td>{lev.noOfDay}</td>
-                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
+                                                        <td>
+                                                            {lev.isPaid ? <a class="label label-warning" style={{ marginLeft: '5px' }} onClick={(e) => this.pasidStatusChangeHandlar(e, lev._id, lev.isPaid)} value={lev.isPaid}>Paid</a>
+                                                                : <a class="label label-warning" style={{ marginLeft: '5px' }} onClick={(e) => this.pasidStatusChangeHandlar(e, lev._id, lev.isPaid)} value={lev.isPaid} value={lev.isPaid}>UnPaid</a>
+                                                            }
+                                                        </td>
+                                                        <td><a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
                                                             <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, lev._id)}><i className="fa fa-edit"></i></a>
                                                         </td>
                                                     </tr>)
@@ -271,12 +284,11 @@ export default class LeaveType extends Component {
 
                                             <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="option1"
                                                     checked={this.state.paidChecked === true}
                                                     value={this.state.paidChecked}
                                                     onChange={(e) => this.paidCheckedHandlar(e)}
                                                 />
-                                                <label class="form-check-label" style={{ paddingLeft: '15px' }} for="inlineCheckbox2"> Is Paid  </label>
+                                                <label class="form-check-label" style={{ paddingLeft: '15px' }} htmlFor="inlineCheckbox2"> Is Paid  </label>
                                             </div>
                                         </div>
 
@@ -310,7 +322,7 @@ export default class LeaveType extends Component {
                         </div>
                     </div>
                 </div>
-            </div >
+            </div>
         )
     }
 }

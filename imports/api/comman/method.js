@@ -2,14 +2,13 @@ import { Meteor } from 'meteor/meteor';
 import Country from '../country/country';
 import State from '../states/states';
 import Cities from '../cites/cites';
-var Sugar = require('sugar');
 import LeaveType from '../leave/leaveTypeSchema';
 import User from '../user/users';
 import Attendance from '../attendance/attendance';
 import GeneralSetting from '../generalsetting/generalsetting';
+import Leave from '../leave/leaveScheme';
+import Notification from '../notification/notification';
 if (Meteor.isServer) {
- 
-
     Meteor.methods({
         //Add Country state and city 
         'addcountry': (cname, ccode) => {
@@ -71,6 +70,14 @@ if (Meteor.isServer) {
         'updateLeaveType': (leaveTypeName, noofday, lid, ispaid) => {
             return LeaveType.update({ _id: lid }, { $set: { leaveTypeName: leaveTypeName, noOfDay: noofday, isPaid: ispaid } })
         },
+        'updateIsPaid': (lid, ispaid) => {
+            if (ispaid == true) {
+                return LeaveType.update({ _id: lid }, { $set: { isPaid: false } })
+            } else {
+                return LeaveType.update({ _id: lid }, { $set: { isPaid: true } })
+            }
+
+        },
         'deleteLeaveType': (lid) => {
             return LeaveType.remove({ _id: lid });
         },
@@ -93,10 +100,31 @@ if (Meteor.isServer) {
             return Attendance.find({}).count();
         },
         //general setting
-        'updateHours': (todayHrs, weekHrs, monthHrs, overHrs, id) => {
-            return GeneralSetting.update({ _id: id }, { $set: { todayHrs: todayHrs, weekHrs: weekHrs, monthHrs: monthHrs, overHrs: overHrs } })
+        'updateGeneraleSetting': (generaleSetting, id) => {
+            return GeneralSetting.update({ _id: id }, {
+                $set: generaleSetting
+            })
+        },
+        'leaveApply': (leaveobj) => {
+            return Leave.insert(leaveobj);
+        },
+        'searchLeave': (pipeline) => {
+            return Promise.await(Leave.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countLeaveData': () => {
+            return Leave.find({}).count();
+        },
+        'updateLeaveApprove': (lid) => {
+            return Leave.update({ _id: lid }, { $set: { isApprove: true } })
+        },
+        'LeaveApprove.Notification': (leaveApplyNotification) => {
+            return Notification.insert(leaveApplyNotification)
+        },
+        'notificationCount': (id) => {
+            return Notification.find({ receiverId: id, isRead: false }).count();
+        },
+        'statusReadable': (nid) => {
+            return Notification.update({ _id: nid }, { $set: { isRead: true } });
         }
-
-
     })
 }

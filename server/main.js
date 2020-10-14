@@ -19,19 +19,18 @@ Meteor.startup(async () => {
         };
         Accounts.createUser(options);
     }
-
-    S3.config = {
-        key: 'AKIAIQZEI4RO6OSIZGQQ',
-        secret: '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',
-        bucket: 'apex-hr-portal',
-        region: 'ap-south-1',
-    };
     if (GeneralSetting.find().count() === 0) {
-        GeneralSetting.insert({
-            todayHrs: '8',
-            weekHrs: '44',
-            monthHrs: '176',
-            overHrs: '4'
-        });
+        let general = {
+            todayHrs: 8,
+            weekHrs: 44,
+            monthHrs: 176,
+            overHrs: 4,
+            monthlyLeave: 1,
+            CarryForwardLeave: 3,
+            yearlyLeave: 12,
+            fromTime: 10,
+            toTime: 7,
+        };
+         GeneralSetting.insert(general);
     }
 });
