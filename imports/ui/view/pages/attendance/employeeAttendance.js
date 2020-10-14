@@ -38,6 +38,7 @@ class EmployeeAttendance extends Component {
       this.setOverTimeProgress()
       this.setBreakTime()
       this.progress()
+      this.breaktime()
     }, 1000);
   }
   componentWillReceiveProps(nextProps) {
@@ -48,6 +49,7 @@ class EmployeeAttendance extends Component {
     this.setOverTimeProgress()
     this.setBreakTime()
     this.progress()
+    this.breaktime()
   }
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -104,46 +106,61 @@ class EmployeeAttendance extends Component {
       })
     }
   }
+
   setOverTimeProgress() {
-    if (this.props.todayBreakList.length > 0) {
-      let regHrs = this.props.hoursData && this.props.hoursData.todayHrs * 60
-      let diffs = [];
-      let getisPunchIn = this.props.todayBreakList.filter((a) => a.isCheckIn)
-      let getisPunchOut = this.props.todayBreakList.filter((a) => !a.isCheckIn)
-      let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
-      let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
-      let first = moment(getPunchInTime[0]);
-      let last = moment(getPunchOutTime[getPunchOutTime.length - 1])
-      let total = moment(last.diff(first, "minutes"));
-      let getoverTime = total.diff(regHrs, "minutes");
-      diffs.push(total);
+    let { hoursData } = this.props;
+    let data = this.progress('monthInOutList');
+    if (data) {
+      let work = moment.duration(data.CountHrs, "minutes").asMinutes();
+      let overtime = 0;
+      if (work > (hoursData.monthHrs * 60)) {
+        overtime = (work - (hoursData.monthHrs * 60))
+      } else {
+        overtime = 0
+      }
       this.setState({
-        overCountHrs: moment.utc().hours(diffs / 60).minutes(diffs % 60).format("HH:mm"),
-        overTimeProgress: ((diffs / 60) * 100)
+        overCountHrs: moment.utc().hours(overtime / 60).minutes(overtime % 60).format("HH:mm"),
+        overTimeProgress: ((overtime / 60) * 100 / hoursData.overHrs)
       })
     }
   }
-  setBreakTime() {
-    if (this.props.todayBreakList.length > 0) {
+
+  breaktime(data) {
+    let getdata = data || [];
+    if (getdata.length > 0) {
       let diffs = [];
-      let getisPunchIn = this.props.todayBreakList.filter((a) => a.isCheckIn)
-      let getisPunchOut = this.props.todayBreakList.filter((a) => !a.isCheckIn)
+      let getisPunchIn = getdata.filter((a) => a.isCheckIn);
+      let getisPunchOut = getdata.filter((a) => !a.isCheckIn);
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
-      let first = moment(getPunchInTime[0]);
+      let first = getPunchInTime[0];
       let last = getPunchOutTime[getPunchOutTime.length - 1]
       getPunchInTime.shift();
-      
+      getPunchOutTime.splice(-1, 1)
       getPunchOutTime.map((t, index) => {
         let getInTime = moment(getPunchInTime[index]);
         let getOutTime = moment(t);
         let getDiff = getInTime.diff(getOutTime, "minutes");
         diffs.push(getDiff);
       })
+      let value = {
+        BreakTime: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes((Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
+        FirstTime: moment(first).format("HH:mm:ss"),
+        LastTime: moment(last).format("HH:mm:ss")
+      }
+      return value
+    } else {
+
+    }
+  }
+
+  setBreakTime() {
+    let data = this.breaktime(this.props.todayBreakList)
+    if (data) {
       this.setState({
-        breakTime: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes((Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
-        firstTime: moment(first).format("HH:mm:ss"),
-        lastTime: moment(last).format("HH:mm:ss")
+        breakTime: data.BreakTime,
+        firstTime: data.FirstTime,
+        lastTime: data.LastTime
       })
     }
   }
@@ -178,14 +195,14 @@ class EmployeeAttendance extends Component {
     const self = this;
     let pipeline = [
       {
-        $group: {
-          _id: "$date",
-          items: {
-            $push: '$$ROOT'
-          }
-        }
+        "$match": { "userId": FlowRouter.current().queryParams.id || Meteor.userId() }
       },
-
+      {
+        $project: { date: '$date', isCheckIn: '$isCheckIn', dateTime: '$dateTime', userId: "$userId" }
+      },
+      {
+        $group: { _id: "$date", items: { $push: '$$ROOT' } }
+      },
       { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
       { "$limit": this.state.pageLength },
     ];
@@ -375,37 +392,24 @@ class EmployeeAttendance extends Component {
                       </thead>
                       <tbody>
                         {attendanceData.map((attendance) => {
-                          // console.log("attendance :: " , );
-                          let diffs = []
-                          let getisPunchIn = attendance && attendance.items.filter((a) => a.isCheckIn)
-                          let getisPunchOut = attendance && attendance.items.filter((a) => !a.isCheckIn)
-                          let getPunchInTime = _.pluck(getisPunchIn, 'dateTime')
-                          let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime')
-                          let first = moment(getPunchInTime[0])
-                          let last = getPunchOutTime[getPunchOutTime.length - 1]
-                          getPunchInTime.shift()
-                          getPunchOutTime.splice(-1,1)
-                          getPunchOutTime.map((t, index) => {
-                            let getInTime = moment(getPunchInTime[index]);
-                            let getOutTime = moment(t);
-                            let getDiff = getInTime.diff(getOutTime, "minutes");
-                            diffs.push(getDiff);
-                          })
-                          let breakTime = moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes((Sugar.Array.sum(diffs) % 60)).format("HH:mm")
-                          let firstTime = moment(first).format("HH:mm:ss")
-                          let lastTime  = moment(last).format("HH:mm:ss")
-                          let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
-                          let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(breakTime, "HH:mm:ss"))).format("HH:mm:ss")
-                          return (
-                            <tr key={attendance._id}>
-                              <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
-                              <td>{firstTime}</td>
-                              <td>{lastTime}</td>
-                              <td>{total}</td>
-                              <td>{workHrs}</td>
-                              <td>{breakTime}</td>
-                            </tr>
-                          )
+                          let data = this.breaktime(attendance && attendance.items)
+                          if (data) {
+                            let breakTime = data.BreakTime
+                            let firstTime = data.FirstTime
+                            let lastTime = data.LastTime
+                            let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
+                            let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(breakTime, "HH:mm:ss"))).format("HH:mm:ss")
+                            return (
+                              <tr key={attendance._id}>
+                                <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
+                                <td>{firstTime}</td>
+                                <td>{lastTime}</td>
+                                <td>{total}</td>
+                                <td>{workHrs}</td>
+                                <td>{breakTime}</td>
+                              </tr>
+                            )
+                          }
                         })}
                       </tbody>
                       <tfoot>
@@ -460,10 +464,10 @@ export default withTracker(() => {
   monthData.setMonth(monthData.getMonth())
 
   //let user 
-    let userId = Meteor.userId();
-    if (FlowRouter.current().params._id) {
-      userId = FlowRouter.current().params._id;
-    }
+  let userId = Meteor.userId();
+  if (FlowRouter.current().queryParams.id) {
+    userId = FlowRouter.current().queryParams.id;
+  }
   return {
     todayInOutList: Attendance.find({ "userId": userId, "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": -1 } }).fetch(),
     todayBreakList: Attendance.find({ "userId": userId, "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": +1 } }).fetch(),
