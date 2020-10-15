@@ -35,3 +35,6 @@ lepozepo:s3
 random@1.2.0
 aldeed:collection2
 aldeed:simple-schema
+cfs:standard-packages
+#cfs:gridfs
+cfs:filesystem

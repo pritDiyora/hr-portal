@@ -24,6 +24,8 @@ import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPa
 import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
 import Leave from '../../imports/ui/view/pages/leave/leave';
 import { de } from 'date-fns/locale';
+import AdminAttendance from '../../imports/ui/view/pages/attendance/adminAttedance.js';
+import AdminTodayAttendance from '../../imports/ui/view/pages/attendance/adminTodayAttendance.js';
 
 const accessRoute = [
     { routeName: 'listuser', roles: ['superadmin', 'admin'] },
@@ -316,3 +318,24 @@ FlowRouter.route('/generalSetting', {
     }
 })
 
+FlowRouter.route('/adminAttendance', {
+    name: 'AdminAttendance',
+    action(){
+        mount(MainLayout, {
+            content(){
+                return <AdminAttendance />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/adminTodayAttendance', {
+    name: 'AdminTodayAttendance',
+    action(){
+        mount(MainLayout, {
+            content() {
+                return <AdminTodayAttendance />
+            }
+        })
+    }
+})

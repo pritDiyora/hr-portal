@@ -5,6 +5,7 @@ import Cities from '../../cites/cites';
 import User from '../users';
 import Attendance from '../../attendance/attendance';
 import GeneralSetting from '../../generalsetting/generalsetting';
+import AdminAttendance from '../../attendance/adminAttendance';
 if (Meteor.isServer) {
 
   Meteor.publish('user', function () {
@@ -50,5 +51,7 @@ if (Meteor.isServer) {
     return GeneralSetting.find();
   })
 
-
+  Meteor.publish('adminAttendanceData', function(){
+    return AdminAttendance.find();
+  })
 }
