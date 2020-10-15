@@ -15,7 +15,7 @@ import ProfileComponent from './component/ProfileComponent';
 import ExperieanceComponent from './component/ExperienceComponent';
 import AddressComponent from './component/AddressComponent';
 import User from '../../../../../api/user/users';
-
+import Images from '../../../../../api/fileUploading/cfsCollection';
 class AddHR extends React.Component {
     constructor(props) {
         super(props);
@@ -51,22 +51,18 @@ class AddHR extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // debugger
         let self = this, countrie = [], states = [], city = [];
         nextProps.countries.length > 0 && nextProps.countries.map((country) => countrie.push({ value: country._id, label: country.countryname }));
         nextProps.state.length > 0 && nextProps.state.map((state) => states.push({ value: state._id, label: state.stateName }));
         nextProps.city.length > 0 && nextProps.city.map((cities) => city.push({ value: cities._id, label: cities.cityName }));
-        this.setState({
-            countrie,
-            states,
-            city
-        });
+        this.setState({ countrie, states, city });
+
         if (this.props.flag == 1) {
             self.setState({ flag: this.props.flag, userid: FlowRouter.current("_id").params._id })
             let { profile } = self.state;
-            let userAddress = nextProps.userdata.address || [] || undefined,
-                userEducation = nextProps.userdata.education || [] || undefined,
-                userExperiance = nextProps.userdata.experiance || [] || undefined;
+            let userAddress = nextProps.userdata.address || [],
+                userEducation = nextProps.userdata.education || [],
+                userExperiance = nextProps.userdata.experiance || [];
             //set User Profile
             profile[`firstName`] = nextProps.userdata.profile.firstName;
             profile[`lastName`] = nextProps.userdata.profile.lastName;
@@ -78,21 +74,22 @@ class AddHR extends React.Component {
             profile[`userType`] = nextProps.userdata.profile.userType;
             profile[`phone`] = nextProps.userdata.profile.phone;
             profile[`joiningDate`] = nextProps.userdata.profile.joiningDate;
-            self.setState({email: nextProps.userdata.emails[0].address,profile });
+            profile[`description`] = nextProps.userdata.profile.description;
+            self.setState({ email: nextProps.userdata.emails[0].address, profile });
             //set User Address
             userAddress.map((addresses) => {
-                let couobj = countrie.find(cou => cou.value == addresses.country);
-                self.setState({ CountryOption: couobj });
-                let stateobj = states.find(state => state.value == addresses.state);
-                self.setState({ StateOption: stateobj });
-                let cityobj = city.find(ci => ci.value == addresses.city);
-                self.setState({ CityOption: cityobj });
-                self.setState({addressline1: addresses.addressline1, addressline2: addresses.addressline2,zipcode: addresses.zipcode});
+                let couobj = nextProps.countries.find(cou => cou._id == addresses.country);
+                self.setState({ CountryOption: { value: couobj._id, label: couobj.countryname } });
+                let stateobj = nextProps.statedata.find(state => state._id == addresses.state);
+                self.setState({ StateOption: { value: stateobj._id, label: stateobj.stateName } });
+                let cityobj = nextProps.citiesdata.find(ci => ci._id == addresses.city);
+                self.setState({ CityOption: { value: cityobj._id, label: cityobj.cityName } });
+                self.setState({ addressline1: addresses.addressline1, addressline2: addresses.addressline2, zipcode: addresses.zipcode });
             });
             //set User Education
             let education = []
             userEducation.map((edu, i) => {
-                let value = {key: Random.id(),index: i };
+                let value = { key: Random.id(), index: i };
                 education.push(value)
                 this.setState({
                     [`education.coursename_${value.key}`]: edu.cousrseName,
@@ -106,7 +103,7 @@ class AddHR extends React.Component {
             //set User Excperiance
             let experiance = [];
             userExperiance.map((exp, i) => {
-                let value = { key: Random.id(),index: i};
+                let value = { key: Random.id(), index: i };
                 experiance.push(value)
                 self.setState({
                     [`experiance.companyname_${value.key}`]: exp.companyName,
@@ -125,14 +122,6 @@ class AddHR extends React.Component {
     componentDidMount() {
         //datepicker
         $('.input-group.date').datepicker({
-            format: "yyyy",
-            autoclose: true,
-            minViewMode: "years",
-            changeYear: true,
-            yearRange: "2005:2015"
-        });
-
-        $('input[name="daterange"]').daterangepicker({
             format: "yyyy",
             autoclose: true,
             minViewMode: "years",
@@ -215,23 +204,23 @@ class AddHR extends React.Component {
     //file upload
     filechangeHandler(e, key) {
         var self = this;
-        let filess = e.target.files;
+        // let filess = e.target.files;
         self.setState({ loading: true })
-        S3.upload({
-            files: filess,
-            path: "/img"
-        }, function (err, r) {
-            if (!err) {
-                self.setState({
-                    [`education.certificate_${key}`]: r.url,
-                    loading: false
-                }, () => {
-                    console.log("df :: ", self.state);
-                });
+        const upload = Images.insert({
+            file: e.target.files[0],
+            streams: 'dynamic',
+            chunkSize: 'dynamic'
+        }, false);
+        upload.on('start', function () {
+        });
+        upload.on('end', function (error, fileObj) {
+            if (error) {
+                alert('Error during upload: ' + error);
+            } else {
+                alert('File "' + fileObj.name + '" successfully uploaded');
             }
         });
-
-
+        upload.start();
     }
     EducationchangeHandler(event) {
         this.setState({
@@ -290,14 +279,12 @@ class AddHR extends React.Component {
             [`experiance.startdate_${key}`]: from
         });
     }
-    
+
     handleToChange(to, key) {
         this.setState({
-            [`experiance.enddate_${key}`]: to},  this.child.current.showFromMonth());
+            [`experiance.enddate_${key}`]: to
+        }, this.child.current.showFromMonth());
     }
-
-
-
     AddressChangeHandler(event) {
         const { name, value } = event.target;
         this.setState({
@@ -475,6 +462,7 @@ class AddHR extends React.Component {
                                         email={this.state.email}
                                         gender={this.state.profile.gender}
                                         userType={this.state.profile.userType}
+                                        description={this.state.profile.description}
                                         profileChangeHandler={this.profileChangeHandler}
                                         EmailChangeHandler={this.EmailChangeHandler}
                                     />

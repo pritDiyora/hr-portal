@@ -16,6 +16,21 @@ Schemas.GeneralSetting = new SimpleSchema({
   overHrs: {
     type: Number,
   },
+  monthlyLeave: {
+    type: Number
+  },
+  CarryForwardLeave: {
+    type: Number
+  },
+  yearlyLeave: {
+    type: Number
+  },
+  fromTime:{
+    type:String
+  },
+  toTime:{
+    type:String
+  },
   isActive: {
     type: Boolean,
     defaultValue: true
@@ -25,30 +40,30 @@ Schemas.GeneralSetting = new SimpleSchema({
     autoValue() {
       return new Date();
     },
-    optional:true
+    optional: true
   },
   createdBy: {
     type: String,
     autoValue() {
-      if(this.isInsert){
+      if (this.isInsert) {
         return this.userId;
       }
     },
-    optional:true
+    optional: true
   },
   modifiedAt: {
     type: Date,
     autoValue() {
       return new Date()
     },
-    optional:true
+    optional: true
   },
   modifiedBy: {
     type: String,
     autoValue() {
       return this.userId;
     },
-    optional:true
+    optional: true
   }
 });
 

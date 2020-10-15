@@ -281,7 +281,7 @@ class ListUser extends Component {
                                                                 <td>
                                                                     <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, event._id)}> <i className="fa fa-trash-o"></i></a>
                                                                     <a href={`updateuser/${event._id}`} className="btn btn-xs  btn-primary "><i className="fa fa-edit"></i></a>
-                                                                    <a href={`/employeeAttendance?id=${event._id}`} class="label label-warning" style={{ marginLeft: '5px' }}>Attendance</a>
+                                                                    <a href={`/employeeAttendance?id=${event._id}`} className="label label-warning" style={{ marginLeft: '5px' }}>Attendance</a>
                                                                 </td>
                                                             </tr>
                                                         )

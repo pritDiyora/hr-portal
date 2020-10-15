@@ -3,7 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import Attendance from '../../../api/attendance/attendance';
 import moment from 'moment';
-
+import Notification from '../../../api/notification/notification';
+import Avatar from 'react-avatar';
 class Header extends Component {
 
 	constructor(props) {
@@ -12,15 +13,29 @@ class Header extends Component {
 			secondsElapsed: "",
 			createdAt: this.props.createdAt,
 			isLoading: false,
-			show: true
+			show: true,
+			count: undefined,
+			name: '',
+			notificationlist: []
 		}
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.checkInOutList !== this.props.checkInOutList) {
 			this.setTiming();
 		}
+		this.setState({ notificationlist: nextProps.notifiationList });
 	}
-	
+	componentDidMount() {
+		this.notificationCount();
+	}
+	notificationCount() {
+		const self = this;
+		Meteor.call('notificationCount', Meteor.userId(), function (err, res) {
+			if (!err) {
+				self.setState({ count: res });
+			}
+		})
+	}
 	setTiming() {
 		let chkInStatus = Meteor.user() && Meteor.user().profile.clockStatus;
 		if (chkInStatus) {
@@ -35,7 +50,7 @@ class Header extends Component {
 		} else {
 			this.setState({
 				secondsElapsed: '00:00:00'
-			},() => {
+			}, () => {
 				clearInterval(this.countdown);
 			});
 		}
@@ -79,8 +94,23 @@ class Header extends Component {
 		}
 		Meteor.call('checkInOut', value);
 	}
-
+	getUserName(userid) {
+		const self = this;
+		let userInfo = this.props.userName.find(user => user._id == userid);
+		return userInfo.profile.firstName + ' ' + userInfo.profile.lastName;
+	}
+	handleLeaveItem(event, notificationId, notificationType) {
+		event.preventDefault();
+		const self = this;
+		Meteor.call('statusReadable', notificationId, function (err, res) {
+			if (!err) {
+				self.notificationCount();
+				FlowRouter.go(`/${notificationType}`);
+			}
+		})
+	}
 	render() {
+		let { notificationlist } = this.state;
 		return (
 			<div className="row border-bottom">
 				<nav className="navbar navbar-static-top" role="navigation" style={{ 'marginBottom': '0' }}>
@@ -94,65 +124,52 @@ class Header extends Component {
 					</div>
 					<ul className="nav navbar-top-links navbar-right">
 						{Meteor.userId() && <li>
-							<span type="button" className="btn btn-primary" id="btnModal" onClick={this.clockInOut} disabled={this.state.isLoading} style={{fontSize:"12px"}}>
-								{ this.state.isLoading 
-									? <i className="fa fa-spinner fa-spin"></i> 
-									: <>Clock In/Out <p className="no-margins" style={{fontSize:"10px"}}>{this.state.secondsElapsed}</p></>
+							<span type="button" className="btn btn-primary" id="btnModal" onClick={this.clockInOut} disabled={this.state.isLoading} style={{ fontSize: "12px" }}>
+								{this.state.isLoading
+									? <i className="fa fa-spinner fa-spin"></i>
+									: <>Clock In/Out <p className="no-margins" style={{ fontSize: "10px" }}>{this.state.secondsElapsed}</p></>
 								}
 							</span>
 						</li>}
 						<li id="dropdownNoti" className="dropdown">
 							<a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.showMailNoti(e)}>
 								<i className="fa fa-envelope"></i>
-								<span className="label label-warning">16</span>
+								{this.state.count == 0 ? " " : <span className="label label-warning">{this.state.count}</span>}
+
 							</a>
 							<ul className="dropdown-menu dropdown-messages">
-								<li>
-									<div className="dropdown-messages-box">
-										<a href="profile.html" className="pull-left">
-											<img alt="image" className="img-circle" src="img/a7.jpg" />
-										</a>
-										<div className="media-body">
-											<small className="pull-right">46h ago</small>
-											<strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br />
-											<small className="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
-										</div>
-									</div>
-								</li>
-								<li className="divider"></li>
-								<li>
-									<div className="dropdown-messages-box">
-										<a href="profile.html" className="pull-left">
-											<img alt="image" className="img-circle" src="img/a4.jpg" />
-										</a>
-										<div className="media-body ">
-											<small className="pull-right text-navy">5h ago</small>
-											<strong>Chris Johnatan Overtunk</strong> started following <strong>Monica Smith</strong>. <br />
-											<small className="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
-										</div>
-									</div>
-								</li>
-								<li className="divider"></li>
-								<li>
-									<div className="dropdown-messages-box">
-										<a href="profile.html" className="pull-left">
-											<img alt="image" className="img-circle" src="img/profile.jpg" />
-										</a>
-										<div className="media-body ">
-											<small className="pull-right">23h ago</small>
-											<strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br />
-											<small className="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
-										</div>
-									</div>
-								</li>
-								<li className="divider"></li>
+								{
+									notificationlist.map((notification) => {
+										let firstname = this.getUserName(notification.sendId)
+										return (<li key={notification._id} >
+											<div className="dropdown-messages-box">
+												<a href="profile.html" className="pull-left">
+													<Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}	
+													/>
+												</a>
+												<div className="media-body" onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
+													<small className="pull-right">{moment(notification.createdAtDate).fromNow()}</small>
+													<strong>{firstname}</strong>  <br />
+													<small className="text-muted">{notification.description}</small><br />
+													<small className="text-muted">{moment(notification.createdAtDate).fromNow()} at {moment(notification.createdAtDate).format('hh:mm')}
+													 - {moment(notification.createdAtDate).format('DD.MM.YYYY')}</small>
+												</div>
+											</div>
+											<ul>
+												<li className="divider"></li>
+											</ul>
+										</li>
+										)
+									})
+								}
 								<li>
 									<div className="text-center link-block">
-										<a href="mailbox.html">
+										<a href="mailbox.html" className="dropdown-item">
 											<i className="fa fa-envelope"></i> <strong>Read All Messages</strong>
 										</a>
 									</div>
 								</li>
+
 							</ul>
 						</li>
 						<li id="dropdownMsgNoti" className="dropdown">
@@ -218,8 +235,12 @@ class Header extends Component {
 
 export default withTracker(() => {
 	Meteor.subscribe('checkInOutList');
+	Meteor.subscribe('notificationList');
+	Meteor.subscribe('getUserType');
 	return {
-		checkInOutList: Attendance.findOne({ "userId": Meteor.userId() }, { sort: { "dateTime": -1 } })
+		checkInOutList: Attendance.findOne({ "userId": Meteor.userId() }, { sort: { "dateTime": -1 } }),
+		notifiationList: Notification.find({ receiverId: Meteor.userId(), isRead: false }).fetch(),
+		userName: User.find({}).fetch()
 	}
 })(Header);
 

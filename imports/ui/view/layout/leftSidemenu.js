@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-
+import Avatar from 'react-avatar';
 class LeftSidemenu extends Component {
 
   constructor(props) {
@@ -32,8 +32,9 @@ class LeftSidemenu extends Component {
         <div className="sidebar-collapse">
           <ul className="nav metismenu" id="side-menu">
             <li className="nav-header">
-              <div id="profile" className="dropdown profile-element"> <span>
-                <img alt="image" className="img-circle" src="img/profile_small.jpg" />
+              <div id="profile" className="dropdown profile-element"> 
+              <span>
+                <Avatar className="img-circle" size="50" color="#ffcccc" fgColor="#990000" name={currentUser && currentUser.profile && currentUser.profile.firstName + " " + currentUser.profile.lastName} maxInitials={2} />
               </span>
 
                 <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
@@ -60,13 +61,13 @@ class LeftSidemenu extends Component {
                 <li><a href="/dashboard">Dashboard v.1</a></li>
               </ul>
             </li>
-            {AccessPermission()? <li><a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a></li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a></li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission()? <li><a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a></li>: <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a></li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission()? <li><a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a></li>: <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a></li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission()? <li> <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a></li>: <a href="/accesspermission"></a>
+            {AccessPermission() ? <li> <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a></li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/city"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a> </li> : <a href="/accesspermission"></a>
             }
@@ -77,6 +78,8 @@ class LeftSidemenu extends Component {
             {AccessPermission() ? <li><a href="/adminAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Admin Attendance</span></a> </li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/adminTodayAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Today Attendance</span></a> </li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/leaveApproveList"><i className="fa fa-diamond"></i> <span className="nav-label">Leave List</span></a> </li> : <a href="/accesspermission"></a>
             }
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
@@ -306,9 +309,9 @@ export default withTracker(() => {
 
 function AccessPermission() {
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "superadmin"
-      || Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin") {
-      return true;
+    || Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin") {
+    return true;
   } else {
-      return false;
+    return false;
   }
 }

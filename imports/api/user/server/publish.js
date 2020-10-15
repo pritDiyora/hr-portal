@@ -6,10 +6,14 @@ import User from '../users';
 import Attendance from '../../attendance/attendance';
 import GeneralSetting from '../../generalsetting/generalsetting';
 import AdminAttendance from '../../attendance/adminAttendance';
+import LeaveType from '../../leave/leaveTypeSchema';
+import Leave from '../../leave/leaveScheme';
+import { ready } from 'jquery';
+import Notification from '../../notification/notification';
 if (Meteor.isServer) {
 
   Meteor.publish('user', function () {
-    return Meteor.users.find({ _id: this.userId });
+    return Meteor.users.find({});
   })
 
   Meteor.publish('checkInOutList', function () {
@@ -47,11 +51,29 @@ if (Meteor.isServer) {
   })
 
 
-  Meteor.publish('hoursData', function (id) {
+  Meteor.publish('generaleSetting', function (id) {
     return GeneralSetting.find();
   })
 
   Meteor.publish('adminAttendanceData', function(){
     return AdminAttendance.find();
   })
+  Meteor.publish('leaveType', function () {
+    return LeaveType.find();
+  })
+
+  Meteor.publish('ListleaveApply', function () {
+    return Leave.find();
+  })
+
+  Meteor.publish('getUserType', function () {
+    return User.find({});
+  })
+
+  Meteor.publish('notificationList', function () {
+    return Notification.find({});
+  })
+
+  
+
 }

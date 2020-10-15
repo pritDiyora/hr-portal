@@ -48,7 +48,6 @@ class ProfileComponent extends Component {
                         </div>
                     </div>
                 </div>
-
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
@@ -75,8 +74,6 @@ class ProfileComponent extends Component {
                             />
                             {this.props.Profilevalidator.message('Mothername', this.props.motherName, 'required|alpha')}
                         </div>
-
-
                     </div>
                 </div>
                 <div className="form-group row">
@@ -90,23 +87,18 @@ class ProfileComponent extends Component {
                                 onChange={this.props.BirthDateChangeHandler}
                             />
                         </div>
-
                         <div className="col-md-6">
-                            <label>Email Id  <sup style={{ color: "red" }}>*</sup></label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                name="email"
-                                id="email_id"
-                                value={this.props.email || ''}
-                                onChange={this.props.EmailChangeHandler}
-                                placeholder="Enter Email" />
-                            {this.props.Profilevalidator.message('Email', this.props.email, 'required|email')}
+                            <label>Joining Date  <sup style={{ color: "red" }}>*</sup></label>
+                            <DatePickerInput
+                                className='my-custom-datepicker-component'
+                                name="joiningDate"
+                                value={this.props.joiningDate}
+                                onChange={this.props.JoinDateChangeHandler}
+                            />
                         </div>
+
                     </div>
                 </div>
-
-
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
@@ -140,14 +132,33 @@ class ProfileComponent extends Component {
                 <div className="form-group row">
                     <div className="col-md-12">
                         <div className="col-md-6">
-                            <label>Joining Date  <sup style={{ color: "red" }}>*</sup></label>
-                            <DatePickerInput
-                                className='my-custom-datepicker-component'
-                                name="joiningDate"
-                                value={this.props.joiningDate}
-                                onChange={this.props.JoinDateChangeHandler}
+                            <label>Description  <sup style={{ color: "red" }}>*</sup></label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="description"
+                                id="description"
+                                value={this.props.description || ''}
+                                onChange={this.props.profileChangeHandler}
                             />
                         </div>
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <div className="col-md-12">
+                        <div className="col-md-6">
+                            <label>Email Id  <sup style={{ color: "red" }}>*</sup></label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                name="email"
+                                id="email_id"
+                                value={this.props.email || ''}
+                                onChange={this.props.EmailChangeHandler}
+                                placeholder="Enter Email" />
+                            {this.props.Profilevalidator.message('Email', this.props.email, 'required|email')}
+                        </div>
+
                         <div className="col-md-2">
                             <label>Gender  <sup style={{ color: "red" }}>*</sup></label><br />
                             <div className="radio-inline form-check abc-radio abc-radio-success">
@@ -180,7 +191,6 @@ class ProfileComponent extends Component {
                             </div>
                             {this.props.Profilevalidator.message('Gender', this.props.gender, 'required|alpha')}
                         </div>
-
                         <div className="col-md-4">
                             <label>User Type  <sup style={{ color: "red" }}>*</sup></label><br />
                             <div className="radio-inline form-check abc-radio abc-radio-success">

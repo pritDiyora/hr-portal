@@ -27,14 +27,17 @@ import { de } from 'date-fns/locale';
 import AdminAttendance from '../../imports/ui/view/pages/attendance/adminAttedance.js';
 import AdminTodayAttendance from '../../imports/ui/view/pages/attendance/adminTodayAttendance.js';
 
+import ApplyLeave from '../../imports/ui/view/pages/leave/leave';
+import WrapperDate from '../../imports/ui/view/layout/wrapperDate';
+import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveListing';
 const accessRoute = [
     { routeName: 'listuser', roles: ['superadmin', 'admin'] },
     { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
     { routeName: 'country', roles: ['superadmin', 'admin'] },
     { routeName: 'state', roles: ['superadmin', 'admin'] },
     { routeName: 'city', roles: ['superadmin', 'admin'] },
-    { routeName: 'leave', roles: ['superadmin', 'admin'] },
     { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
+    { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] }
 ]
 
 // Accounts
@@ -237,7 +240,20 @@ FlowRouter.route('/leave', {
         if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
-                    return <Leave />
+                    return <ApplyLeave />
+                }
+            })
+        }
+
+    }
+});
+FlowRouter.route('/leaveApproveList', {
+    name: 'leaveApproveList',
+    action() {
+        if (requiredLogin()) {
+            mount(MainLayout, {
+                content() {
+                    return <LeaveApproveList />
                 }
             })
         }
@@ -309,7 +325,7 @@ FlowRouter.notFound = {
 
 FlowRouter.route('/generalSetting', {
     name: 'GeneralSetting',
-    action(){
+    action() {
         mount(MainLayout, {
             content() {
                 return <GeneralSetting />
@@ -335,6 +351,17 @@ FlowRouter.route('/adminTodayAttendance', {
         mount(MainLayout, {
             content() {
                 return <AdminTodayAttendance />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/WrapperDate', {
+    name: 'Date',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <WrapperDate />
             }
         })
     }
