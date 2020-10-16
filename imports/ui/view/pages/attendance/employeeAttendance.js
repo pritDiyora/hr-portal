@@ -6,9 +6,10 @@ import { toast } from 'react-toastify';
 import { withTracker } from 'meteor/react-meteor-data';
 import Attendance from '../../../../api/attendance/attendance'
 import GeneralSetting from '../../../../api/generalsetting/generalsetting'
+// import File from '../../../../api/fileupload/file'
+
 var Sugar = require('sugar');
 import Pagination from "react-js-pagination";
-
 class EmployeeAttendance extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +32,6 @@ class EmployeeAttendance extends Component {
   componentDidMount() {
     this.getDateList()
     this.interval = setInterval(() => {
-
       this.setTodayProgress()
       this.setWeekProgress()
       this.setMonthProgress()
@@ -42,7 +42,6 @@ class EmployeeAttendance extends Component {
     }, 1000);
   }
   componentWillReceiveProps(nextProps) {
-
     this.setTodayProgress()
     this.setWeekProgress()
     this.setMonthProgress()
@@ -54,7 +53,6 @@ class EmployeeAttendance extends Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
-
   progress(data, hoursKey) {
     let getdata = this.props && this.props[data] || [];
     let hours = this.props && this.props.hoursData && this.props.hoursData[hoursKey] || 0;
@@ -106,7 +104,6 @@ class EmployeeAttendance extends Component {
       })
     }
   }
-
   setOverTimeProgress() {
     let { hoursData } = this.props;
     let data = this.progress('monthInOutList');
@@ -124,7 +121,6 @@ class EmployeeAttendance extends Component {
       })
     }
   }
-
   breaktime(data) {
     let getdata = data || [];
     if (getdata.length > 0) {
@@ -134,7 +130,7 @@ class EmployeeAttendance extends Component {
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
       let first = getPunchInTime[0];
-      let last = getPunchOutTime[getPunchOutTime.length - 1]
+      let last = moment(getPunchOutTime[getPunchOutTime.length - 1])
       getPunchInTime.shift();
       getPunchOutTime.splice(-1, 1)
       getPunchOutTime.map((t, index) => {
@@ -153,7 +149,6 @@ class EmployeeAttendance extends Component {
 
     }
   }
-
   setBreakTime() {
     let data = this.breaktime(this.props.todayBreakList)
     if (data) {
@@ -164,7 +159,6 @@ class EmployeeAttendance extends Component {
       })
     }
   }
-
   showhandle(event) {
     this.setState({
       currentPage: 1,
@@ -190,7 +184,6 @@ class EmployeeAttendance extends Component {
       this.getDateList();
     })
   }
-
   getDateList() {
     const self = this;
     let pipeline = [
@@ -203,17 +196,15 @@ class EmployeeAttendance extends Component {
       {
         $group: { _id: "$date", items: { $push: '$$ROOT' } }
       },
+      {
+        $sort: {_id: -1}
+      },
       { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
       { "$limit": this.state.pageLength },
     ];
     Meteor.call("searchAttendanceDate", pipeline, function (err, res) {
       if (!err) {
-        Meteor.call("countAttendancedata", function (err1, res1) {
-          if (!err) {
-            self.setState({ totalpage: res1 });
-          }
-        })
-        self.setState({ attendanceData: res });
+        self.setState({ attendanceData: res , totalpage: res.length});
       } else {
         toast.error(err);
       }
@@ -222,7 +213,6 @@ class EmployeeAttendance extends Component {
   render() {
     let { todayInOutList, hoursData } = this.props;
     let { attendanceData } = this.state
-
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -349,7 +339,7 @@ class EmployeeAttendance extends Component {
           <div className="col-lg-12">
             <div className="ibox ">
               <div className="ibox-title">
-                <h5>Employee Today Attendance Data Table</h5>
+                <h5>Employee Attendance Date Wise Data Table</h5>
                 <IboxTools />
               </div>
               <div className="ibox-content">

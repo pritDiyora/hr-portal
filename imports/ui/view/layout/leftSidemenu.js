@@ -73,6 +73,12 @@ class LeftSidemenu extends Component {
             }
             {AccessPermission() ? <li><a href="/leaveType"><i className="fa fa-diamond"></i> <span className="nav-label">Leave Type</span></a> </li> : <a href="/accesspermission"></a>
             }
+            {AccessPermission() ? <li><a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a> </li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/adminAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Admin Attendance</span></a> </li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/adminTodayAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Today Attendance</span></a> </li> : <a href="/accesspermission"></a>
+            }
             {AccessPermission() ? <li><a href="/leaveApproveList"><i className="fa fa-diamond"></i> <span className="nav-label">Leave List</span></a> </li> : <a href="/accesspermission"></a>
             }
             <li>
@@ -81,9 +87,7 @@ class LeftSidemenu extends Component {
             <li>
               <a href="/leave"><i className="fa fa-diamond"></i> <span className="nav-label">Leave</span></a>
             </li>
-            <li>
-              <a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a>
-            </li>
+            
             {/* <li>
                   <a href="#"><i className="fa fa-bar-chart-o"></i> <span className="nav-label">Graphs</span><span className="fa arrow"></span></a>
                   <ul className="nav nav-second-level collapse">

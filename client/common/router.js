@@ -22,6 +22,11 @@ import GeneralSetting from '../../imports/ui/view/pages/generalsetting/generalSe
 import NotFoundPage from '../../imports/ui/view/pages/notFoundPage/NotFoundPage';
 import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPage/AccessPermissionPage';
 import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
+import Leave from '../../imports/ui/view/pages/leave/leave';
+import { de } from 'date-fns/locale';
+import AdminAttendance from '../../imports/ui/view/pages/attendance/adminAttedance.js';
+import AdminTodayAttendance from '../../imports/ui/view/pages/attendance/adminTodayAttendance.js';
+
 import ApplyLeave from '../../imports/ui/view/pages/leave/leave';
 import WrapperDate from '../../imports/ui/view/layout/wrapperDate';
 import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveListing';
@@ -337,6 +342,28 @@ FlowRouter.route('/generalSetting', {
         mount(MainLayout, {
             content() {
                 return <GeneralSetting />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/adminAttendance', {
+    name: 'AdminAttendance',
+    action(){
+        mount(MainLayout, {
+            content(){
+                return <AdminAttendance />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/adminTodayAttendance', {
+    name: 'AdminTodayAttendance',
+    action(){
+        mount(MainLayout, {
+            content() {
+                return <AdminTodayAttendance />
             }
         })
     }

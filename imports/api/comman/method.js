@@ -6,6 +6,7 @@ import LeaveType from '../leave/leaveTypeSchema';
 import User from '../user/users';
 import Attendance from '../attendance/attendance';
 import GeneralSetting from '../generalsetting/generalsetting';
+import AdminAttendance from '../attendance/adminAttendance';
 import Leave from '../leave/leaveScheme';
 import Notification from '../notification/notification';
 if (Meteor.isServer) {
@@ -100,6 +101,20 @@ if (Meteor.isServer) {
             return Attendance.find({}).count();
         },
         //general setting
+        'updateHours': (todayHrs, weekHrs, monthHrs, overHrs, id) => {
+            return GeneralSetting.update({ _id: id }, { $set: { todayHrs: todayHrs, weekHrs: weekHrs, monthHrs: monthHrs, overHrs: overHrs } })
+        },
+
+        //AdminAttendance
+        'adminAttendance': (userIds, date) => {
+            // date = moment().format("YYYY-MM-DD")
+            return AdminAttendance.insert({ userIds: userIds, date: date})
+        },
+        'updateAdminAttendance': (userIds, id) => {
+           return AdminAttendance.update({_id: id}, {$set: {userIds: userIds}})
+            
+        },
+
         'updateGeneraleSetting': (generaleSetting, id) => {
             return GeneralSetting.update({ _id: id }, {
                 $set: generaleSetting

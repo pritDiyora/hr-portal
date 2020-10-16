@@ -5,6 +5,7 @@ import Cities from '../../cites/cites';
 import User from '../users';
 import Attendance from '../../attendance/attendance';
 import GeneralSetting from '../../generalsetting/generalsetting';
+import AdminAttendance from '../../attendance/adminAttendance';
 import LeaveType from '../../leave/leaveTypeSchema';
 import Leave from '../../leave/leaveScheme';
 import { ready } from 'jquery';
@@ -54,6 +55,9 @@ if (Meteor.isServer) {
     return GeneralSetting.find();
   })
 
+  Meteor.publish('adminAttendanceData', function(){
+    return AdminAttendance.find();
+  })
   Meteor.publish('leaveType', function () {
     return LeaveType.find();
   })
