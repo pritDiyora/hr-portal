@@ -7,7 +7,6 @@ class ProfileComponent extends Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         return (
             <div>
@@ -131,7 +130,7 @@ class ProfileComponent extends Component {
                 </div>
                 <div className="form-group row">
                     <div className="col-md-12">
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                             <label>Description  <sup style={{ color: "red" }}>*</sup></label>
                             <input
                                 type="text"
@@ -272,9 +271,4 @@ class ProfileComponent extends Component {
         );
     }
 }
-
-ProfileComponent.propTypes = {
-
-};
-
 export default ProfileComponent;

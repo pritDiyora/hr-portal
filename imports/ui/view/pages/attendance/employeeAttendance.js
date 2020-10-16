@@ -60,7 +60,7 @@ class EmployeeAttendance extends Component {
     let hours = this.props && this.props.hoursData && this.props.hoursData[hoursKey] || 0;
     if (getdata.length > 0) {
       let diffs = []
-      let getisPunchIn = getdata.filter((a) => a.isCheckIn);
+      let getisPunchIn = getdata.filter((a) => a.isCheckIn);      
       let getisPunchOut = getdata.filter((a) => !a.isCheckIn)
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
@@ -113,14 +113,14 @@ class EmployeeAttendance extends Component {
     if (data) {
       let work = moment.duration(data.CountHrs, "minutes").asMinutes();
       let overtime = 0;
-      if (work > (hoursData.monthHrs * 60)) {
-        overtime = (work - (hoursData.monthHrs * 60))
+      if (work > (hoursData && hoursData.monthHrs * 60)) {
+        overtime = (work - (hoursData && hoursData.monthHrs * 60))
       } else {
         overtime = 0
       }
       this.setState({
         overCountHrs: moment.utc().hours(overtime / 60).minutes(overtime % 60).format("HH:mm"),
-        overTimeProgress: ((overtime / 60) * 100 / hoursData.overHrs)
+        overTimeProgress: ((overtime / 60) * 100 / hoursData && hoursData.overHrs)
       })
     }
   }
@@ -208,7 +208,7 @@ class EmployeeAttendance extends Component {
     ];
     Meteor.call("searchAttendanceDate", pipeline, function (err, res) {
       if (!err) {
-        Meteor.call("countAttendancedata", res, function (err1, res1) {
+        Meteor.call("countAttendancedata", function (err1, res1) {
           if (!err) {
             self.setState({ totalpage: res1 });
           }
@@ -445,7 +445,7 @@ class EmployeeAttendance extends Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('checkInOutList');
-  Meteor.subscribe('generaleSetting')
+  Meteor.subscribe('generaleSetting');
   //today
   var start = new Date();
   start.setHours(0, 0, 0, 0);

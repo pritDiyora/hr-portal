@@ -18,6 +18,7 @@ class GeneralSettings extends Component {
       yearlyleave: "",
       fromTime: "",
       toTime: "",
+      noofleave: "",
       button: false,
       id: ""
     }
@@ -34,13 +35,14 @@ class GeneralSettings extends Component {
       carryforwardleave: nextpops.hoursData.CarryForwardLeave,
       yearlyleave: nextpops.hoursData.yearlyLeave,
       fromTime: nextpops.hoursData.fromTime,
-      toTime: nextpops.hoursData.toTime
+      toTime: nextpops.hoursData.toTime,
+      noofleave: nextpops.hoursData.noOfLeave
     })
   }
 
   addHours() {
     let { todayHrs, weekHrs, monthHrs, yearlyleave, fromTime, toTime,
-      overHrs, id, monthleave, carryforwardleave } = this.state;
+      overHrs, id, monthleave, carryforwardleave, noofleave } = this.state;
     let generaleSetting = {
       todayHrs: parseInt(todayHrs),
       weekHrs: parseInt(weekHrs),
@@ -50,7 +52,8 @@ class GeneralSettings extends Component {
       carryForwardLeave: parseInt(carryforwardleave),
       yearlyLeave: parseInt(yearlyleave),
       fromTime: fromTime,
-      toTime: toTime
+      toTime: toTime,
+      noOfLeave: noofleave
     }
     Meteor.call('updateGeneraleSetting', generaleSetting, id, function (err, result) {
       if (!err) {
@@ -160,7 +163,15 @@ class GeneralSettings extends Component {
                         onChange={(e) => this.generalSetting(e)}
                       />
                     </div>
-
+                    <div className="col-md-6">
+                      <label>No Of Leave</label>
+                      <select name="noofleave" className="form-control" defaultValue={this.state.noofleave}>
+                        <option>Select Option</option>
+                        <option defaultValue="day">Days</option>
+                        <option defaultValue="month">Monthly</option>
+                        <option defaultValue="year">Yearly</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
                 <div className="row">

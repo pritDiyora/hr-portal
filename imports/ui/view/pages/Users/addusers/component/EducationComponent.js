@@ -9,7 +9,7 @@ class EducationComponent extends React.Component {
         const el = this.props.rowData;
         let education1 = this.props.education;
         return (
-            <div className="panel-body" key={this.props.id.toS} style={{ marginBottom: "5px" }}>
+            <div className="panel-body" key={this.props.id} style={{ marginBottom: "5px" }}>
                 {education1.length !== 1 && <div style={{ textAlign: "right" }}><a className="btn btn-xs btn-primary" onClick={(e) => this.props.EduucationremoveClick(e, el.index)} ><i className="fa fa-times" aria-hidden="true"></i></a></div>}
                 <div className="form-group row">
                     <div className="col-md-12">

@@ -62,6 +62,10 @@ if (Meteor.isServer) {
     return Leave.find();
   })
 
+  Meteor.publish('userWisrLeave', function (id) {
+    return Leave.find({ userId: id });
+  })
+
   Meteor.publish('getUserType', function () {
     return User.find({});
   })
@@ -70,6 +74,6 @@ if (Meteor.isServer) {
     return Notification.find({});
   })
 
-  
+
 
 }

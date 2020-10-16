@@ -1,5 +1,4 @@
 import { Mongo } from 'meteor/mongo'
-import { Number } from 'sugar';
 Schemas = {};
 
 const LeaveType = new Mongo.Collection('leavetype');
@@ -9,7 +8,7 @@ Schemas.LeaveType =  new SimpleSchema({
     type: String
   },
   noOfDay: {
-    type: String
+    type: Number
   },
   isPaid: {
     type: Boolean,

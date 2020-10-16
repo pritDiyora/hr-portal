@@ -137,40 +137,45 @@ class Header extends Component {
 								{this.state.count == 0 ? " " : <span className="label label-warning">{this.state.count}</span>}
 
 							</a>
-							<ul className="dropdown-menu dropdown-messages">
-								{
-									notificationlist.map((notification) => {
-										let firstname = this.getUserName(notification.sendId)
-										return (<li key={notification._id} >
-											<div className="dropdown-messages-box">
-												<a href="profile.html" className="pull-left">
-													<Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}	
-													/>
-												</a>
-												<div className="media-body" onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
-													<small className="pull-right">{moment(notification.createdAtDate).fromNow()}</small>
-													<strong>{firstname}</strong>  <br />
-													<small className="text-muted">{notification.description}</small><br />
-													<small className="text-muted">{moment(notification.createdAtDate).fromNow()} at {moment(notification.createdAtDate).format('hh:mm')}
+							{
+								this.state.count == 0 ? "" :
+									<ul className="dropdown-menu dropdown-messages">
+										{
+											notificationlist.map((notification) => {
+												let firstname = this.getUserName(notification.sendId)
+												return (<li key={notification._id} >
+													<div className="dropdown-messages-box">
+														<a href="profile.html" className="pull-left">
+															<Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
+															/>
+														</a>
+														<div className="media-body" onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
+															<small className="pull-right">{moment(notification.createdAtDate).fromNow()}</small>
+															<strong>{firstname}</strong>  <br />
+															<small className="text-muted">{notification.description}</small><br />
+															<small className="text-muted">{moment(notification.createdAtDate).fromNow()} at {moment(notification.createdAtDate).format('hh:mm')}
 													 - {moment(notification.createdAtDate).format('DD.MM.YYYY')}</small>
-												</div>
+														</div>
+													</div>
+													<ul>
+														<li className="divider"></li>
+													</ul>
+												</li>
+												)
+											})
+										}
+										<li>
+											<div className="text-center link-block">
+												<a href="mailbox.html" className="dropdown-item">
+													<i className="fa fa-envelope"></i> <strong>Read All Messages</strong>
+												</a>
 											</div>
-											<ul>
-												<li className="divider"></li>
-											</ul>
 										</li>
-										)
-									})
-								}
-								<li>
-									<div className="text-center link-block">
-										<a href="mailbox.html" className="dropdown-item">
-											<i className="fa fa-envelope"></i> <strong>Read All Messages</strong>
-										</a>
-									</div>
-								</li>
 
-							</ul>
+									</ul>
+
+							}
+
 						</li>
 						<li id="dropdownMsgNoti" className="dropdown">
 							<a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.MsgNoti(e)}>

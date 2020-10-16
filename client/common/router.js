@@ -114,7 +114,15 @@ FlowRouter.route('/profile', {
                 }
             })
         }
-    }
+    },
+    subscriptions: function () {
+        Meteor.subscribe('CountryData');
+        Meteor.subscribe('user');
+        Meteor.subscribe('Statedata');
+        Meteor.subscribe('Citydata');
+        Meteor.subscribe('generaleSetting');
+        Meteor.subscribe('userWisrLeave', Meteor.userId());
+    },
 })
 FlowRouter.route('/dashboard', {
     name: 'Dashboard1',
@@ -164,6 +172,11 @@ FlowRouter.route('/updateuser/:_id', {
                 }
             })
         }
+    },
+    subscriptions: function () {
+        Meteor.subscribe('CountryData');
+        Meteor.subscribe('Statedata');
+        Meteor.subscribe('Citydata');
     }
 })
 FlowRouter.route('/country', {
@@ -183,11 +196,11 @@ FlowRouter.route('/employeeAttendance', {
     name: 'EmployeeAttendance',
     action() {
         // if (requiredLogin()) {
-            mount(MainLayout, {
-                content() {
-                    return <EmployeeAttendance />
-                }
-            })
+        mount(MainLayout, {
+            content() {
+                return <EmployeeAttendance />
+            }
+        })
         // }
     }
 })

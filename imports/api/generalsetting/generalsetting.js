@@ -25,11 +25,14 @@ Schemas.GeneralSetting = new SimpleSchema({
   yearlyLeave: {
     type: Number
   },
-  fromTime:{
-    type:String
+  fromTime: {
+    type: String
   },
-  toTime:{
-    type:String
+  toTime: {
+    type: String
+  },
+  noOfLeave: {
+    type: String
   },
   isActive: {
     type: Boolean,
