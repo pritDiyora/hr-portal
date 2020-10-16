@@ -110,9 +110,11 @@ if (Meteor.isServer) {
             // date = moment().format("YYYY-MM-DD")
             return AdminAttendance.insert({ userIds: userIds, date: date})
         },
-        'updateAdminAttendance': (userIds, date, id) => {
-            return AdminAttendance.update({_id: id}, {$set: {userIds: userIds, date: date}})
+        'updateAdminAttendance': (userIds, id) => {
+           return AdminAttendance.update({_id: id}, {$set: {userIds: userIds}})
+            
         },
+
         'updateGeneraleSetting': (generaleSetting, id) => {
             return GeneralSetting.update({ _id: id }, {
                 $set: generaleSetting

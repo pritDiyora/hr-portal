@@ -6,6 +6,7 @@ import Cities from '../../../../api/cites/cites';
 import { toast } from 'react-toastify';
 import { withTracker } from 'meteor/react-meteor-data'
 import { id, tr } from 'date-fns/locale';
+import AdminAttendance from '../../../../api/attendance/adminAttendance'
 
 class AdminTodayAttendance extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class AdminTodayAttendance extends Component {
       userIds: '',
       date: '',
       button: false,
-      id: ""
+      adminId: ""
     }
   }
   componentDidMount() {
@@ -67,16 +68,16 @@ class AdminTodayAttendance extends Component {
     let { userAttendanceIds, userIds, date } = this.state
     userIds = userAttendanceIds
     date = moment().format("YYYY-MM-DD")
-    if(this.state.button == true){
-      Meteor.call('updateAdminAttendance', userIds, date, this.state.id, function(err, result){
-        if(!err){
-          toast.success('Record Updated.. ' , result)
-          this.setState({button: false})
-        }else{
+    if (this.state.button == true) {
+      Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
+        if (!err) {
+          toast.success('Record Updated.. ' + result)
+        } else {
           toast.error('Record not updated..' + err)
         }
       })
-    }else{
+
+    } else {
       Meteor.call('adminAttendance', userIds, date, function (err, result) {
         if (!err) {
           toast.success("Record Inserted...", result)
@@ -86,21 +87,30 @@ class AdminTodayAttendance extends Component {
       })
     }
   }
-
-  
-  isCheckHandler(e) {
-    let {userAttendanceIds} = this.state
-    const {checked, value} = e.target
-    if(checked){
-      userAttendanceIds = [...userAttendanceIds, value];
-    }else{
-      userAttendanceIds = userAttendanceIds.filter(e1 => e1 !== value)
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      userAttendanceIds: nextProps.adminAttendance && nextProps.adminAttendance.userIds || [],
+      adminId: nextProps.adminAttendance && nextProps.adminAttendance._id,
+      button: true
+    })
+  }
+  isCheckHandler(e, id) {
+    let { userAttendanceIds } = this.state
+    const { checked } = e.target
+    if (checked) {
+      userAttendanceIds = [...userAttendanceIds, id];
+    } else {
+      userAttendanceIds = userAttendanceIds.filter(e1 => e1 !== id)
     }
     this.setState({
       userAttendanceIds
-    },() => console.log(this.state.userAttendanceIds))
+    }, () => console.log(this.state.userAttendanceIds))
   }
+
+
   render() {
+    let { userAttendanceIds } = this.state;
+
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -118,20 +128,20 @@ class AdminTodayAttendance extends Component {
                     <tr>
                       <th>Employee Name</th>
                       <th>Attendance</th>
-
                     </tr>
                   </thead>
                   <tbody>
                     {this.state.displayedUser.map((user) => {
                       let userId = user._id
                       let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName;
+                      let isCheck = userAttendanceIds.find(d => d == userId);
                       return (
                         <tr key={userId}>
                           <td>{name}</td>
                           <td>
                             <input type="checkbox"
-                              value={userId}
-                              onChange={(e) => this.isCheckHandler(e)}
+                              checked={!!isCheck}
+                              onChange={(e) => this.isCheckHandler(e, userId)}
                             />
                           </td>
                         </tr>
@@ -141,9 +151,9 @@ class AdminTodayAttendance extends Component {
 
                 </table>
                 <div className="text-center">
-                  <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addAttendance(e) }}>Save</button>
+                  {this.state.button ? <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addAttendance(e) }}>Save</button>
+                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addAttendance(e) }}>Save</button>}
                 </div>
-
               </div>
             </div>
           </div>
@@ -156,10 +166,11 @@ export default withTracker(() => {
   Meteor.subscribe('CountryData');
   Meteor.subscribe('Statedata');
   Meteor.subscribe('Citydata');
+  Meteor.subscribe('adminAttendanceData');
   return {
     country: Country.find({}).fetch(),
     states: State.find({}).fetch(),
     city: Cities.find({}).fetch(),
-
+    adminAttendance: AdminAttendance.findOne({ date: moment().format('YYYY-MM-DD') }),
   }
 })(AdminTodayAttendance)

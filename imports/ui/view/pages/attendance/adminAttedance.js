@@ -99,11 +99,12 @@ class AdminAttendances extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {this.state.displayedUser.map((user, i) => {
+                        {this.state.displayedUser.map((user) => {
                           let id = user._id
+                         
                           let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName
                           return (
-                            <tr key={i}>
+                            <tr key={id}>
                               <td>{name}</td>
                               {this.state.result.map((i, res) => {
                                 return (
@@ -113,9 +114,9 @@ class AdminAttendances extends Component {
                                         let date = moment(admin.date).format("DD") - 1
                                         let check
                                         if (res == date) {
-                                          if (admin.userIds == id) {
+                                          if (admin.userIds.indexOf(id) > -1) {
                                             check = <i key={i} className="fa fa-check text-info"></i>
-                                          }else if(admin.userIds !== id){
+                                          }else{
                                             check = <i key={i} className="fa fa-close text-danger"></i>
                                           }
                                         }
