@@ -58,66 +58,68 @@ class AddHR extends React.Component {
         this.setState({ countrie, states, city });
 
         if (this.props.flag == 1) {
-            self.setState({ flag: this.props.flag, userid: FlowRouter.current("_id").params._id })
-            let { profile } = self.state;
-            let userAddress = nextProps.userdata.address || [],
-                userEducation = nextProps.userdata.education || [],
-                userExperiance = nextProps.userdata.experiance || [];
-            //set User Profile
-            profile[`firstName`] = nextProps.userdata.profile.firstName;
-            profile[`lastName`] = nextProps.userdata.profile.lastName;
-            profile[`fatherName`] = nextProps.userdata.profile.fatherName;
-            profile[`motherName`] = nextProps.userdata.profile.motherName;
-            profile[`gender`] = nextProps.userdata.profile.gender;
-            profile[`birthDate`] = nextProps.userdata.profile.birthDate;
-            profile[`officalEmailid`] = nextProps.userdata.profile.officalEmailId;
-            profile[`userType`] = nextProps.userdata.profile.userType;
-            profile[`phone`] = nextProps.userdata.profile.phone;
-            profile[`joiningDate`] = nextProps.userdata.profile.joiningDate;
-            profile[`description`] = nextProps.userdata.profile.description;
-            self.setState({ email: nextProps.userdata.emails[0].address, profile });
-            //set User Address
-            userAddress.map((addresses) => {
-                let couobj = nextProps.countries.find(cou => cou._id == addresses.country);
-                self.setState({ CountryOption: { value: couobj._id, label: couobj.countryname } });
-                let stateobj = nextProps.statedata.find(state => state._id == addresses.state);
-                self.setState({ StateOption: { value: stateobj._id, label: stateobj.stateName } });
-                let cityobj = nextProps.citiesdata.find(ci => ci._id == addresses.city);
-                self.setState({ CityOption: { value: cityobj._id, label: cityobj.cityName } });
-                self.setState({ addressline1: addresses.addressline1, addressline2: addresses.addressline2, zipcode: addresses.zipcode });
-            });
-            //set User Education
-            let education = []
-            userEducation.map((edu, i) => {
-                let value = { key: Random.id(), index: i };
-                education.push(value)
-                this.setState({
-                    [`education.coursename_${value.key}`]: edu.cousrseName,
-                    [`education.coursetype_${value.key}`]: edu.cousrseType,
-                    [`education.institutename_${value.key}`]: edu.instituteName,
-                    [`education.acedemicyear_${value.key}`]: edu.academicYear,
-                    [`education.certificate_${value.key}`]: edu.certificate,
-                    education
-                });
-            });
-            //set User Excperiance
-            let experiance = [];
-            userExperiance.map((exp, i) => {
-                let value = { key: Random.id(), index: i };
-                experiance.push(value)
-                self.setState({
-                    [`experiance.companyname_${value.key}`]: exp.companyName,
-                    [`experiance.workexperiance_${value.key}`]: exp.workExpeience,
-                    [`experiance.startdate_${value.key}`]: exp.startAt,
-                    [`experiance.enddate_${value.key}`]: exp.endAt,
-                    [`experiance.techonology_${value.key}`]: exp.technology || [],
-                    experiance
-                })
-            });
-
+            this.updateUserDetails(nextProps,self);
         } else {
             self.setState({ flag: this.props.flag });
         }
+    }
+    updateUserDetails(nextProps,self) {
+        self.setState({ flag: this.props.flag, userid: FlowRouter.current("_id").params._id })
+        let { profile } = self.state;
+        let userAddress = nextProps.userdata && nextProps.userdata.address || [],
+            userEducation = nextProps.userdata && nextProps.userdata.education || [],
+            userExperiance = nextProps.userdata && nextProps.userdata.experiance || [];
+        //set User Profile
+        profile[`firstName`] = nextProps.userdata && nextProps.userdata && nextProps.userdata.profile.firstName;
+        profile[`lastName`] = nextProps.userdata && nextProps.userdata.profile.lastName;
+        profile[`fatherName`] = nextProps.userdata && nextProps.userdata.profile.fatherName;
+        profile[`motherName`] = nextProps.userdata && nextProps.userdata.profile.motherName;
+        profile[`gender`] = nextProps.userdata && nextProps.userdata.profile.gender;
+        profile[`birthDate`] = nextProps.userdata && nextProps.userdata.profile.birthDate;
+        profile[`officalEmailid`] = nextProps.userdata && nextProps.userdata.profile.officalEmailId;
+        profile[`userType`] = nextProps.userdata && nextProps.userdata.profile.userType;
+        profile[`phone`] = nextProps.userdata && nextProps.userdata.profile.phone;
+        profile[`joiningDate`] = nextProps.userdata && nextProps.userdata.profile.joiningDate;
+        profile[`description`] = nextProps.userdata && nextProps.userdata.profile.description;
+        self.setState({ email: nextProps.userdata && nextProps.userdata.emails[0].address, profile });
+        //set User Address
+        userAddress.map((addresses) => {
+            let couobj = nextProps.countries && nextProps.countries.find(cou => cou._id == addresses.country);
+            self.setState({ CountryOption: { value: couobj && couobj._id, label: couobj && couobj.countryname } });
+            let stateobj = nextProps.statedata && nextProps.statedata.find(state => state._id == addresses.state);
+            self.setState({ StateOption: { value: stateobj && stateobj._id, label: stateobj && stateobj.stateName } });
+            let cityobj = nextProps.citiesdata && nextProps.citiesdata.find(ci => ci._id == addresses.city);
+            self.setState({ CityOption: { value: cityobj && cityobj._id, label: cityobj && cityobj.cityName } });
+            self.setState({ addressline1: addresses.addressline1, addressline2: addresses.addressline2, zipcode: addresses.zipcode });
+        });
+        //set User Education
+        let education = []
+        userEducation.map((edu, i) => {
+            let value = { key: Random.id(), index: i };
+            education.push(value)
+            this.setState({
+                [`education.coursename_${value.key}`]: edu.cousrseName,
+                [`education.coursetype_${value.key}`]: edu.cousrseType,
+                [`education.institutename_${value.key}`]: edu.instituteName,
+                [`education.acedemicyear_${value.key}`]: edu.academicYear,
+                [`education.certificate_${value.key}`]: edu.certificate,
+                education
+            });
+        });
+        //set User Excperiance
+        let experiance = [];
+        userExperiance.map((exp, i) => {
+            let value = { key: Random.id(), index: i };
+            experiance.push(value)
+            self.setState({
+                [`experiance.companyname_${value.key}`]: exp.companyName,
+                [`experiance.workexperiance_${value.key}`]: exp.workExpeience,
+                [`experiance.startdate_${value.key}`]: exp.startAt,
+                [`experiance.enddate_${value.key}`]: exp.endAt,
+                [`experiance.techonology_${value.key}`]: exp.technology || [],
+                experiance
+            })
+        });
     }
     componentDidMount() {
         //datepicker
@@ -166,8 +168,8 @@ class AddHR extends React.Component {
                 academicyear={this.state[`education.acedemicyear_${el.key}`] || ''}
                 coursetype={this.state[`education.coursetype_${el.key}`] || ''}
                 certificate={this.state[`education.certificate_${el.key}`] || ''}
-            />)
-        })
+            />);
+        });
     }
     //tag
     TaghandleChange(tag, key) {
@@ -530,11 +532,8 @@ class AddHR extends React.Component {
     }
 }
 export default withTracker(() => {
-    Meteor.subscribe('CountryData');
     Meteor.subscribe('Statedata1', Session.get('country'));
     Meteor.subscribe('citydata', Session.get('state'));
-    Meteor.subscribe('Statedata');
-    Meteor.subscribe('Citydata');
     Meteor.subscribe('updateprofile', FlowRouter.current("_id").params._id);
     return {
         countries: Country.find({}).fetch(),

@@ -130,8 +130,14 @@ if (Meteor.isServer) {
         'countLeaveData': () => {
             return Leave.find({}).count();
         },
-        'updateLeaveApprove': (lid) => {
-            return Leave.update({ _id: lid }, { $set: { isApprove: true } })
+        'getleavedate': () => {
+            return Leave.find({}).fetch();
+        },
+        'updateLeaveApprove': (lid, approvebyname) => {
+            return Leave.update({ _id: lid }, { $set: { isApprove: true, approveBy: approvebyname } })
+        },
+        'updateLeaveDecline': (id) => {
+            return Leave.update({ _id: lid }, { $set: { isApprove: false, approveBy: Meteor.userId() } })
         },
         'LeaveApprove.Notification': (leaveApplyNotification) => {
             return Notification.insert(leaveApplyNotification)

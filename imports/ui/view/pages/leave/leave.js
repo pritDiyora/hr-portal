@@ -14,7 +14,7 @@ import DateTimeRangeContainer from "react-advanced-datetimerange-picker";
 import moment from 'moment';
 import Leave from '../../../../api/leave/leaveScheme';
 import User from '../../../../api/user/users';
-let calendarApi;
+import { th } from 'date-fns/locale';
 class ApplyLeave extends Component {
     constructor(props) {
         super(props);
@@ -49,6 +49,27 @@ class ApplyLeave extends Component {
         });
     }
 
+    componentWillMount() {
+        const { currentEvents } = this.state;
+        const self = this;
+        Meteor.call('getleavedate', function (err, res) {
+            if (!err) {
+                let leaveEvents = currentEvents || [];
+                res.map((leave, pos) => {
+                    let leaveList = {
+                        id: pos.toString(),
+                        title: leave.leaveType,
+                        start: leave.startDate,
+                        end: leave.endDate
+                    };
+                    leaveEvents.push(leaveList);
+                })
+                self.setState({ currentEvents: leaveEvents }, () => {
+                    console.log('componentWillMount  currentEvents: :', self.state.currentEvents);
+                });
+            }
+        })
+    }
     render() {
         let disabled = true;
         let now = new Date();
@@ -79,7 +100,10 @@ class ApplyLeave extends Component {
         };
         let maxDate = moment(start).add(24, "hour");
         let minDate = moment(new Date()).add(24, "hour");
-        const { leaveType, leaveReason, isHalf } = this.state;
+        const { leaveType, leaveReason, isHalf, currentEvents } = this.state;
+        console.log('Render :: ', this.state.currentEvents);
+        console.log('INITIAL_EVENTS :: ', INITIAL_EVENTS);
+
         return (
             <div className="wrapper wrapper-content  animated fadeInRight">
                 <div className="ibox ">
@@ -105,7 +129,11 @@ class ApplyLeave extends Component {
                             select={this.handleDateSelect}
                             eventContent={renderEventContent} // custom render function
                             eventClick={this.handleEventClick}
-                            eventsSet={this.handleEvents} // cal
+                            events={
+                                //  currentEvents
+                                [{ id: "0", title: "LFBYSeHcQ9JqkTMBu", start: "2020-10-17T17:00:00", end: "2020-10-17T19:00:00" },
+                                { id: "1", title: "SZzSsaeKyMF5zC6Sd", start: "2020-10-21T00:00:00", end: "2020-10-22T00:00:00" }]
+                            }
                         />
                     </div>
                 </div>
@@ -120,9 +148,9 @@ class ApplyLeave extends Component {
                             <div className="modal-body">
                                 <div className="content container-fluid">
                                     <form>
-                                        <div class="form-group">
-                                            <label>Leave Type <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="leaveType" value={leaveType}
+                                        <div className="form-group">
+                                            <label>Leave Type <span className="text-danger">*</span></label>
+                                            <select className="form-control" name="leaveType" value={leaveType}
                                                 onChange={(e) => this.leaveHandlar(e)} >
                                                 <option defaultValue>Select Leave Type</option>
                                                 {
@@ -133,7 +161,7 @@ class ApplyLeave extends Component {
                                             </select>
                                         </div>
                                         <div className="InputFromTo">
-                                            <div class="form-group">
+                                            <div className="form-group">
                                                 <div className="col-md-12" style={{ padding: "0px" }}>
                                                     <DateTimeRangeContainer
                                                         ranges={ranges}
@@ -143,7 +171,7 @@ class ApplyLeave extends Component {
                                                         applyCallback={this.applyCallback}
                                                         smartMode >
                                                         <div className="col-md-6" style={{ paddingLeft: "0px" }}>
-                                                            <label>Start Date <span class="text-danger">*</span></label>
+                                                            <label>Start Date <span className="text-danger">*</span></label>
 
                                                             <FormControl
                                                                 id="formControlsTextB"
@@ -153,12 +181,12 @@ class ApplyLeave extends Component {
                                                                 style={{ cursor: "pointer" }}
                                                                 disabled={disabled}
                                                                 value={this.state.start.format(
-                                                                    "DD-MM-YYYY HH:mm"
+                                                                    "DD-MM-YYYYTHH:mm:ss"
                                                                 )}
                                                             />
                                                         </div>
                                                         <div className="col-md-6" style={{ padding: "0px" }}>
-                                                            <label>End Date <span class="text-danger">*</span></label>
+                                                            <label>End Date <span className="text-danger">*</span></label>
                                                             <FormControl
                                                                 id="formControlsTextB"
                                                                 type="text"
@@ -166,7 +194,7 @@ class ApplyLeave extends Component {
                                                                 placeholder="Enter text"
                                                                 style={{ cursor: "pointer" }}
                                                                 disabled={disabled}
-                                                                value={this.state.end.format("DD-MM-YYYY HH:mm")}
+                                                                value={this.state.end.format("DD-MM-YYYYTHH:mm:ss")}
                                                             />
 
                                                         </div>
@@ -174,7 +202,7 @@ class ApplyLeave extends Component {
                                                 </div>
 
                                             </div>
-                                            <div class="form-group">
+                                            <div className="form-group">
                                                 <div className="col-md-12" style={{ padding: "0px" }}>
                                                     <div className="col-md-6" style={{ paddingLeft: "0px" }}>
                                                         <label>Select Half</label>
@@ -197,12 +225,12 @@ class ApplyLeave extends Component {
 
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label>Leave Reason <span class="text-danger">*</span></label>
-                                            <textarea rows="4" class="reason" name="leaveReason" value={leaveReason} onChange={(e) => this.leaveHandlar(e)}></textarea>
+                                        <div className="form-group">
+                                            <label>Leave Reason <span className="text-danger">*</span></label>
+                                            <textarea rows="4" className="reason" name="leaveReason" value={leaveReason} onChange={(e) => this.leaveHandlar(e)}></textarea>
                                         </div>
-                                        <div class="submit-section">
-                                            <button class="btn btn-primary submit-btn" onClick={(e) => this.leaveApply(e)}>Apply</button>
+                                        <div className="submit-section">
+                                            <button className="btn btn-primary submit-btn" onClick={(e) => this.leaveApply(e)}>Apply</button>
                                         </div>
                                     </form>
                                 </div>
@@ -220,8 +248,6 @@ class ApplyLeave extends Component {
     };
     handleDateSelect = (selectInfo) => {
         const self = this;
-        calendarApi = selectInfo.view.calendar;
-        calendarApi.unselect();
         var selectedDate = moment(selectInfo.start).format('YYYY/MM/DD');
         var todayDate = moment().format('YYYY/MM/DD');
         if (selectedDate >= todayDate) {
@@ -230,16 +256,6 @@ class ApplyLeave extends Component {
                 end: moment(selectInfo.end),
             });
             $("#add-panel").modal("show");
-
-            calendarApi.addEvent({
-                id: createEventId(),
-                title: this.state.leavename,
-                start: selectInfo.startStr,
-                end: selectInfo.endStr,
-                allDay: selectInfo.allDay
-            });
-
-
         } else {
             alert('You can not select past Date..');
         }
@@ -254,8 +270,8 @@ class ApplyLeave extends Component {
         let leaveObject = {
             userId: Meteor.userId(),
             leaveType: self.state.leaveType,
-            startDate: moment(self.state.start).format('YYYY/MM/DD hh:mm'),
-            endDate: moment(self.state.end).format('YYYY/MM/DD hh:mm'),
+            startDate: moment(self.state.start).format('YYYY-MM-DDTHH:mm:ss'),
+            endDate: moment(self.state.end).format('YYYY-MM-DDTHH:mm:ss'),
             idHalf: self.state.idHalf,
             reason: self.state.leaveReason,
         };
@@ -275,6 +291,7 @@ class ApplyLeave extends Component {
                 }
                 Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
                     if (!err) {
+                        self.setState({ leaveType: '',  leaveReason: '' });
                         console.log('notification send', res);
                     }
                 });
@@ -290,13 +307,9 @@ class ApplyLeave extends Component {
             clickInfo.event.remove();
         }
     };
-    handleEvents = (events) => {
-        console.log('events', events);
-        this.setState({
-            currentEvents: events
-        });
-    };
+
     componentWillReceiveProps(nextProps) {
+        const { currentEvents } = this.state;
         const self = this;
         let user = nextProps.userType.find(user => user.profile.userType == 'admin');
         let userid = user && user._id || "";

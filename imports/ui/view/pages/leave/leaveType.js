@@ -53,7 +53,7 @@ export default class LeaveType extends Component {
         const self = this;
         let { typename, noofday, leaveTypeId, paidChecked } = this.state;
         if (this.state.button == true) {
-            Meteor.call('updateLeaveType', typename, noofday, leaveTypeId, paidChecked, function (err, result) {
+            Meteor.call('updateLeaveType', typename, parseInt(noofday), leaveTypeId, paidChecked, function (err, result) {
                 if (!err) {
                     toast.success("Record updates..." + result);
                     $("#add-panel").modal("hide");
@@ -69,7 +69,7 @@ export default class LeaveType extends Component {
                 }
             })
         } else {
-            Meteor.call('addleaveType', typename, noofday, paidChecked, function (err, result) {
+            Meteor.call('addleaveType', typename, parseInt(noofday), paidChecked, function (err, result) {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
@@ -238,8 +238,8 @@ export default class LeaveType extends Component {
                                                         <td>{lev.leaveTypeName}</td>
                                                         <td>{lev.noOfDay}</td>
                                                         <td>
-                                                            {lev.isPaid ? <a class="label label-warning" style={{ marginLeft: '5px' }} onClick={(e) => this.pasidStatusChangeHandlar(e, lev._id, lev.isPaid)} value={lev.isPaid}>Paid</a>
-                                                                : <a class="label label-warning" style={{ marginLeft: '5px' }} onClick={(e) => this.pasidStatusChangeHandlar(e, lev._id, lev.isPaid)} value={lev.isPaid} value={lev.isPaid}>UnPaid</a>
+                                                            {lev.isPaid ? <a className="label label-warning" style={{ marginLeft: '5px' }} onClick={(e) => this.pasidStatusChangeHandlar(e, lev._id, lev.isPaid)} value={lev.isPaid}>Paid</a>
+                                                                : <a className="label label-warning" style={{ marginLeft: '5px' }} onClick={(e) => this.pasidStatusChangeHandlar(e, lev._id, lev.isPaid)} value={lev.isPaid} value={lev.isPaid}>UnPaid</a>
                                                             }
                                                         </td>
                                                         <td><a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, lev._id)}> <i className="fa fa-trash-o"></i></a>
@@ -282,13 +282,13 @@ export default class LeaveType extends Component {
                                         </div>
                                         <div className="col-md-12" style={{ paddingLeft: '7px' }}>
 
-                                            <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
+                                            <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                                                <input className="form-check-input" type="checkbox" id="inlineCheckbox2"
                                                     checked={this.state.paidChecked === true}
                                                     value={this.state.paidChecked}
                                                     onChange={(e) => this.paidCheckedHandlar(e)}
                                                 />
-                                                <label class="form-check-label" style={{ paddingLeft: '15px' }} htmlFor="inlineCheckbox2"> Is Paid  </label>
+                                                <label className="form-check-label" style={{ paddingLeft: '15px' }} htmlFor="inlineCheckbox2"> Is Paid  </label>
                                             </div>
                                         </div>
 

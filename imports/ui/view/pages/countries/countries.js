@@ -66,7 +66,7 @@ export default class Countries extends Component {
                         self.getCountryData();
                     } else {
                         toast.error("Error ::" + err);
-                        
+
                     }
                 })
             } else {
@@ -117,11 +117,8 @@ export default class Countries extends Component {
     }
     cancel(e) {
         this.setState({
-            countryname: "",
-            countrycode: "",
-            countryid: "",
-            button: false
-        })
+            countryname: "", countrycode: "", countryid: "", button: false
+        });
         $("#add-panel").modal("hide");
     }
     search(e) {
@@ -264,8 +261,8 @@ export default class Countries extends Component {
                                         <div className="col-md-12">
                                             <div className="col-md-6">
                                                 <label>Country Name</label>
-                                                <input type="text" className="form-control" value={this.state.countryname} 
-                                                onChange={(e) => this.setState({ countryname: e.target.value })}
+                                                <input type="text" className="form-control" value={this.state.countryname}
+                                                    onChange={(e) => this.setState({ countryname: e.target.value })}
                                                 />
                                                 {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
                                             </div>

@@ -5,11 +5,23 @@ import Country from '../../../../api/country/country';
 import State from '../../../../api/states/states';
 import Cities from '../../../../api/cites/cites';
 import Avatar from 'react-avatar';
-
+import GeneralSetting from '../../../../api/generalsetting/generalsetting';
+import Leave from '../../../../api/leave/leaveScheme';
 class Profile extends Component {
     constructor(props) {
         super(props);
-        this.state = { country: "", states: "", city: "", zipcode: "", profileimage: "" }
+        this.state = {
+            country: "",
+            states: "",
+            city: "",
+            zipcode: "",
+            profileimage: "",
+            totalgainleave: 0,
+            remainingleave: 0,
+            totalunpaidleave: 0,
+            totalpaidleave: 0,
+            mothly: ""
+        }
     }
     componentWillReceiveProps(nextProps) {
         let userCountry = nextProps.currentUser && nextProps.currentUser.address && nextProps.currentUser.address[0].country || [],
@@ -20,9 +32,7 @@ class Profile extends Component {
         let stat = nextProps.statedata.find(st => st._id == userState) || {};
         let cities = nextProps.citiesdata.find(city => city._id == userCity) || {};
         this.setState({ country: cou.countryname, states: stat.stateName, city: cities.cityName, zipcode: userZipCode });
-    }
-    componentDidMount() {
-
+        this.totalLeaveCaculation(nextProps);
     }
     profilePicUploade(e) {
         var self = this;
@@ -46,6 +56,25 @@ class Profile extends Component {
             }
         });
 
+    }
+    totalLeaveCaculation(nextProps) {
+        let count = 0;
+        console.log(nextProps.userLeaveData);
+
+        nextProps.userLeaveData && nextProps.userLeaveData.map((ule) => {
+            const startdate = moment(ule.startDate, "DD/MM/YYYY");
+            const enddate = moment(ule.endDate, "DD/MM/YYYY");
+            let days = enddate.diff(startdate, 'days');
+            startdate.add(days, 'days');
+            count = count + days;
+        });
+        if (count > 12) {
+            let paidLeave = (nextProps.generalData && nextProps.generalData.yearlyLeave - count) * -1;
+            this.setState({ totalpaidleave: paidLeave, totalgainleave: count });
+        } else {
+            let remainLeave = nextProps.generalData && nextProps.generalData.yearlyLeave - count;
+            this.setState({ totalgainleave: count, remainingleave: remainLeave });
+        }
     }
     render() {
         let { currentUser } = this.props;
@@ -84,9 +113,7 @@ class Profile extends Component {
                                                 {country == undefined ? " " : "," + country}{states == undefined ? " " : "," + states}
                                                 {city == undefined ? "" : "," + city} {zipcode == undefined ? "" : "-" + zipcode}</p>
                                         }
-                                        <h5>
-                                            About me
-                                         </h5>
+                                        <h5><b>About me</b></h5>
                                         <p>
                                             {currentUser && currentUser.profile && currentUser.profile.description == undefined
                                                 ? currentUser && currentUser.profile && currentUser.profile.designation
@@ -95,22 +122,29 @@ class Profile extends Component {
                                     </center>
                                     <div className="col-md-12" style={{ padding: "0px" }}>
                                         <div className="col-md-3">
-                                            <h5>Total Leave</h5>
-                                            <p>0</p>
+                                            <div style={{ textAlign: "center" }}>
+                                                <h5>Annual Leave</h5>
+                                                <p>{this.props.generalData && this.props.generalData.yearlyLeave}</p>
+                                            </div>
                                         </div>
                                         <div className="col-md-3" style={{ padding: "0px" }}>
-                                            <h5>Total GainLeave</h5>
-                                            <p>0</p>
+                                            <div style={{ textAlign: "center" }}>
+                                                <h5>Total GainLeave</h5>
+                                                <p>{this.state.totalgainleave}/12</p>
+                                            </div>
                                         </div>
                                         <div className="col-md-3">
-                                            <h5>Total Paid</h5>
-                                            <p>0</p>
+                                            <div style={{ textAlign: "center" }}>
+                                                <h5>Total Paid</h5>
+                                                <p>{this.state.totalpaidleave}</p>
+                                            </div>
                                         </div>
                                         <div className="col-md-3" style={{ padding: "0px" }}>
-                                            <h5>Remaining Leave</h5>
-                                            <p>0</p>
+                                            <div style={{ textAlign: "center" }}>
+                                                <h5>Remaining Leave</h5>
+                                                <p>{this.state.remainingleave}</p>
+                                            </div>
                                         </div>
-
                                     </div>
                                     <div className="user-button">
                                         <div className="row">
@@ -150,15 +184,12 @@ class Profile extends Component {
 }
 
 export default withTracker(() => {
-    Meteor.subscribe('CountryData');
-    Meteor.subscribe('user');
-    Meteor.subscribe('Statedata');
-    Meteor.subscribe('Citydata');
-    // debugger
     return {
         countries: Country.find({}).fetch(),
         currentUser: Meteor.user(),
         statedata: State.find({}).fetch(),
         citiesdata: Cities.find({}).fetch(),
+        generalData: GeneralSetting.findOne({}),
+        userLeaveData: Leave.find({ userId: Meteor.userId(), isApprove: true }).fetch()
     }
 })(Profile);

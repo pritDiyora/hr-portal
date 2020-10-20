@@ -58,7 +58,7 @@ class EmployeeAttendance extends Component {
     let hours = this.props && this.props.hoursData && this.props.hoursData[hoursKey] || 0;
     if (getdata.length > 0) {
       let diffs = []
-      let getisPunchIn = getdata.filter((a) => a.isCheckIn);
+      let getisPunchIn = getdata.filter((a) => a.isCheckIn);      
       let getisPunchOut = getdata.filter((a) => !a.isCheckIn)
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
@@ -204,7 +204,6 @@ class EmployeeAttendance extends Component {
     ];
     Meteor.call("searchAttendanceDate", pipeline, function (err, res) {
       if (!err) {
-        
         self.setState({ attendanceData: res , totalpage: res.length});
       } else {
         toast.error(err);
@@ -436,7 +435,7 @@ class EmployeeAttendance extends Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('checkInOutList');
-  Meteor.subscribe('generaleSetting')
+  Meteor.subscribe('generaleSetting');
   //today
   var start = new Date();
   start.setHours(0, 0, 0, 0);

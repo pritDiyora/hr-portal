@@ -9,7 +9,6 @@ import Pagination from "react-js-pagination";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class City extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -173,12 +172,9 @@ class City extends Component {
         })
     }
     updaterecord(e, id) {
-        this.state.displayedCity.map((state, i) => {
-            if (state._id == id) {
-                this.setState({ countryid: state.countryId, stateid: state.stateId, cityname: state.cityName, button: true, cityid: state._id })
-            }
-        })
-        $("#add-panel").modal("show");
+        let state = this.state.displayedCity.find(state => state._id == id);
+        this.setState({ countryid: state.countryId, stateid: state.stateId, cityname: state.cityName, button: true, cityid: state._id })
+        $("#add-panel").modal("show"); 
     }
     cancel(e) {
         this.setState({ countryid: "", statename: "", button: false, cityid: "" })

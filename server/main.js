@@ -30,6 +30,7 @@ Meteor.startup(async () => {
             yearlyLeave: 12,
             fromTime: 10,
             toTime: 7,
+            noOfLeave:"month"
         };
          GeneralSetting.insert(general);
     }

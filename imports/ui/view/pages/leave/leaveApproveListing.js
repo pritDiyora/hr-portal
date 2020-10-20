@@ -165,7 +165,8 @@ export default class LeaveApproveList extends Component {
         days = endDate.diff(startDate, 'days');
         startDate.add(days, 'days');
         if (moment(start).format('YYYY/MM/DD') == moment(end).format('YYYY/MM/DD')) {
-            let starthour = moment(start.split(" ")[1], "hh:mm"), endHour = moment(end.split(" ")[1], "hh:mm"), hour, minutes;
+            var startdate = new Date(start), enddate = new Date(end);
+            let starthour = moment(startdate, "hh:mm"), endHour = moment(enddate, "hh:mm"), hour, minutes;
             hour = endHour.diff(starthour, 'hours');
             starthour.add(hour, 'days');
             str = hour + 'hours';
@@ -174,8 +175,35 @@ export default class LeaveApproveList extends Component {
         }
         return str;
     }
-    ApprovedLeave(event, id) {
+    ApprovedLeave(event, id, leavename, rId) {
         event.preventDefault();
+        const self = this;
+        let approveByName = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName;
+        Meteor.call('updateLeaveApprove', id, approveByName, function (err, res) {
+            if (!err) {
+                $('.hover_bkgr_fricc').show();
+                let leaveApproveNotification = {
+                    title: leavename,
+                    description: 'Leave Approved..',
+                    sendId: Meteor.userId(),
+                    receiverId: rId,
+                    type: 'leaveApproved',
+                    createdAtDate: new Date()
+                }
+                Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
+                    if (!err) {
+                        console.log('notification send', res);
+                    }
+                });
+                self.getLeaveData();
+            }
+        });
+    }
+    cancel(e) {
+        $('.hover_bkgr_fricc').hide();
+    }
+    declineLeave(e, id) {
+        e.preventDefault();
         const self = this;
         Meteor.call('updateLeaveApprove', id, function (err, res) {
             if (!err) {
@@ -183,9 +211,6 @@ export default class LeaveApproveList extends Component {
                 self.getLeaveData();
             }
         });
-    }
-    cancel(e) {
-        $('.hover_bkgr_fricc').hide();
     }
     render() {
         let { sortKey, sortValue, displayedLeave } = this.state;
@@ -229,24 +254,25 @@ export default class LeaveApproveList extends Component {
                                                 <th onClick={(e) => this.ascDesc(e, "startDate")}>Start Date  <i className={`fa fa-sort mr-10 ${sortKey === 'startDate' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th onClick={(e) => this.ascDesc(e, "endDate")}>End Date  <i className={`fa fa-sort mr-10 ${sortKey === 'endDate' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                                                 <th onClick={(e) => this.ascDesc(e, "reason")}>Reason of Leave <i className={`fa fa-sort mr-10 ${sortKey === 'reason' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
-                                                <th>No Of Day</th>
+                                                <th>No Of Day/Hours</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {displayedLeave.map((le, i) => {
+                                                
                                                 let noofDay = this.noOfDayLeave(le.startDate, le.endDate)
                                                 return (
                                                     <tr key={i}>
                                                         <td>{le.username.profile.firstName + ' ' + le.username.profile.lastName}</td>
                                                         <td>{le.leavetype.leaveTypeName}</td>
-                                                        <td>{le.startDate}</td>
-                                                        <td>{le.endDate}</td>
+                                                        <td>{moment(new Date(le.startDate)).format('YYYY-MM-DD hh:mm')}</td>
+                                                        <td>{moment(new Date(le.endDate)).format('YYYY-MM-DD hh:mm')}</td>
                                                         <td>{le.reason}</td>
                                                         <td>{noofDay}</td>
-                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.deletemodel(e, le._id)}> <i className="fa fa-times-rectangle-o"> Declined</i></a>
+                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.declineLeave(e, le._id)}> <i className="fa fa-times-rectangle-o"> Declined</i></a>
                                                             {le.isApprove ? <a className="btn btn-xs btn-primary " disabled><i className="fa fa-check-square-o"> Approved</i></a>
-                                                                : <a className="btn btn-xs btn-success " onClick={(e) => this.ApprovedLeave(e, le._id)}><i className="fa fa-check-square-o"> Approve</i></a>
+                                                                : <a className="btn btn-xs btn-success " onClick={(e) => this.ApprovedLeave(e, le._id, le.leavetype.leaveTypeName, le.username._id)}><i className="fa fa-check-square-o"> Approve</i></a>
                                                             }
 
                                                         </td>
@@ -273,7 +299,7 @@ export default class LeaveApproveList extends Component {
                     <span className="helper"></span>
                     <div>
                         <div className="popupCloseButton" onClick={(e) => this.cancel(e)}>&times;</div>
-                        <button class="btn btn-info btn-circle btn-lg" type="button"><i class="fa fa-check"></i>
+                        <button className="btn btn-info btn-circle btn-lg" type="button"><i className="fa fa-check"></i>
                         </button>
                         <h2><b>Approved Successfully...</b></h2>
                     </div>
