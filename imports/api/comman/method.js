@@ -9,6 +9,7 @@ import GeneralSetting from '../generalsetting/generalsetting';
 import AdminAttendance from '../attendance/adminAttendance';
 import Leave from '../leave/leaveScheme';
 import Notification from '../notification/notification';
+import Holiday from '../holiday/holidaySchema';
 if (Meteor.isServer) {
     Meteor.methods({
         //Add Country state and city 
@@ -140,6 +141,23 @@ if (Meteor.isServer) {
         },
         'statusReadable': (nid) => {
             return Notification.update({ _id: nid }, { $set: { isRead: true } });
-        }
+        },
+
+        //holiday 
+        'addholiday': (holidayname, holidaydate) => {
+            return Holiday.insert({ holidayname: holidayname, holidaydate: holidaydate });
+        },
+        'deleteholiday': (id) => {
+            return Holiday.remove({ _id: id });
+        },
+        'updateholiday': (holidayname, holidaydate, id) => {
+            return Holiday.update({ _id: id }, { $set: { holidayname: holidayname, holidaydate: holidaydate } })
+        },
+        'searchholiday': (pipeline) => {
+            return Promise.await(Holiday.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countHolidaydata': () => {
+            return Holiday.find({}).count();
+        },
     })
 }

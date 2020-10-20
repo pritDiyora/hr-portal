@@ -30,6 +30,7 @@ import AdminTodayAttendance from '../../imports/ui/view/pages/attendance/adminTo
 import ApplyLeave from '../../imports/ui/view/pages/leave/leave';
 import WrapperDate from '../../imports/ui/view/layout/wrapperDate';
 import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveListing';
+import Holiday from '../../imports/ui/view/pages/holiday/holiday.js';
 const accessRoute = [
     { routeName: 'listuser', roles: ['superadmin', 'admin'] },
     { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
@@ -362,6 +363,17 @@ FlowRouter.route('/WrapperDate', {
         mount(MainLayout, {
             content() {
                 return <WrapperDate />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/holiday', {
+    name: 'Holiday',
+    action(){
+        mount(MainLayout, {
+            content(){
+                return <Holiday />
             }
         })
     }

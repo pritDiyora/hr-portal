@@ -10,7 +10,7 @@ Schemas.AdminAttendance = new SimpleSchema({
     type: String
   },
   date: {
-    type: String,
+    type: Date,
     unique: true
   },
   isActive: {

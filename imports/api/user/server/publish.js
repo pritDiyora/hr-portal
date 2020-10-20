@@ -10,6 +10,7 @@ import LeaveType from '../../leave/leaveTypeSchema';
 import Leave from '../../leave/leaveScheme';
 import { ready } from 'jquery';
 import Notification from '../../notification/notification';
+import Holiday from '../../holiday/holidaySchema';
 if (Meteor.isServer) {
 
   Meteor.publish('user', function () {
@@ -72,6 +73,10 @@ if (Meteor.isServer) {
 
   Meteor.publish('notificationList', function () {
     return Notification.find({});
+  })
+
+  Meteor.publish('holiday', function() {
+    return Holiday.find();
   })
 
   

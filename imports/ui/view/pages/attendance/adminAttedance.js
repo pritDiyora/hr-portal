@@ -6,18 +6,22 @@ import Country from '../../../../api/country/country';
 import State from '../../../../api/states/states';
 import Cities from '../../../../api/cites/cites';
 import AdminAttendance from '../../../../api/attendance/adminAttendance'
+import Holiday from '../../../../api/holiday/holidaySchema';
 
 class AdminAttendances extends Component {
   constructor(props) {
     super(props);
     this.state = {
       displayedUser: [],
-      result: []
+      result: [],
+      holiday: [],
+
     }
   }
   componentDidMount() {
     this.getUser();
     this.getDaysArray();
+    this.getHoliday();
   }
 
   getUser() {
@@ -66,14 +70,30 @@ class AdminAttendances extends Component {
     year = moment().format("YYYY")
     var monthIndex = month - 1;
     var date = new Date(year, monthIndex, 1);
+    // console.log("date :: " , date);
     while (date.getMonth() == monthIndex) {
       this.state.result.push(date.getDate())
       date.setDate(date.getDate() + 1);
     }
   }
 
+  getHoliday = (year, month) => {
+    month = moment().format("MM")
+    year = moment().format("YYYY")
+    var monthIndex = month - 1;
+    var date = new Date(year, monthIndex, 1)
+    while (date.getMonth() === monthIndex) {
+      if (date.getDay() === 0) {
+        this.state.holiday.push(date.getDate())
+      }
+      date.setDate(date.getDate() + 1);
+    }
+    console.log("holiday :: ", this.state.holiday);
+  }
+
   render() {
-    let { adminAttendance } = this.props
+    let { adminAttendance, holidays } = this.props
+    // console.log("holiday :: " , holidays);
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -84,8 +104,6 @@ class AdminAttendances extends Component {
               </div>
               <div className="ibox-content">
                 <div className="container-fluid">
-
-
                   <div className="col-lg-12">
                     <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
                       <thead>
@@ -101,36 +119,69 @@ class AdminAttendances extends Component {
                       <tbody>
                         {this.state.displayedUser.map((user) => {
                           let id = user._id
-                         
                           let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName
                           return (
                             <tr key={id}>
                               <td>{name}</td>
-                              {this.state.result.map((i, res) => {
-                                return (
-                                  <td key={i}>
-                                    {
-                                      adminAttendance.map((admin, i) => {
-                                        let date = moment(admin.date).format("DD") - 1
-                                        let check
-                                        if (res == date) {
-                                          if (admin.userIds.indexOf(id) > -1) {
-                                            check = <i key={i} className="fa fa-check text-info"></i>
-                                          }else{
-                                            check = <i key={i} className="fa fa-close text-danger"></i>
+                              {
+                                this.state.result.map((res) => {
+
+                                  // let chkIsHoliDay = false;
+                                  // chkIsHoliDay = holidays.find((d) => { return moment(d.holidaydate).format("YYYY/MM/DD") == moment(`${moment().format("YYYY")}/${moment().format("MM")}/${res}`).format("YYYY/MM/DD") });
+                                  // console.log('chkIsHoliDay :: ', chkIsHoliDay);
+
+                                  return (
+                                    <td key={res}>
+                                      {
+                                        adminAttendance.map((admin, i) => {
+                                          console.log("admin :: " , admin);
+                                          let check
+                                          let monthAttendance = moment(admin.date).format("MM")
+                                          let month = moment().format("MM")
+                                          let yearAttendance = moment(admin.date).format("YYYY")
+                                          let year = moment().format("YYYY")
+                                          if (year == yearAttendance) {
+                                            if (month == monthAttendance) {
+                                              let date = moment(admin.date).format("DD")
+                                              if (res == date) {
+                                                if (admin.userIds.indexOf(id) > -1) {
+                                                  check = <i key={i} className="fa fa-check text-info"></i>
+                                                } else {
+                                                  check = <i key={i} className="fa fa-close text-danger"></i>
+                                                }
+                                              }
+
+                                            }
                                           }
-                                        }
-                                        return check
-                                      })
-                                    }
-                                  </td>
-                                )
-                              })}
+                                          holidays.map((event) => {
+                                            let monthHoliday = moment(event.holidaydate).format("MM")
+                                            let month = moment().format("MM")
+                                            let yearHoliday = moment(event.holidaydate).format("YYYY")
+                                            let year = moment().format("YYYY")
+                                            if (year == yearHoliday) {
+                                              if (month == monthHoliday) {
+                                                let date = moment(event.holidaydate).format("DD")
+                                                this.state.holiday.push(date)
+                                                this.state.holiday.map((holiday) => {
+                                                  console.log("holiday :: " , holiday);
+                                                  if (holiday == res) {
+                                                    check = <i className="fa fa-minus"></i>
+                                                  }
+                                                })
+                                              }
+                                            }
+                                          })
+
+                                          return check
+                                        })
+                                      }
+                                    </td>
+                                  )
+                                })}
                             </tr>
                           )
                         })}
                       </tbody>
-
                     </table>
                   </div>
                 </div>
@@ -147,10 +198,12 @@ export default withTracker(() => {
   Meteor.subscribe('Statedata');
   Meteor.subscribe('Citydata');
   Meteor.subscribe('adminAttendanceData');
+  Meteor.subscribe('holiday')
   return {
     adminAttendance: AdminAttendance.find({}).fetch(),
     country: Country.find({}).fetch(),
     states: State.find({}).fetch(),
-    city: Cities.find({}).fetch()
+    city: Cities.find({}).fetch(),
+    holidays: Holiday.find({}).fetch()
   }
 })(AdminAttendances)

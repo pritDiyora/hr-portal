@@ -67,31 +67,32 @@ class AdminTodayAttendance extends Component {
   addAttendance(e) {
     let { userAttendanceIds, userIds, date } = this.state
     userIds = userAttendanceIds
-    date = moment().format("YYYY-MM-DD")
-    if (this.state.button == true) {
-      Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
-        if (!err) {
-          toast.success('Record Updated.. ' + result)
-        } else {
-          toast.error('Record not updated..' + err)
-        }
-      })
-
-    } else {
-      Meteor.call('adminAttendance', userIds, date, function (err, result) {
-        if (!err) {
-          toast.success("Record Inserted...", result)
-        } else {
-          toast.error("Record not inserted..." + err);
-        }
-      })
-    }
+    date = moment().format("YYYY/MM/DD")
+   
+      if (this.state.button == true) {
+        Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
+          if (!err) {
+            toast.success('Record Updated.. ' + result)
+          } else {
+            toast.error('Record not updated..' + err)
+          }
+        })
+      } else {
+        Meteor.call('adminAttendance', userIds, date, function (err, result) {
+          if (!err) {
+            toast.success("Record Inserted...", result)
+          } else {
+            toast.error("Record not inserted..." + err);
+          }
+        })
+      }
+    
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       userAttendanceIds: nextProps.adminAttendance && nextProps.adminAttendance.userIds || [],
       adminId: nextProps.adminAttendance && nextProps.adminAttendance._id,
-      button: true
+      // button: true
     })
   }
   isCheckHandler(e, id) {

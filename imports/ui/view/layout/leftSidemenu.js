@@ -81,6 +81,8 @@ class LeftSidemenu extends Component {
             }
             {AccessPermission() ? <li><a href="/leaveApproveList"><i className="fa fa-diamond"></i> <span className="nav-label">Leave List</span></a> </li> : <a href="/accesspermission"></a>
             }
+            {AccessPermission() ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
+            }
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
             </li>
