@@ -21,6 +21,7 @@
     "jquery-steps": "^1.1.0",
     "meteor-node-stubs": "^0.3.2",
     "moment": "^2.27.0",
+    "moment-holiday": "^1.5.1",
     "rc-datepicker": "^5.0.16",
     "react-advanced-datetimerange-picker": "^1.0.13",
     "react-avatar": "^3.9.7",

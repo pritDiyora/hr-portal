@@ -58,7 +58,8 @@ class EmployeeAttendance extends Component {
     let hours = this.props && this.props.hoursData && this.props.hoursData[hoursKey] || 0;
     if (getdata.length > 0) {
       let diffs = []
-      let getisPunchIn = getdata.filter((a) => a.isCheckIn);      
+      let getisPunchIn = getdata.filter((a) => a.isCheckIn);    
+      console.log('getisPunchIn :: ',getisPunchIn);  
       let getisPunchOut = getdata.filter((a) => !a.isCheckIn)
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
@@ -67,9 +68,12 @@ class EmployeeAttendance extends Component {
         let getOutTime = getPunchOutTime && getPunchOutTime[index] ? moment(getPunchOutTime[index]) : moment();
         let getDiff = getOutTime.diff(getInTime, "minutes");
         diffs.push(getDiff);
+        // console.log("diff : " , diffs);
       })
       let value = {
-        CountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
+        // CountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
+        CountHrs: (Math.floor(Sugar.Array.sum(diffs) / 60)),
+        CountMin: (Math.floor(Sugar.Array.sum(diffs) % 60)),
         Progress: ((Sugar.Array.sum(diffs) / 60) * 100 / hours).toFixed(2),
       }
       return value;
@@ -82,6 +86,7 @@ class EmployeeAttendance extends Component {
     if (data) {
       this.setState({
         toDayCountHrs: data.CountHrs,
+        toDayCountMin: data.CountMin,
         toDayProgress: data.Progress
       })
     }
@@ -91,6 +96,7 @@ class EmployeeAttendance extends Component {
     if (data) {
       this.setState({
         weekCountHrs: data.CountHrs,
+        weekCountMin: data.CountMin,
         weekProgress: data.Progress
       })
     }
@@ -100,6 +106,7 @@ class EmployeeAttendance extends Component {
     if (data) {
       this.setState({
         monthCountHrs: data.CountHrs,
+        monthCountMin: data.CountMin,
         monthProgress: data.Progress
       })
     }
@@ -257,7 +264,7 @@ class EmployeeAttendance extends Component {
               <div className="ibox-content no-padding">
                 <ul className="list-group">
                   <li className="list-group-item">
-                    <p>Today: <strong>{this.state.toDayCountHrs} hrs / {hoursData && hoursData.todayHrs} hrs</strong></p>
+                    <p>Today: <strong>{this.state.toDayCountHrs}:{this.state.toDayCountMin} hrs / {hoursData && hoursData.todayHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-primary"
                         style={{ width: this.state.toDayProgress + "%" }}
@@ -269,7 +276,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>This Week: <strong>{this.state.weekCountHrs} hrs / {hoursData && hoursData.weekHrs} hrs</strong></p>
+                    <p>This Week: <strong>{this.state.weekCountHrs}:{this.state.weekCountMin} hrs / {hoursData && hoursData.weekHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-warning"
                         style={{ width: this.state.weekProgress + "%" }}
@@ -281,7 +288,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>This Month: <strong>{this.state.monthCountHrs} hrs / {hoursData && hoursData.monthHrs} hrs</strong></p>
+                    <p>This Month: <strong>{this.state.monthCountHrs}:{this.state.monthCountMin} hrs / {hoursData && hoursData.monthHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-success"
                         style={{ width: this.state.monthProgress + "%" }}

@@ -68,31 +68,31 @@ class AdminTodayAttendance extends Component {
     let { userAttendanceIds, userIds, date } = this.state
     userIds = userAttendanceIds
     date = moment().format("YYYY/MM/DD")
-   
-      if (this.state.button == true) {
-        Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
-          if (!err) {
-            toast.success('Record Updated.. ' + result)
-          } else {
-            toast.error('Record not updated..' + err)
-          }
-        })
-      } else {
-        Meteor.call('adminAttendance', userIds, date, function (err, result) {
-          if (!err) {
-            toast.success("Record Inserted...", result)
-          } else {
-            toast.error("Record not inserted..." + err);
-          }
-        })
-      }
-    
+
+    if (this.state.button == true) {
+      Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
+        if (!err) {
+          toast.success('Record Updated.. ' + result)
+        } else {
+          toast.error('Record not updated..' + err)
+        }
+      })
+    } else {
+      Meteor.call('adminAttendance', userIds, date, function (err, result) {
+        if (!err) {
+          toast.success("Record Inserted...", result)
+        } else {
+          toast.error("Record not inserted..." + err);
+        }
+      })
+    }
+
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       userAttendanceIds: nextProps.adminAttendance && nextProps.adminAttendance.userIds || [],
       adminId: nextProps.adminAttendance && nextProps.adminAttendance._id,
-      // button: true
+      button: true
     })
   }
   isCheckHandler(e, id) {
@@ -111,7 +111,8 @@ class AdminTodayAttendance extends Component {
 
   render() {
     let { userAttendanceIds } = this.state;
-
+    let { adminAttendance } = this.props
+    console.log('adminAttendance :: ', adminAttendance);
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -172,6 +173,6 @@ export default withTracker(() => {
     country: Country.find({}).fetch(),
     states: State.find({}).fetch(),
     city: Cities.find({}).fetch(),
-    adminAttendance: AdminAttendance.findOne({ date: moment().format('YYYY-MM-DD') }),
+    adminAttendance: AdminAttendance.findOne({ date: moment().format('YYYY/MM/DD') }),
   }
 })(AdminTodayAttendance)
