@@ -34,6 +34,9 @@ Schemas.GeneralSetting = new SimpleSchema({
   noOfLeave: {
     type: String
   },
+  workDayOfMonth: {
+    type: Number
+  },
   isActive: {
     type: Boolean,
     defaultValue: true

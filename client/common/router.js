@@ -31,6 +31,7 @@ import ApplyLeave from '../../imports/ui/view/pages/leave/leave';
 import WrapperDate from '../../imports/ui/view/layout/wrapperDate';
 import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveListing';
 import Holiday from '../../imports/ui/view/pages/holiday/holiday.js';
+import Salary from '../../imports/ui/view/pages/salary/salary.js';
 const accessRoute = [
     { routeName: 'listuser', roles: ['superadmin', 'admin'] },
     { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
@@ -387,6 +388,17 @@ FlowRouter.route('/holiday', {
         mount(MainLayout, {
             content(){
                 return <Holiday />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/salary', {
+    name: 'Salary',
+    action(){
+        mount(MainLayout, {
+            content(){
+                return <Salary />
             }
         })
     }

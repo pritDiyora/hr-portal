@@ -20,7 +20,8 @@ class GeneralSettings extends Component {
       toTime: "",
       noofleave: "",
       button: false,
-      id: ""
+      id: "",
+      workDayOfMonth: ""
     }
   }
 
@@ -36,13 +37,14 @@ class GeneralSettings extends Component {
       yearlyleave: nextpops.hoursData.yearlyLeave,
       fromTime: nextpops.hoursData.fromTime,
       toTime: nextpops.hoursData.toTime,
-      noofleave: nextpops.hoursData.noOfLeave
+      noofleave: nextpops.hoursData.noOfLeave,
+      workDayOfMonth: nextpops.hoursData.workDayOfMonth
     })
   }
 
   addHours() {
     let { todayHrs, weekHrs, monthHrs, yearlyleave, fromTime, toTime,
-      overHrs, id, monthleave, carryforwardleave, noofleave } = this.state;
+      overHrs, id, monthleave, carryforwardleave, noofleave, workDayOfMonth } = this.state;
     let generaleSetting = {
       todayHrs: parseInt(todayHrs),
       weekHrs: parseInt(weekHrs),
@@ -53,7 +55,8 @@ class GeneralSettings extends Component {
       yearlyLeave: parseInt(yearlyleave),
       fromTime: fromTime,
       toTime: toTime,
-      noOfLeave: noofleave
+      noOfLeave: noofleave,
+      workDayOfMonth: parseInt(workDayOfMonth)
     }
     Meteor.call('updateGeneraleSetting', generaleSetting, id, function (err, result) {
       if (!err) {
@@ -171,6 +174,27 @@ class GeneralSettings extends Component {
                         <option defaultValue="month">Monthly</option>
                         <option defaultValue="year">Yearly</option>
                       </select>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-12">
+                    <div className="col-sm-4">
+                      <label className="mainheading">Employee Attendance</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <div className="col-md-12">
+                    <div className="col-md-6">
+                      <label>Work Day of Month</label>
+                      <input type="number"
+                        name="workDayOfMonth"
+                        className="form-control"
+                        value={this.state.workDayOfMonth}
+                        onChange={(e) => this.generalSetting(e)}
+                      />
                     </div>
                   </div>
                 </div>

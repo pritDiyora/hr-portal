@@ -71,9 +71,9 @@ if (Meteor.isServer) {
     return Leave.find({ userId: id });
   })
 
-  Meteor.publish('getUserType', function () {
-    return User.find({});
-  })
+  // Meteor.publish('getUserType', function () {
+  //   return User.find({});
+  // })
 
   Meteor.publish('notificationList', function () {
     return Notification.find({});
@@ -82,8 +82,5 @@ if (Meteor.isServer) {
   Meteor.publish('holiday', function() {
     return Holiday.find();
   })
-
-  
-
 
 }

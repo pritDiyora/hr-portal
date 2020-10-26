@@ -10,6 +10,7 @@ import AdminAttendance from '../attendance/adminAttendance';
 import Leave from '../leave/leaveScheme';
 import Notification from '../notification/notification';
 import Holiday from '../holiday/holidaySchema';
+import Salary from '../salary/salarySchema';
 if (Meteor.isServer) {
     Meteor.methods({
         //Add Country state and city 
@@ -164,6 +165,23 @@ if (Meteor.isServer) {
         },
         'countHolidaydata': () => {
             return Holiday.find({}).count();
+        },
+
+        //salary
+        'addsalary': (uid, totalsalary) => {
+            return Salary.insert({ userId: uid, totalSalary: totalsalary });
+        },
+        'updatesalarydata': (uid, totalsalary, id) => {
+            return Salary.update({ _id: id }, { $set: { userId: uid, totalSalary: totalsalary } })
+        },
+        'deletesalary': (id) => {
+            return Salary.remove({ _id: id });
+        },
+        'searchSalary': (pipeline) => {
+            return Promise.await(Salary.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countSalarydata': () => {
+            return Salary.find({}).count();
         },
     })
 }
