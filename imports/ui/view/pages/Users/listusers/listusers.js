@@ -10,6 +10,8 @@ import Cities from '../../../../../api/cites/cites';
 import Pagination from "react-js-pagination";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import bootbox from 'bootbox'
+
 class ListUser extends Component {
     constructor(props) {
         super(props);
@@ -139,23 +141,37 @@ class ListUser extends Component {
         }
     }
     openmodeldelete(e, id) {
-        e.preventDefault();
-        $("#deletemodel").modal("show");
-        this.setState({ userid: id })
+        this.setState({ leaveTypeId: id })
+        bootbox.confirm({
+            message: "Are you sure you want to delete.. ?",
+            className: 'rubberBand animated',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-info'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    const self = this;
+                    console.log('self :: ', self);
+                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                        if (!err) {
+                            toast.success("Record Deleted.." + res)
+                            self.getLeaveTypeData();
+                        } else {
+                            toast.error(err)
+                        }
+                    });
+                }
+            },
+        });
     }
-    deletrecord(e) {
-        e.preventDefault();
-        const self = this;
-        Meteor.call('deleteuser', this.state.userid, function (err, res) {
-            if (!err) {
-                $("#deletemodel").modal("hide");
-                toast.success("Record Deleted.." + res)
-                self.getUserData();
-            } else {
-                toast.error(err)
-            }
-        })
-    }
+    
     datedifferent(date1, date2) {
         var str;
         var joinindate = date1 || undefined;
@@ -303,25 +319,8 @@ class ListUser extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Are you sure you want to delete.. ?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
+               
             </div>
         )
     }

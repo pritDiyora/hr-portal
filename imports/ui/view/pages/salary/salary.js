@@ -11,6 +11,8 @@ import Country from '../../../../api/country/country';
 import State from '../../../../api/states/states';
 import Cities from '../../../../api/cites/cites';
 import GeneralSetting from '../../../../api/generalsetting/generalsetting';
+import bootbox from 'bootbox'
+
 class Salary extends Component {
 
   constructor(props) {
@@ -29,14 +31,11 @@ class Salary extends Component {
       currentPage: 1,
       totalpage: 0,
       displayedUser: [],
-      displayedLeave: []
-
     }
   }
   componentDidMount() {
     this.getSalaryData();
     this.getUser()
-    this.getLeaveData()
   }
   showhandle(event) {
     this.setState({
@@ -155,23 +154,37 @@ class Salary extends Component {
     $("#add-panel").modal("show");
   }
   openmodeldelete(e, id) {
-    e.preventDefault();
-    $("#deletemodel").modal("show");
-    this.setState({ salaryid: id })
+    this.setState({ leaveTypeId: id })
+        bootbox.confirm({
+            message: "Are you sure you want to delete.. ?",
+            className: 'rubberBand animated',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-info'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    const self = this;
+                    console.log('self :: ', self);
+                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                        if (!err) {
+                            toast.success("Record Deleted.." + res)
+                            self.getLeaveTypeData();
+                        } else {
+                            toast.error(err)
+                        }
+                    });
+                }
+            },
+        });
   }
-  deletrecord(e) {
-    e.preventDefault();
-    const self = this;
-    Meteor.call('deletesalary', this.state.salaryid, function (err, res) {
-      if (!err) {
-        $("#deletemodel").modal("hide");
-        toast.success("Record Deleted.." + res)
-        self.getSalaryData()
-      } else {
-        toast.error(err)
-      }
-    })
-  }
+  
   updaterecord(e, id) {
     let salary = this.state.displayedSalary.find(salary => salary._id == id);
     this.setState({ userid: salary.userId, totalsalary: salary.totalSalary, button: true, salaryid: id })
@@ -222,80 +235,32 @@ class Salary extends Component {
     });
   }
 
-  getLeaveData() {
-    const self = this;
-    let pipeline = [
-      {
-        "$lookup": {
-          from: "users",
-          localField: "userId",
-          foreignField: "_id",
-          as: "username"
-        }
-      },
-      { "$unwind": "$username" },
-      {
-        "$lookup": {
-          from: "leavetype",
-          localField: "leaveType",
-          foreignField: "_id",
-          as: "leavetype"
-        }
-      },
-      { "$unwind": "$leavetype" },
-      {
-        "$match": {
-          "$or": [
-            { "username.profile.firstName": { $regex: this.state.searchStr, $options: 'i' } },
-            { "username.profile.lastName": { $regex: this.state.searchStr, $options: 'i' } },
-            { "leavetype.leaveTypeName": { $regex: this.state.searchStr, $options: 'i' } },
-            { "startDate": { $regex: this.state.searchStr, $options: 'i' } },
-            { 'endDate': { $regex: this.state.searchStr, $options: 'i' } },
-            { "reason": { $regex: this.state.searchStr, $options: 'i' } },
-          ]
-        }
-      },
-      { "$sort": { [this.state.sortKey]: this.state.sortValue } },
-      { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
-      { "$limit": this.state.pageLength },
-    ];
-    Meteor.call("searchLeave", pipeline, function (err, res) {
-      if (!err) {
-        Meteor.call("countLeaveData", function (err1, res1) {
-          if (!err) {
-            self.setState({ totalpage: res1 });
-          }
-        })
-        self.setState({ displayedLeave: res });
-      } else {
-        toast.error(err);
-      }
-    });
-
-  }
-  noOfDayLeave(start, end) {
-    var startDate = start || undefined, str, endDate, days, day;
+  noOfDayLeave(start, end, isApprove) {
+    let startDate, str, endDate, days;
     startDate = moment(start, "YYYY/MM/DD");
     endDate = moment(end, "YYYY/MM/DD");
-    day = endDate.diff(startDate, 'days');
-    days = day + 1
-    startDate.add(days, 'days');
-    if (moment(start).format('YYYY/MM/DD') == moment(end).format('YYYY/MM/DD')) {
-      var startdate = new Date(start), enddate = new Date(end);
-      let starthour = moment(startdate, "hh:mm"), endHour = moment(enddate, "hh:mm"), hour, minutes;
-      hour = endHour.diff(starthour, 'hours');
-      starthour.add(hour, 'days');
-      str = hour;
+    if (isApprove == true) {
+      days = endDate.diff(startDate, 'days');
+      startDate.add(days, 'days');
+      if (startDate == endDate) {
+        var startdate = new Date(start), enddate = new Date(end);
+        let starthour = moment(startdate, "hh:mm"), endHour = moment(enddate, "hh:mm"), hour, minutes;
+        hour = endHour.diff(starthour, 'hours');
+        starthour.add(hour, 'days');
+        str = hour;
+      } else {
+        str = days;
+      }
     } else {
-      str = days;
+      str = 0;
     }
     return str;
   }
 
   render() {
     let { sortKey, sortValue } = this.state;
-    let { gsetting } = this.props
-    // console.log('gsetting :: ', gsetting);
+    let { gsetting, leave } = this.props
+    console.log('gsetting :: ', gsetting);
     return (
       <div>
         <div className="wrapper wrapper-content animated fadeInRight" >
@@ -346,32 +311,36 @@ class Salary extends Component {
                         this.state.displayedSalary.map((salary, i) => {
                           let noofDay
                           let fullName = salary.name.profile.firstName + " " + salary.name.profile.lastName
+                          leave.map((le, i) => {
 
+                            noofDay = this.noOfDayLeave(le.startDate, le.endDate, le.isApprove)
+                            if (salary.userId == le.userId) {
+                              noofDay
+                            } else {
+                              noofDay = 0
+                            }
+                            // return noofDay
+                          })
                           return (
                             <tr key={i}>
                               <td>{fullName}</td>
                               <td>{salary.totalSalary}</td>
-                              {this.state.displayedLeave.map((le , i) => {
-                                noofDay = this.noOfDayLeave(le.startDate, le.endDate)
-                                console.log('day :: ', noofDay);
-                                if (salary.userId == le.userId) {
-                                  noofDay
-                                } else {
-                                  noofDay = 0
-                                }
-                                
-                              })}
-                              <td key={i}>{noofDay}</td>
-                              <td></td>
+
+                              <td>{noofDay}</td>
+                              <td>{gsetting.map((e) => {
+                                let totalday = e.workDayOfMonth
+                                let diff = totalday - noofDay
+                                return diff
+                              })}</td>
                               <td>
                                 <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, salary._id)}>
                                   <i className="fa fa-trash-o"></i></a>
-
                                 <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, salary._id)}>
                                   <i className="fa fa-edit"></i></a>
                               </td>
                             </tr>
                           )
+
                         })
                       }
                     </tbody>
@@ -418,7 +387,7 @@ class Salary extends Component {
                             <option value={user._id} key={user._id}>{fullName}</option>
                           )
                         })}
-                      </select>
+                      </select><br />
 
                       <label>Total Salary</label>
                       <input type="text"
@@ -444,27 +413,6 @@ class Salary extends Component {
             </div>
           </div>
         </div>
-
-        <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Modal title</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to delete.. ?</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
 
     )
@@ -481,7 +429,7 @@ export default withTracker(() => {
     country: Country.find({}).fetch(),
     states: State.find({}).fetch(),
     city: Cities.find({}).fetch(),
-    gsetting: GeneralSetting.findOne({})
+    gsetting: GeneralSetting.find({}).fetch()
   }
 })(Salary);
 

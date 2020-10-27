@@ -5,7 +5,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import SimpleReactValidator from 'simple-react-validator';
-import { DatePicker,  DatePickerInput } from 'rc-datepicker';
+import { DatePicker, DatePickerInput } from 'rc-datepicker';
+import bootbox from 'bootbox'
 
 export default class Holiday extends Component {
 
@@ -90,23 +91,37 @@ export default class Holiday extends Component {
   }
   //Delete Model
   deletemodel(e, id) {
-    e.preventDefault();
-    $("#deletemodel").modal("show");
-    this.setState({ holidayid: id })
+    this.setState({ leaveTypeId: id })
+    bootbox.confirm({
+      message: "Are you sure you want to delete.. ?",
+      className: 'rubberBand animated',
+      buttons: {
+        confirm: {
+          label: 'Yes',
+          className: 'btn-info'
+        },
+        cancel: {
+          label: 'No',
+          className: 'btn-danger'
+        }
+      },
+      callback: function (result) {
+        if (result) {
+          const self = this;
+          console.log('self :: ', self);
+          Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+            if (!err) {
+              toast.success("Record Deleted.." + res)
+              self.getLeaveTypeData();
+            } else {
+              toast.error(err)
+            }
+          });
+        }
+      },
+    });
   }
-  deletrecord(e) {
-    e.preventDefault();
-    const self = this;
-    Meteor.call('deleteholiday', this.state.holidayid, function (err, res) {
-      if (!err) {
-        $("#deletemodel").modal("hide");
-        toast.success("Record Deleted.." + res)
-        self.getHolidayData();
-      } else {
-        toast.error(err)
-      }
-    })
-  }
+
   //Insert and Edit Model
   modelclick(event, id) {
     event.preventDefault()
@@ -268,25 +283,24 @@ export default class Holiday extends Component {
                 <div className="container-fluid">
                   <div className="form-group row">
                     <div className="col-md-12">
-                      <div className="col-md-6">
-                        <label>Holiday Name</label>
-                        <input type="text" className="form-control" value={this.state.holidayname}
-                          onChange={(e) => this.setState({ holidayname: e.target.value })}
-                        />
-                        {this.holidayValidator.message('Holiday Name', this.state.holidayname, 'required')}
-                      </div>
+                      <label>Holiday Name</label>
+                      <input type="text" className="form-control" value={this.state.holidayname}
+                        onChange={(e) => this.setState({ holidayname: e.target.value })}
+                      /><br />
+                      {this.holidayValidator.message('Holiday Name', this.state.holidayname, 'required')}
+                    </div>
 
-                      <div className="col-md-6">
-                        <label>Holiday Date</label>
-                        <DatePickerInput
-                          className='my-custom-datepicker-component'
-                          name="holidaydate"
-                          value={this.state.holidaydate}
-                          onChange={(e) => this.setState({ holidaydate: e})}
-                        />
+                    <div className="col-md-6">
+                      <label>Holiday Date</label>
+                      <DatePickerInput
+                        className='my-custom-datepicker-component'
+                        name="holidaydate"
+                        value={this.state.holidaydate}
+                        onChange={(e) => this.setState({ holidaydate: e })}
+                      />
 
-                        {this.holidayValidator.message('Holiday Date', this.state.holidaydate, 'required')}
-                      </div>
+                      {this.holidayValidator.message('Holiday Date', this.state.holidaydate, 'required')}
+
                     </div>
                   </div>
                 </div>
@@ -300,25 +314,7 @@ export default class Holiday extends Component {
           </div>
         </div>
 
-        <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Delete Model</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to delete.. ?</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
+
       </div >
     )
   }

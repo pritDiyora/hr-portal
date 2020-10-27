@@ -144,15 +144,7 @@ class GeneralSettings extends Component {
                         onChange={(e) => this.generalSetting(e)}
                       />
                     </div>
-                    <div className="col-md-6">
-                      <label>CarryForward (Month wise)</label>
-                      <input type="number"
-                        name="carryforwardleave"
-                        className="form-control"
-                        value={this.state.carryforwardleave}
-                        onChange={(e) => this.generalSetting(e)}
-                      />
-                    </div>
+                    
                   </div>
                 </div>
                 <div className="form-group row">
@@ -189,6 +181,15 @@ class GeneralSettings extends Component {
                   <div className="col-md-12">
                     <div className="col-md-6">
                       <label>Work Day of Month</label>
+                      <input type="number"
+                        name="workDayOfMonth"
+                        className="form-control"
+                        value={this.state.workDayOfMonth}
+                        onChange={(e) => this.generalSetting(e)}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label>Curry Forword Leave</label>
                       <input type="number"
                         name="workDayOfMonth"
                         className="form-control"

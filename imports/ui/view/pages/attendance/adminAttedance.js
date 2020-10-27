@@ -121,12 +121,14 @@ class AdminAttendances extends Component {
     if (year == yearStartLeave) {
       if (month == monthStartLeave) {
         let startdate = moment(start);
-        let enddate = moment(end);
+        let edate = moment(end);
+        let enddate = moment(edate - 1)
         while (enddate > startdate || startdate.format('DD') === enddate.format('DD')) {
           dayOfDate.push(startdate.format('DD'));
           startdate.add(1, 'day');
         }
         dayOfDate.map((dayOfDate) => dayOfDate)
+        
       }
     }
     return dayOfDate

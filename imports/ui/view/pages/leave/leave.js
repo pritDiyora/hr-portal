@@ -65,7 +65,6 @@ class ApplyLeave extends Component {
                     leaveEvents.push(leaveList);
                 })
                 self.setState({ currentEvents: leaveEvents }, () => {
-                    console.log('componentWillMount  currentEvents: :', self.state.currentEvents);
                 });
             }
         })
@@ -101,8 +100,6 @@ class ApplyLeave extends Component {
         let maxDate = moment(start).add(24, "hour");
         let minDate = moment(new Date()).add(24, "hour");
         const { leaveType, leaveReason, isHalf, currentEvents } = this.state;
-        console.log('Render :: ', this.state.currentEvents);
-        console.log('INITIAL_EVENTS :: ', INITIAL_EVENTS);
 
         return (
             <div className="wrapper wrapper-content  animated fadeInRight">
@@ -312,6 +309,7 @@ class ApplyLeave extends Component {
         const { currentEvents } = this.state;
         const self = this;
         let user = nextProps.userType.find(user => user.profile.userType == 'admin');
+        console.log('user ::', user);
         let userid = user && user._id || "";
         this.setState({ recevierId: userid })
     }
