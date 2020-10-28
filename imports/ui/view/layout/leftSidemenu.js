@@ -65,7 +65,7 @@ class LeftSidemenu extends Component {
             }
             {AccessPermission() ? <li><a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a></li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/country"><i className="fa fa-diamond"></i> <span className="nav-label">Country</span></a></li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/country"><i className="fa fa-globe"></i> <span className="nav-label">Country</span></a></li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li> <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a></li> : <a href="/accesspermission"></a>
             }
@@ -80,6 +80,10 @@ class LeftSidemenu extends Component {
             {AccessPermission() ? <li><a href="/adminTodayAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Today Attendance</span></a> </li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/leaveApproveList"><i className="fa fa-diamond"></i> <span className="nav-label">Leave List</span></a> </li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
+            }
+            {AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>

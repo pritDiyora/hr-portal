@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import SimpleReactValidator from 'simple-react-validator';
 import { th } from 'date-fns/locale';
+import bootbox from 'bootbox'
+
 export default class Countries extends Component {
 
     constructor(props) {
@@ -74,6 +76,12 @@ export default class Countries extends Component {
                     if (!err) {
                         toast.success("Record Inserted..." + result);
                         $("#add-panel").modal("hide");
+                        self.setState({
+                            countryname: "",
+                            countrycode: "",
+                            countryid: "",
+                            button: false
+                        })
                         self.getCountryData();
                     } else {
                         toast.error("Error ::" + err);
@@ -88,23 +96,36 @@ export default class Countries extends Component {
     }
     //Delete Model
     deletemodel(e, id) {
-        e.preventDefault();
-        $("#deletemodel").modal("show");
-        this.setState({ countryid: id })
-    }
-    deletrecord(e) {
-        e.preventDefault();
         const self = this;
-        Meteor.call('deletecountry', this.state.countryid, function (err, res) {
-            if (!err) {
-                $("#deletemodel").modal("hide");
-                toast.success("Record Deleted.." + res)
-                self.getCountryData();
-            } else {
-                toast.error(err)
-            }
-        })
+        self.setState({ countryId: id })
+        bootbox.confirm({
+            message: "Are you sure you want to delete.. ?",
+            className: 'rubberBand animated',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-info'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    Meteor.call('deletecountry', self.state.countryId, function (err, res) {
+                        if (!err) {
+                            toast.success("Record Deleted.." + res)
+                            self.getCountryData();
+                        } else {
+                            toast.error(err)
+                        }
+                    });
+                }
+            },
+        });
     }
+
     //Insert and Edit Model
     modelclick(event, id) {
         event.preventDefault()
@@ -259,20 +280,20 @@ export default class Countries extends Component {
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
-                                            <div className="col-md-6">
-                                                <label>Country Name</label>
-                                                <input type="text" className="form-control" value={this.state.countryname}
-                                                    onChange={(e) => this.setState({ countryname: e.target.value })}
-                                                />
-                                                {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
-                                            </div>
 
-                                            <div className="col-md-6">
-                                                <label>Country Code</label>
-                                                <input type="text" className="form-control" value={this.state.countrycode} onChange={(e) => this.setState({ countrycode: e.target.value })}
-                                                />
-                                                {this.countryValidator.message('Country Name', this.state.countrycode, 'required|numeric')}
-                                            </div>
+                                            <label>Country Name</label>
+                                            <input type="text" className="form-control" value={this.state.countryname}
+                                                onChange={(e) => this.setState({ countryname: e.target.value })}
+                                            /><br />
+                                            {this.countryValidator.message('Country Name', this.state.countryname, 'required')}
+                                        </div>
+
+                                        <div className="col-md-12">
+                                            <label>Country Code</label>
+                                            <input type="text" className="form-control" value={this.state.countrycode} onChange={(e) => this.setState({ countrycode: e.target.value })}
+                                            />
+                                            {this.countryValidator.message('Country Name', this.state.countrycode, 'required|numeric')}
+
                                         </div>
                                     </div>
                                 </div>
@@ -286,25 +307,7 @@ export default class Countries extends Component {
                     </div>
                 </div>
 
-                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Delete Model</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Are you sure you want to delete.. ?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div >
         )
     }

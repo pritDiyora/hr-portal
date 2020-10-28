@@ -30,6 +30,7 @@ class ApplyLeave extends Component {
             idHalf: false,
             start: moment(new Date()),
             end: moment(new Date()),
+            user: []
         }
         this.applyCallback = this.applyCallback.bind(this);
     }
@@ -65,7 +66,6 @@ class ApplyLeave extends Component {
                     leaveEvents.push(leaveList);
                 })
                 self.setState({ currentEvents: leaveEvents }, () => {
-                    console.log('componentWillMount  currentEvents: :', self.state.currentEvents);
                 });
             }
         })
@@ -101,8 +101,6 @@ class ApplyLeave extends Component {
         let maxDate = moment(start).add(24, "hour");
         let minDate = moment(new Date()).add(24, "hour");
         const { leaveType, leaveReason, isHalf, currentEvents } = this.state;
-        console.log('Render :: ', this.state.currentEvents);
-        console.log('INITIAL_EVENTS :: ', INITIAL_EVENTS);
 
         return (
             <div className="wrapper wrapper-content  animated fadeInRight">
@@ -285,14 +283,13 @@ class ApplyLeave extends Component {
                     title: leavename.leaveTypeName,
                     description: self.state.leaveReason,
                     sendId: Meteor.userId(),
-                    receiverId: self.state.recevierId,
+                    receiverId: self.state.user,
                     type: 'leaveApproveList',
                     createdAtDate: new Date()
                 }
                 Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
                     if (!err) {
                         self.setState({ leaveType: '',  leaveReason: '' });
-                        console.log('notification send', res);
                     }
                 });
             } else {
@@ -311,9 +308,11 @@ class ApplyLeave extends Component {
     componentWillReceiveProps(nextProps) {
         const { currentEvents } = this.state;
         const self = this;
-        let user = nextProps.userType.find(user => user.profile.userType == 'admin');
-        let userid = user && user._id || "";
-        this.setState({ recevierId: userid })
+        let superadmin = nextProps.userType.find(user => user.profile.userType == 'superadmin');
+        let admin = nextProps.userType.find(user => user.profile.userType == 'admin');
+        let sadminid = superadmin && superadmin._id || ""; 
+        let adminid = admin && admin._id || "";
+        self.state.user = [sadminid, adminid]
     }
 }
 function renderEventContent(eventInfo) {

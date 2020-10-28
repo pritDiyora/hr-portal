@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import SimpleReactValidator from 'simple-react-validator';
 import { tr } from 'date-fns/locale';
+import bootbox from 'bootbox'
 export default class LeaveType extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ export default class LeaveType extends Component {
             totalpage: 0
         }
         this.leaveTypeValidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
+        this.deletemodel = this.deletemodel.bind(this);
     }
     //Dropdown pagination
     showhandle(event) {
@@ -83,23 +85,38 @@ export default class LeaveType extends Component {
     }
     //Delete Model
     deletemodel(e, id) {
-        e.preventDefault();
-        $("#deletemodel").modal("show");
-        this.setState({ leaveTypeId: id })
-    }
-    deletrecord(e) {
-        e.preventDefault();
         const self = this;
-        Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
-            if (!err) {
-                $("#deletemodel").modal("hide");
-                toast.success("Record Deleted.." + res)
-                self.getLeaveTypeData();
-            } else {
-                toast.error(err)
-            }
+        self.setState({ leaveTypeId: id })
+        bootbox.confirm({
+            message: "Are you sure you want to delete.. ?",
+            className: 'rubberBand animated',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-info'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+
+                    console.log('self :: ', self);
+                    Meteor.call('deleteLeaveType', self.state.leaveTypeId, function (err, res) {
+                        if (!err) {
+                            toast.success("Record Deleted.." + res)
+                            self.getLeaveTypeData();
+                        } else {
+                            toast.error(err)
+                        }
+                    });
+                }
+            },
         });
     }
+
     //Insert and Edit Model
     modelclick(event, id) {
         event.preventDefault()
@@ -128,13 +145,32 @@ export default class LeaveType extends Component {
         })
     }
     pasidStatusChangeHandlar(e, id, paid) {
-        e.preventDefault();
         const self = this;
-        Meteor.call('updateIsPaid', id, paid, function (err, res) {
-            if (!err) {
-                self.getLeaveTypeData();
+        bootbox.confirm({
+            message: "Are you sure you want to unpaid to paid and paid to unpaid... ?",
+            className: 'rubberBand animated',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-info'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    e.preventDefault()
+                    Meteor.call('updateIsPaid', id, paid, function (err, res) {
+                        if (!err) {
+                            self.getLeaveTypeData();
+                        }
+                    })
+                }
             }
-        })
+        });
+
     }
     getLeaveTypeData() {
         const self = this;
@@ -199,7 +235,7 @@ export default class LeaveType extends Component {
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add Leave Type</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add LeaveType   </a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
@@ -303,25 +339,7 @@ export default class LeaveType extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Delete Model</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Are you sure you want to delete.. ?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         )
     }

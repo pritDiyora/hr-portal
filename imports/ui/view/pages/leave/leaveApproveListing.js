@@ -181,12 +181,12 @@ export default class LeaveApproveList extends Component {
         let approveByName = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName;
         Meteor.call('updateLeaveApprove', id, approveByName, function (err, res) {
             if (!err) {
-                $('.hover_bkgr_fricc').show();
+                $('#approve').show();
                 let leaveApproveNotification = {
                     title: leavename,
                     description: 'Leave Approved..',
                     sendId: Meteor.userId(),
-                    receiverId: rId,
+                    receiverId: [rId],
                     type: 'leaveApproved',
                     createdAtDate: new Date()
                 }
@@ -202,12 +202,26 @@ export default class LeaveApproveList extends Component {
     cancel(e) {
         $('.hover_bkgr_fricc').hide();
     }
-    declineLeave(e, id) {
+    declineLeave(e, id , leavename, rId) {
         e.preventDefault();
         const self = this;
-        Meteor.call('updateLeaveApprove', id, function (err, res) {
+        let declineByName = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName;
+        Meteor.call('updateLeaveDecline', id,declineByName, function (err, res) {
             if (!err) {
-                toast.success('Rejected Leave Succesfully..',res);
+                $('#decline').show();
+                let leaveApproveNotification = {
+                    title: leavename,
+                    description: 'Leave Rejected..',
+                    sendId: Meteor.userId(),
+                    receiverId: [rId],
+                    type: 'leaveDecline',
+                    createdAtDate: new Date()
+                }
+                Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
+                    if (!err) {
+                        console.log('notification send', res);
+                    }
+                });
                 self.getLeaveData();
             }
         });
@@ -219,12 +233,11 @@ export default class LeaveApproveList extends Component {
                 <div className="wrapper wrapper-content animated fadeInRight" >
                     <div className="ibox ">
                         <div className="ibox-title">
-                            <h5>Country List</h5>
+                            <h5>Employee Leave Listing</h5>
                             <IboxTools />
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add country</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
@@ -270,7 +283,7 @@ export default class LeaveApproveList extends Component {
                                                         <td>{moment(new Date(le.endDate)).format('YYYY-MM-DD hh:mm')}</td>
                                                         <td>{le.reason}</td>
                                                         <td>{noofDay}</td>
-                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.declineLeave(e, le._id)}> <i className="fa fa-times-rectangle-o"> Declined</i></a>
+                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.declineLeave(e, le._id, le.leavetype.leaveTypeName, le.username._id)}> <i className="fa fa-times-rectangle-o"> Declined</i></a>
                                                             {le.isApprove ? <a className="btn btn-xs btn-primary " disabled><i className="fa fa-check-square-o"> Approved</i></a>
                                                                 : <a className="btn btn-xs btn-success " onClick={(e) => this.ApprovedLeave(e, le._id, le.leavetype.leaveTypeName, le.username._id)}><i className="fa fa-check-square-o"> Approve</i></a>
                                                             }
@@ -295,13 +308,22 @@ export default class LeaveApproveList extends Component {
                     </div>
                 </div>
 
-                <div className="hover_bkgr_fricc">
+                <div className="hover_bkgr_fricc" id="approve">
                     <span className="helper"></span>
                     <div>
                         <div className="popupCloseButton" onClick={(e) => this.cancel(e)}>&times;</div>
                         <button className="btn btn-info btn-circle btn-lg" type="button"><i className="fa fa-check"></i>
                         </button>
                         <h2><b>Approved Successfully...</b></h2>
+                    </div>
+                </div>
+                <div className="hover_bkgr_fricc" id="decline">
+                    <span className="helper"></span>
+                    <div>
+                        <div className="popupCloseButton" onClick={(e) => this.cancel(e)}>&times;</div>
+                        <button className="btn btn-info btn-circle btn-lg" type="button"><i className="fa fa-check"></i>
+                        </button>
+                        <h2><b>Leave Rejected....</b></h2>
                     </div>
                 </div>
                 <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">

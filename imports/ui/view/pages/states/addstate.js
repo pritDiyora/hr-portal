@@ -6,6 +6,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
+import bootbox from 'bootbox'
+
 class State extends Component {
 
     constructor(props) {
@@ -86,6 +88,7 @@ class State extends Component {
                         self.setState({ totalpage: res1 });
                     }
                 })
+                console.log('res ::::', res);
                 self.setState({ displayedState: res });
             } else {
                 toast.error(err);
@@ -121,6 +124,11 @@ class State extends Component {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.setState({
+                        countryid: "",
+                        statename: "",
+                        button: false
+                    })
                     self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
@@ -133,6 +141,11 @@ class State extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.setState({
+                        countryid: "",
+                        statename: "",
+                        button: false
+                    })
                     self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
@@ -145,23 +158,36 @@ class State extends Component {
         $("#add-panel").modal("show");
     }
     openmodeldelete(e, id) {
-        e.preventDefault();
-        $("#deletemodel").modal("show");
-        this.setState({ stateid: id })
-    }
-    deletrecord(e) {
-        e.preventDefault();
         const self = this;
-        Meteor.call('deletestate', this.state.stateid, function (err, res) {
-            if (!err) {
-                $("#deletemodel").modal("hide");
-                toast.success("Record Deleted.." + res)
-                self.getCountryData()
-            } else {
-                toast.error(err)
-            }
-        })
+        self.setState({ stateId: id })
+        bootbox.confirm({
+            message: "Are you sure you want to delete.. ?",
+            className: 'rubberBand animated',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-info'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    Meteor.call('deletestate', self.state.stateId, function (err, res) {
+                        if (!err) {
+                            toast.success("Record Deleted.." + res)
+                            self.getStateData();
+                        } else {
+                            toast.error(err)
+                        }
+                    });
+                }
+            },
+        });
     }
+
     updaterecord(e, id) {
         let state = this.state.displayedState.find(state => state._id == id);
         this.setState({ countryid: state.countryId, statename: state.stateName, button: true, stateid: id })
@@ -265,26 +291,25 @@ class State extends Component {
                                 <div className="container-fluid">
                                     <div className="form-group row">
                                         <div className="col-md-12">
-                                            <div className="col-md-6">
-                                                <label>Country Name</label>
-                                                <select className="form-control"
-                                                    onChange={(e) => this.setState({ countryid: e.target.value })}
-                                                    value={this.state.countryid}
-                                                >
-                                                    <option defaultValue>Select Country</option>
-                                                    {this.props.countries.map((country) => (
-                                                        <option value={country._id} key={country._id}>{country.countryname}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <label>State Name</label>
-                                                <input type="text"
-                                                    className="form-control"
-                                                    onChange={(e) => this.setState({ statename: e.target.value })}
-                                                    value={this.state.statename}
-                                                />
-                                            </div>
+                                            <label>Country Name</label>
+                                            <select className="form-control"
+                                                onChange={(e) => this.setState({ countryid: e.target.value })}
+                                                value={this.state.countryid}
+                                            >
+                                                <option defaultValue>Select Country</option>
+                                                {this.props.countries.map((country) => (
+                                                    <option value={country._id} key={country._id}>{country.countryname}</option>
+                                                ))}
+                                            </select><br />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label>State Name</label>
+                                            <input type="text"
+                                                className="form-control"
+                                                onChange={(e) => this.setState({ statename: e.target.value })}
+                                                value={this.state.statename}
+                                            />
+
                                         </div>
                                     </div>
 
@@ -297,32 +322,10 @@ class State extends Component {
                                         <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addstate(e) }}>Update State</button>
                                         : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addstate(e) }}>Add State</button>
                                 }
-
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Are you sure you want to delete.. ?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
         )

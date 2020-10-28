@@ -49,21 +49,31 @@ class AddHR extends React.Component {
         this.Educationvalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
         this.Experiencevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
     }
-
+    componentDidMount() {
+        //datepicker
+        $('.input-group.date').datepicker({
+            format: "yyyy",
+            autoclose: true,
+            minViewMode: "years",
+            changeYear: true,
+            yearRange: "2005:2015"
+        });
+    }
     componentWillReceiveProps(nextProps) {
         let self = this, countrie = [], states = [], city = [];
+        console.log("componentWillReceiveProps");
         nextProps.countries.length > 0 && nextProps.countries.map((country) => countrie.push({ value: country._id, label: country.countryname }));
         nextProps.state.length > 0 && nextProps.state.map((state) => states.push({ value: state._id, label: state.stateName }));
         nextProps.city.length > 0 && nextProps.city.map((cities) => city.push({ value: cities._id, label: cities.cityName }));
         this.setState({ countrie, states, city });
 
         if (this.props.flag == 1) {
-            this.updateUserDetails(nextProps,self);
+            this.updateUserDetails(nextProps, self);
         } else {
             self.setState({ flag: this.props.flag });
         }
     }
-    updateUserDetails(nextProps,self) {
+    updateUserDetails(nextProps, self) {
         self.setState({ flag: this.props.flag, userid: FlowRouter.current("_id").params._id })
         let { profile } = self.state;
         let userAddress = nextProps.userdata && nextProps.userdata.address || [],
@@ -121,16 +131,7 @@ class AddHR extends React.Component {
             })
         });
     }
-    componentDidMount() {
-        //datepicker
-        $('.input-group.date').datepicker({
-            format: "yyyy",
-            autoclose: true,
-            minViewMode: "years",
-            changeYear: true,
-            yearRange: "2005:2015"
-        });
-    }
+
     //Addmore Education
     EducationaddmoreClick(e) {
         e.preventDefault();

@@ -19,6 +19,9 @@ Schemas.Notification = new SimpleSchema({
         }
     },
     receiverId: {
+        type: Array
+    },
+    'receiverId.$': {
         type: String
     },
     type: {

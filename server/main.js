@@ -26,11 +26,10 @@ Meteor.startup(async () => {
             monthHrs: 176,
             overHrs: 4,
             monthlyLeave: 1,
-            CarryForwardLeave: 3,
+            carryForwardLeave: 3,
             yearlyLeave: 12,
-            fromTime: 10,
-            toTime: 7,
-            noOfLeave:"month"
+            // noOfLeave:"month",
+            workDayOfMonth: 26
         };
          GeneralSetting.insert(general);
     }

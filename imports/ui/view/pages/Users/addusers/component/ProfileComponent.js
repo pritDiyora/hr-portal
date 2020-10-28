@@ -82,6 +82,7 @@ class ProfileComponent extends Component {
                             <DatePickerInput
                                 className='my-custom-datepicker-component'
                                 name="birthDate"
+                                maxDate={new Date()}
                                 value={this.props.birthDate}
                                 onChange={this.props.BirthDateChangeHandler}
                             />

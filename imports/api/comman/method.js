@@ -9,6 +9,8 @@ import GeneralSetting from '../generalsetting/generalsetting';
 import AdminAttendance from '../attendance/adminAttendance';
 import Leave from '../leave/leaveScheme';
 import Notification from '../notification/notification';
+import Holiday from '../holiday/holidaySchema';
+import Salary from '../salary/salarySchema';
 if (Meteor.isServer) {
     Meteor.methods({
         //Add Country state and city 
@@ -90,15 +92,14 @@ if (Meteor.isServer) {
         },
         'searchAttendanceDate': (pipeline) => {
             return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
-            // delete pipeline['$skip']
-            // delete pipeline['$limit'] // count()
-            // return [ data, count]
+            
         },
         'countUserdata': () => {
             return User.find({}).count();
         },
-        'countAttendancedata': () => {
-            return Attendance.find({}).count();
+        'countAttendancedata': (pipeline) => {
+            
+            return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
         },
         //general setting
         'updateHours': (todayHrs, weekHrs, monthHrs, overHrs, id) => {
@@ -120,6 +121,8 @@ if (Meteor.isServer) {
                 $set: generaleSetting
             })
         },
+
+        //leave
         'leaveApply': (leaveobj) => {
             return Leave.insert(leaveobj);
         },
@@ -135,8 +138,8 @@ if (Meteor.isServer) {
         'updateLeaveApprove': (lid, approvebyname) => {
             return Leave.update({ _id: lid }, { $set: { isApprove: true, approveBy: approvebyname } })
         },
-        'updateLeaveDecline': (id) => {
-            return Leave.update({ _id: lid }, { $set: { isApprove: false, approveBy: Meteor.userId() } })
+        'updateLeaveDecline': (lid, declinebyname) => {
+            return Leave.update({ _id: lid }, { $set: { isApprove: false, approveBy: declinebyname } })
         },
         'LeaveApprove.Notification': (leaveApplyNotification) => {
             return Notification.insert(leaveApplyNotification)
@@ -146,6 +149,40 @@ if (Meteor.isServer) {
         },
         'statusReadable': (nid) => {
             return Notification.update({ _id: nid }, { $set: { isRead: true } });
-        }
+        },
+
+        //holiday 
+        'addholiday': (holidayname, holidaydate) => {
+            return Holiday.insert({ holidayname: holidayname, holidaydate: holidaydate });
+        },
+        'deleteholiday': (id) => {
+            return Holiday.remove({ _id: id });
+        },
+        'updateholiday': (holidayname, holidaydate, id) => {
+            return Holiday.update({ _id: id }, { $set: { holidayname: holidayname, holidaydate: holidaydate } })
+        },
+        'searchholiday': (pipeline) => {
+            return Promise.await(Holiday.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countHolidaydata': () => {
+            return Holiday.find({}).count();
+        },
+
+        //salary
+        'addsalary': (uid, totalsalary) => {
+            return Salary.insert({ userId: uid, totalSalary: totalsalary });
+        },
+        'updatesalarydata': (uid, totalsalary, id) => {
+            return Salary.update({ _id: id }, { $set: { userId: uid, totalSalary: totalsalary } })
+        },
+        'deletesalary': (id) => {
+            return Salary.remove({ _id: id });
+        },
+        'searchSalary': (pipeline) => {
+            return Promise.await(Salary.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countSalarydata': () => {
+            return Salary.find({}).count();
+        },
     })
 }

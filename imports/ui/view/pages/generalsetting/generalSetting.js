@@ -14,13 +14,13 @@ class GeneralSettings extends Component {
       monthHrs: "",
       overHrs: "",
       monthleave: "",
-      carryforwardleave: "",
+      carryForwardLeave: "",
       yearlyleave: "",
-      fromTime: "",
-      toTime: "",
-      noofleave: "",
+      
+      // noofleave: "",
       button: false,
-      id: ""
+      id: "",
+      workDayOfMonth: ""
     }
   }
 
@@ -32,28 +32,26 @@ class GeneralSettings extends Component {
       overHrs: nextpops.hoursData.overHrs,
       monthHrs: nextpops.hoursData.monthHrs,
       monthleave: nextpops.hoursData.monthlyLeave,
-      carryforwardleave: nextpops.hoursData.CarryForwardLeave,
+      carryForwardLeave: nextpops.hoursData.carryForwardLeave,
       yearlyleave: nextpops.hoursData.yearlyLeave,
-      fromTime: nextpops.hoursData.fromTime,
-      toTime: nextpops.hoursData.toTime,
-      noofleave: nextpops.hoursData.noOfLeave
+      // noofleave: nextpops.hoursData.noOfLeave,
+      workDayOfMonth: nextpops.hoursData.workDayOfMonth
     })
   }
 
   addHours() {
-    let { todayHrs, weekHrs, monthHrs, yearlyleave, fromTime, toTime,
-      overHrs, id, monthleave, carryforwardleave, noofleave } = this.state;
+    let { todayHrs, weekHrs, monthHrs, yearlyleave,
+      overHrs, id, monthleave, carryForwardLeave, noofleave, workDayOfMonth } = this.state;
     let generaleSetting = {
       todayHrs: parseInt(todayHrs),
       weekHrs: parseInt(weekHrs),
       monthHrs: parseInt(monthHrs),
       overHrs: parseInt(overHrs),
       monthlyLeave: parseInt(monthleave),
-      carryForwardLeave: parseInt(carryforwardleave),
+      carryForwardLeave: parseInt(carryForwardLeave),
       yearlyLeave: parseInt(yearlyleave),
-      fromTime: fromTime,
-      toTime: toTime,
-      noOfLeave: noofleave
+      // noOfLeave: noofleave,
+      workDayOfMonth: parseInt(workDayOfMonth)
     }
     Meteor.call('updateGeneraleSetting', generaleSetting, id, function (err, result) {
       if (!err) {
@@ -142,11 +140,11 @@ class GeneralSettings extends Component {
                       />
                     </div>
                     <div className="col-md-6">
-                      <label>CarryForward (Month wise)</label>
+                      <label>Curry Forword Leave</label>
                       <input type="number"
-                        name="carryforwardleave"
+                        name="carryForwardLeave"
                         className="form-control"
-                        value={this.state.carryforwardleave}
+                        value={this.state.carryForwardLeave}
                         onChange={(e) => this.generalSetting(e)}
                       />
                     </div>
@@ -163,7 +161,7 @@ class GeneralSettings extends Component {
                         onChange={(e) => this.generalSetting(e)}
                       />
                     </div>
-                    <div className="col-md-6">
+                    {/* <div className="col-md-6">
                       <label>No Of Leave</label>
                       <select name="noofleave" className="form-control" defaultValue={this.state.noofleave}>
                         <option>Select Option</option>
@@ -171,38 +169,33 @@ class GeneralSettings extends Component {
                         <option defaultValue="month">Monthly</option>
                         <option defaultValue="year">Yearly</option>
                       </select>
-                    </div>
+                    </div> */}
+                    
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-sm-12">
                     <div className="col-sm-4">
-                      <label className="mainheading">Office Time</label>
+                      <label className="mainheading">Employee Attendance</label>
                     </div>
                   </div>
                 </div>
                 <div className="form-group row">
                   <div className="col-md-12">
                     <div className="col-md-6">
-                      <label>From</label>
-                      <input type="text"
-                        name="fromTime"
+                      <label>Work Day of Month</label>
+                      <input type="number"
+                        name="workDayOfMonth"
                         className="form-control"
-                        value={this.state.fromTime}
+                        value={this.state.workDayOfMonth}
                         onChange={(e) => this.generalSetting(e)}
                       />
                     </div>
-                    <div className="col-md-6">
-                      <label>To</label>
-                      <input type="text"
-                        name="toTime"
-                        className="form-control"
-                        value={this.state.toTime}
-                        onChange={(e) => this.generalSetting(e)}
-                      />
-                    </div>
+                    
                   </div>
                 </div>
+                
+                
                 <div className="form-group row">
                   <div className="col-md-6" style={{ textAlign: "right" }}>
                     <button type="button" className="btn btn-primary" value="Save" onClick={(e) => { this.addHours(e) }} >Save</button>

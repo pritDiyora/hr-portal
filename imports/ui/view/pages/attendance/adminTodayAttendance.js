@@ -67,7 +67,8 @@ class AdminTodayAttendance extends Component {
   addAttendance(e) {
     let { userAttendanceIds, userIds, date } = this.state
     userIds = userAttendanceIds
-    date = moment().format("YYYY-MM-DD")
+    date = moment().format("YYYY/MM/DD")
+
     if (this.state.button == true) {
       Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
         if (!err) {
@@ -76,7 +77,6 @@ class AdminTodayAttendance extends Component {
           toast.error('Record not updated..' + err)
         }
       })
-
     } else {
       Meteor.call('adminAttendance', userIds, date, function (err, result) {
         if (!err) {
@@ -86,6 +86,7 @@ class AdminTodayAttendance extends Component {
         }
       })
     }
+
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -110,7 +111,8 @@ class AdminTodayAttendance extends Component {
 
   render() {
     let { userAttendanceIds } = this.state;
-
+    let { adminAttendance } = this.props
+    console.log('adminAttendance :: ', adminAttendance);
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -171,6 +173,6 @@ export default withTracker(() => {
     country: Country.find({}).fetch(),
     states: State.find({}).fetch(),
     city: Cities.find({}).fetch(),
-    adminAttendance: AdminAttendance.findOne({ date: moment().format('YYYY-MM-DD') }),
+    adminAttendance: AdminAttendance.findOne({ date: moment().format('YYYY/MM/DD') }),
   }
 })(AdminTodayAttendance)
