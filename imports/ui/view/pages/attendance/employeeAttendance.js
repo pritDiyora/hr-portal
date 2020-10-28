@@ -58,8 +58,7 @@ class EmployeeAttendance extends Component {
     let hours = this.props && this.props.hoursData && this.props.hoursData[hoursKey] || 0;
     if (getdata.length > 0) {
       let diffs = []
-      let getisPunchIn = getdata.filter((a) => a.isCheckIn);    
-      console.log('getisPunchIn :: ',getisPunchIn);  
+      let getisPunchIn = getdata.filter((a) => a.isCheckIn);
       let getisPunchOut = getdata.filter((a) => !a.isCheckIn)
       let getPunchInTime = _.pluck(getisPunchIn, 'dateTime');
       let getPunchOutTime = _.pluck(getisPunchOut, 'dateTime');
@@ -68,7 +67,6 @@ class EmployeeAttendance extends Component {
         let getOutTime = getPunchOutTime && getPunchOutTime[index] ? moment(getPunchOutTime[index]) : moment();
         let getDiff = getOutTime.diff(getInTime, "minutes");
         diffs.push(getDiff);
-        // console.log("diff : " , diffs);
       })
       let value = {
         // CountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
@@ -201,17 +199,37 @@ class EmployeeAttendance extends Component {
         $project: { date: '$date', isCheckIn: '$isCheckIn', dateTime: '$dateTime', userId: "$userId" }
       },
       {
-        $group: { _id: "$date", items: { $push: '$$ROOT' } }
+        $group: { _id: "$date" , items: { $push: '$$ROOT' } }
       },
       {
-        $sort: {_id: -1}
+        $sort: { _id: -1 }
       },
       { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
       { "$limit": this.state.pageLength },
     ];
+    let countpipeline = [
+      {
+        "$match": { "userId": FlowRouter.current().queryParams.id || Meteor.userId() }
+      },
+      {
+        $project: { date: '$date', isCheckIn: '$isCheckIn', dateTime: '$dateTime', userId: "$userId" }
+      },
+      {
+        $group: { _id: "$date" , items: { $push: '$$ROOT' } }
+      },
+      {
+        "$count": 'count'
+      }
+    ];
     Meteor.call("searchAttendanceDate", pipeline, function (err, res) {
       if (!err) {
-        self.setState({ attendanceData: res , totalpage: res.length});
+        console.log('res',res);
+        Meteor.call("countAttendancedata", countpipeline, function (err1, res1) {
+          if (!err1) {
+            self.setState({ totalpage: res1[0].count });
+          }
+        })
+        self.setState({ attendanceData: res, totalpage: res.length });
       } else {
         toast.error(err);
       }
@@ -355,9 +373,10 @@ class EmployeeAttendance extends Component {
                     <div className="col-sm-6" >
                       <div className="dataTables_length" id="example_length">
                         <label className="dataTables_length text">Show <select name="example_length"
+                          value={this.state.pageLength}
                           className="form-control" onChange={this.showhandle.bind(this)}>
                           <option>5</option>
-                          <option>10</option>
+                          <option >10</option>
                           <option>25</option>
                           <option>50</option>
                           <option>100</option>

@@ -130,6 +130,11 @@ class Salary extends Component {
         if (!err) {
           toast.success("Record Updated..." + result);
           $("#add-panel").modal("hide");
+          self.setState({
+            userid: "",
+            totalsalary: "",
+            button: false
+          })
           self.getSalaryData();
         } else {
           toast.error("Error ::" + err);
@@ -142,6 +147,11 @@ class Salary extends Component {
         if (!err) {
           toast.success("Record Inserted..." + result);
           $("#add-panel").modal("hide");
+          self.setState({
+            userid: "",
+            totalsalary: "",
+            button: false
+          })
           self.getSalaryData();
         } else {
           toast.error("Error ::" + err);
@@ -156,34 +166,34 @@ class Salary extends Component {
   openmodeldelete(e, id) {
     const self = this;
     self.setState({ salaryId: id })
-        bootbox.confirm({
-            message: "Are you sure you want to delete.. ?",
-            className: 'rubberBand animated',
-            buttons: {
-                confirm: {
-                    label: 'Yes',
-                    className: 'btn-info'
-                },
-                cancel: {
-                    label: 'No',
-                    className: 'btn-danger'
-                }
-            },
-            callback: function (result) {
-                if (result) {
-                    Meteor.call('deletesalary', self.state.salaryId, function (err, res) {
-                        if (!err) {
-                            toast.success("Record Deleted.." + res)
-                            self.getSalaryData();
-                        } else {
-                            toast.error(err)
-                        }
-                    });
-                }
-            },
-        });
+    bootbox.confirm({
+      message: "Are you sure you want to delete.. ?",
+      className: 'rubberBand animated',
+      buttons: {
+        confirm: {
+          label: 'Yes',
+          className: 'btn-info'
+        },
+        cancel: {
+          label: 'No',
+          className: 'btn-danger'
+        }
+      },
+      callback: function (result) {
+        if (result) {
+          Meteor.call('deletesalary', self.state.salaryId, function (err, res) {
+            if (!err) {
+              toast.success("Record Deleted.." + res)
+              self.getSalaryData();
+            } else {
+              toast.error(err)
+            }
+          });
+        }
+      },
+    });
   }
-  
+
   updaterecord(e, id) {
     let salary = this.state.displayedSalary.find(salary => salary._id == id);
     this.setState({ userid: salary.userId, totalsalary: salary.totalSalary, button: true, salaryid: id })

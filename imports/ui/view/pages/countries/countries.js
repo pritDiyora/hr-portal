@@ -76,6 +76,12 @@ export default class Countries extends Component {
                     if (!err) {
                         toast.success("Record Inserted..." + result);
                         $("#add-panel").modal("hide");
+                        self.setState({
+                            countryname: "",
+                            countrycode: "",
+                            countryid: "",
+                            button: false
+                        })
                         self.getCountryData();
                     } else {
                         toast.error("Error ::" + err);

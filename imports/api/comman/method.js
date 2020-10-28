@@ -92,15 +92,14 @@ if (Meteor.isServer) {
         },
         'searchAttendanceDate': (pipeline) => {
             return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
-            // delete pipeline['$skip']
-            // delete pipeline['$limit'] // count()
-            // return [ data, count]
+            
         },
         'countUserdata': () => {
             return User.find({}).count();
         },
-        'countAttendancedata': () => {
-            return Attendance.find({}).count();
+        'countAttendancedata': (pipeline) => {
+            
+            return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
         },
         //general setting
         'updateHours': (todayHrs, weekHrs, monthHrs, overHrs, id) => {
@@ -122,6 +121,8 @@ if (Meteor.isServer) {
                 $set: generaleSetting
             })
         },
+
+        //leave
         'leaveApply': (leaveobj) => {
             return Leave.insert(leaveobj);
         },
@@ -137,8 +138,8 @@ if (Meteor.isServer) {
         'updateLeaveApprove': (lid, approvebyname) => {
             return Leave.update({ _id: lid }, { $set: { isApprove: true, approveBy: approvebyname } })
         },
-        'updateLeaveDecline': (id) => {
-            return Leave.update({ _id: lid }, { $set: { isApprove: false, approveBy: Meteor.userId() } })
+        'updateLeaveDecline': (lid, declinebyname) => {
+            return Leave.update({ _id: lid }, { $set: { isApprove: false, approveBy: declinebyname } })
         },
         'LeaveApprove.Notification': (leaveApplyNotification) => {
             return Notification.insert(leaveApplyNotification)

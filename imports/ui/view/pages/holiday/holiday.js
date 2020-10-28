@@ -77,6 +77,12 @@ export default class Holiday extends Component {
           if (!err) {
             toast.success("Record Inserted..." + result);
             $("#add-panel").modal("hide");
+            self.setState({
+              holidayname: "",
+              holidaydate: "",
+              holidayid: "",
+              button: false
+            })
             self.getHolidayData();
           } else {
             toast.error("Error ::" + err);
@@ -294,6 +300,7 @@ export default class Holiday extends Component {
                       <DatePickerInput
                         className='my-custom-datepicker-component'
                         name="holidaydate"
+                        minDate={new Date()}
                         value={this.state.holidaydate}
                         onChange={(e) => this.setState({ holidaydate: e })}
                       />

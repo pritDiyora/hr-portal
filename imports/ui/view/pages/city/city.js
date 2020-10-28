@@ -40,6 +40,12 @@ class City extends Component {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.setState({
+                        countryid: "",
+                        stateid: "",
+                        cityname: "",
+                        button: false
+                    })
                     self.getCityData();
                 } else {
                     toast.error("Error ::" + err);
@@ -52,6 +58,12 @@ class City extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.setState({
+                        countryid: "",
+                        stateid: "",
+                        cityname: "",
+                        button: false
+                    })
                     self.getCityData();
                 } else {
                     toast.error("Error ::" + err);

@@ -111,24 +111,25 @@ class AdminAttendances extends Component {
     return holiday
   }
 
-  getLeaveData(start, end) {
+  getLeaveData(start, end, approve) {
     let dayOfDate = []
     let monthStartLeave = moment(start).format("MM");
     let month = moment().format("MM");
     let yearStartLeave = moment(start).format("YYYY");
     let year = moment().format("YYYY");
-
-    if (year == yearStartLeave) {
-      if (month == monthStartLeave) {
-        let startdate = moment(start);
-        let edate = moment(end);
-        let enddate = moment(edate - 1)
-        while (enddate > startdate || startdate.format('DD') === enddate.format('DD')) {
-          dayOfDate.push(startdate.format('DD'));
-          startdate.add(1, 'day');
+    if(approve == true){
+      if (year == yearStartLeave) {
+        if (month == monthStartLeave) {
+          let startdate = moment(start);
+          let edate = moment(end);
+          let enddate = moment(edate - 1)
+          while (enddate > startdate || startdate.format('DD') === enddate.format('DD')) {
+            dayOfDate.push(startdate.format('DD'));
+            startdate.add(1, 'day');
+          }
+          dayOfDate.map((dayOfDate) => dayOfDate)
+          
         }
-        dayOfDate.map((dayOfDate) => dayOfDate)
-        
       }
     }
     return dayOfDate
@@ -192,7 +193,7 @@ class AdminAttendances extends Component {
                                   }
                                 })
                                 this.props.leave.map((le) => {
-                                  let leave = this.getLeaveData(le.startDate, le.endDate)
+                                  let leave = this.getLeaveData(le.startDate, le.endDate, le.isApprove)
                                   if (id == le.userId) {
                                     leave.find((leav) => {
                                       if (res == leav) {

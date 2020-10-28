@@ -124,6 +124,11 @@ class State extends Component {
                 if (!err) {
                     toast.success("Record Updated..." + result);
                     $("#add-panel").modal("hide");
+                    self.setState({
+                        countryid: "",
+                        statename: "",
+                        button: false
+                    })
                     self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
@@ -136,6 +141,11 @@ class State extends Component {
                 if (!err) {
                     toast.success("Record Inserted..." + result);
                     $("#add-panel").modal("hide");
+                    self.setState({
+                        countryid: "",
+                        statename: "",
+                        button: false
+                    })
                     self.getStateData();
                 } else {
                     toast.error("Error ::" + err);
