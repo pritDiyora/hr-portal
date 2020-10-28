@@ -207,7 +207,7 @@ export default class LeaveApproveList extends Component {
         const self = this;
         Meteor.call('updateLeaveApprove', id, function (err, res) {
             if (!err) {
-                $('.hover_bkgr_fricc').show();
+                toast.success('Rejected Leave Succesfully..',res);
                 self.getLeaveData();
             }
         });
