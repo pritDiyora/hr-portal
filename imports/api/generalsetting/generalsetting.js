@@ -19,21 +19,15 @@ Schemas.GeneralSetting = new SimpleSchema({
   monthlyLeave: {
     type: Number
   },
-  CarryForwardLeave: {
+  carryForwardLeave: {
     type: Number
   },
   yearlyLeave: {
     type: Number
   },
-  fromTime: {
-    type: String
-  },
-  toTime: {
-    type: String
-  },
-  noOfLeave: {
-    type: String
-  },
+  // noOfLeave: {
+  //   type: String
+  // },
   workDayOfMonth: {
     type: Number
   },

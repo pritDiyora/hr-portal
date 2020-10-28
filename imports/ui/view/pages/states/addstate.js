@@ -148,7 +148,8 @@ class State extends Component {
         $("#add-panel").modal("show");
     }
     openmodeldelete(e, id) {
-        this.setState({ leaveTypeId: id })
+        const self = this;
+        self.setState({ stateId: id })
         bootbox.confirm({
             message: "Are you sure you want to delete.. ?",
             className: 'rubberBand animated',
@@ -164,12 +165,10 @@ class State extends Component {
             },
             callback: function (result) {
                 if (result) {
-                    const self = this;
-                    console.log('self :: ', self);
-                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                    Meteor.call('deletestate', self.state.stateId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)
-                            self.getLeaveTypeData();
+                            self.getStateData();
                         } else {
                             toast.error(err)
                         }

@@ -27,6 +27,7 @@ class ListUser extends Component {
             currentPage: 1,
             totalpage: 0
         }
+        this.openmodeldelete = this.openmodeldelete.bind(this)
     }
     componentDidMount() {
         this.getUserData();
@@ -141,7 +142,8 @@ class ListUser extends Component {
         }
     }
     openmodeldelete(e, id) {
-        this.setState({ leaveTypeId: id })
+        const self = this;
+        self.setState({ leaveTypeId: id })
         bootbox.confirm({
             message: "Are you sure you want to delete.. ?",
             className: 'rubberBand animated',
@@ -157,12 +159,10 @@ class ListUser extends Component {
             },
             callback: function (result) {
                 if (result) {
-                    const self = this;
-                    console.log('self :: ', self);
-                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                    Meteor.call('deleteuser', self.state.leaveTypeId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)
-                            self.getLeaveTypeData();
+                            self.getUserData();
                         } else {
                             toast.error(err)
                         }
@@ -170,6 +170,7 @@ class ListUser extends Component {
                 }
             },
         });
+       
     }
     
     datedifferent(date1, date2) {

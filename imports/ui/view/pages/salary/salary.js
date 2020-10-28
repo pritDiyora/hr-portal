@@ -154,7 +154,8 @@ class Salary extends Component {
     $("#add-panel").modal("show");
   }
   openmodeldelete(e, id) {
-    this.setState({ leaveTypeId: id })
+    const self = this;
+    self.setState({ salaryId: id })
         bootbox.confirm({
             message: "Are you sure you want to delete.. ?",
             className: 'rubberBand animated',
@@ -170,12 +171,10 @@ class Salary extends Component {
             },
             callback: function (result) {
                 if (result) {
-                    const self = this;
-                    console.log('self :: ', self);
-                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                    Meteor.call('deletesalary', self.state.salaryId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)
-                            self.getLeaveTypeData();
+                            self.getSalaryData();
                         } else {
                             toast.error(err)
                         }

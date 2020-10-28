@@ -85,7 +85,8 @@ export default class LeaveType extends Component {
     }
     //Delete Model
     deletemodel(e, id) {
-        this.setState({ leaveTypeId: id })
+        const self = this;
+        self.setState({ leaveTypeId: id })
         bootbox.confirm({
             message: "Are you sure you want to delete.. ?",
             className: 'rubberBand animated',
@@ -101,9 +102,9 @@ export default class LeaveType extends Component {
             },
             callback: function (result) {
                 if (result) {
-                    const self = this;
+
                     console.log('self :: ', self);
-                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                    Meteor.call('deleteLeaveType', self.state.leaveTypeId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)
                             self.getLeaveTypeData();
@@ -144,13 +145,14 @@ export default class LeaveType extends Component {
         })
     }
     pasidStatusChangeHandlar(e, id, paid) {
+        const self = this;
         bootbox.confirm({
             message: "Are you sure you want to unpaid to paid and paid to unpaid... ?",
             className: 'rubberBand animated',
             buttons: {
                 confirm: {
                     label: 'Yes',
-                    className: 'btn-success'
+                    className: 'btn-info'
                 },
                 cancel: {
                     label: 'No',
@@ -160,10 +162,9 @@ export default class LeaveType extends Component {
             callback: function (result) {
                 if (result) {
                     e.preventDefault()
-                    const self = this;
                     Meteor.call('updateIsPaid', id, paid, function (err, res) {
                         if (!err) {
-                            // self.getLeaveTypeData();
+                            self.getLeaveTypeData();
                         }
                     })
                 }

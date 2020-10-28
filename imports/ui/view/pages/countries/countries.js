@@ -90,7 +90,8 @@ export default class Countries extends Component {
     }
     //Delete Model
     deletemodel(e, id) {
-        this.setState({ leaveTypeId: id })
+        const self = this;
+        self.setState({ countryId: id })
         bootbox.confirm({
             message: "Are you sure you want to delete.. ?",
             className: 'rubberBand animated',
@@ -106,12 +107,10 @@ export default class Countries extends Component {
             },
             callback: function (result) {
                 if (result) {
-                    const self = this;
-                    console.log('self :: ', self);
-                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                    Meteor.call('deletecountry', self.state.countryId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)
-                            self.getLeaveTypeData();
+                            self.getCountryData();
                         } else {
                             toast.error(err)
                         }

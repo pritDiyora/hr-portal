@@ -91,7 +91,8 @@ export default class Holiday extends Component {
   }
   //Delete Model
   deletemodel(e, id) {
-    this.setState({ leaveTypeId: id })
+    const self = this;
+    self.setState({ holidayId: id })
     bootbox.confirm({
       message: "Are you sure you want to delete.. ?",
       className: 'rubberBand animated',
@@ -107,12 +108,10 @@ export default class Holiday extends Component {
       },
       callback: function (result) {
         if (result) {
-          const self = this;
-          console.log('self :: ', self);
-          Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+          Meteor.call('deleteholiday', self.state.holidayId, function (err, res) {
             if (!err) {
               toast.success("Record Deleted.." + res)
-              self.getLeaveTypeData();
+              self.getHolidayData();
             } else {
               toast.error(err)
             }

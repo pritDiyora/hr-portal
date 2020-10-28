@@ -158,7 +158,8 @@ class City extends Component {
         }
     }
     openmodeldelete(e, id) {
-        this.setState({ leaveTypeId: id })
+        const self = this;
+        self.setState({ cityId: id })
         bootbox.confirm({
             message: "Are you sure you want to delete.. ?",
             className: 'rubberBand animated',
@@ -174,12 +175,10 @@ class City extends Component {
             },
             callback: function (result) {
                 if (result) {
-                    const self = this;
-                    console.log('self :: ', self);
-                    Meteor.call('deleteLeaveType', this.state.leaveTypeId, function (err, res) {
+                    Meteor.call('deletecity', self.state.cityId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)
-                            self.getLeaveTypeData();
+                            self.getCityData();
                         } else {
                             toast.error(err)
                         }
