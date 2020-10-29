@@ -49,28 +49,18 @@ class ApplyLeave extends Component {
             [`${name}`]: value
         });
     }
-
-    componentWillMount() {
-        const { currentEvents } = this.state;
-        const self = this;
-        Meteor.call('getleavedate', function (err, res) {
-            if (!err) {
-                let leaveEvents = currentEvents || [];
-                res.map((leave, pos) => {
-                    let leaveList = {
-                        id: pos.toString(),
-                        title: leave.leaveType,
-                        start: leave.startDate,
-                        end: leave.endDate
-                    };
-                    leaveEvents.push(leaveList);
-                })
-                self.setState({ currentEvents: leaveEvents }, () => {
-                });
-            }
-        })
-    }
     render() {
+        let leaveEvents = [];
+        this.props.leaves.map((leave, pos) => {
+            let leavename = this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType);
+            let leaveList = {
+                id: pos.toString(),
+                title: "Reason :" + leave.reason + '  (' + leavename.leaveTypeName + ')',
+                start: moment(leave.startDate).format('YYYY-MM-DD'),
+                end: moment(leave.endDate).format('YYYY-MM-DD')
+            };
+            leaveEvents.push(leaveList);
+        });
         let disabled = true;
         let now = new Date();
         let start = moment(
@@ -127,11 +117,7 @@ class ApplyLeave extends Component {
                             select={this.handleDateSelect}
                             eventContent={renderEventContent} // custom render function
                             eventClick={this.handleEventClick}
-                            events={
-                                //  currentEvents
-                                [{ id: "0", title: "LFBYSeHcQ9JqkTMBu", start: "2020-10-17T17:00:00", end: "2020-10-17T19:00:00" },
-                                { id: "1", title: "SZzSsaeKyMF5zC6Sd", start: "2020-10-21T00:00:00", end: "2020-10-22T00:00:00" }]
-                            }
+                            events={leaveEvents}
                         />
                     </div>
                 </div>
@@ -289,7 +275,7 @@ class ApplyLeave extends Component {
                 }
                 Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
                     if (!err) {
-                        self.setState({ leaveType: '',  leaveReason: '' });
+                        self.setState({ leaveType: '', leaveReason: '' });
                     }
                 });
             } else {
@@ -310,7 +296,7 @@ class ApplyLeave extends Component {
         const self = this;
         let superadmin = nextProps.userType.find(user => user.profile.userType == 'superadmin');
         let admin = nextProps.userType.find(user => user.profile.userType == 'admin');
-        let sadminid = superadmin && superadmin._id || ""; 
+        let sadminid = superadmin && superadmin._id || "";
         let adminid = admin && admin._id || "";
         self.state.user = [sadminid, adminid]
     }
