@@ -137,7 +137,7 @@ class EmployeeAttendance extends Component {
       let first = getPunchInTime[0];
       let last = moment(getPunchOutTime[getPunchOutTime.length - 1])
       getPunchInTime.shift();
-      getPunchOutTime.splice(-1, 1)
+      // getPunchOutTime.splice(-1, 1)
       getPunchOutTime.map((t, index) => {
         let getInTime = moment(getPunchInTime[index]);
         let getOutTime = moment(t);
@@ -223,7 +223,6 @@ class EmployeeAttendance extends Component {
     ];
     Meteor.call("searchAttendanceDate", pipeline, function (err, res) {
       if (!err) {
-        console.log('res',res);
         Meteor.call("countAttendancedata", countpipeline, function (err1, res1) {
           if (!err1) {
             self.setState({ totalpage: res1[0].count });
@@ -251,11 +250,11 @@ class EmployeeAttendance extends Component {
                 <ul className="list-group">
                   <li className="list-group-item">
                     <h4>Punch In at</h4>
-                    <p>{moment().format("dddd, MMMM Do YYYY")} <span>{this.state.firstTime}</span></p>
+                    <p>{moment().format("dddd, MMMM Do YYYY")}  <span>{this.state.firstTime}</span></p>
                   </li>
                   <li className="list-group-item">
                     <h4>Punch Out at</h4>
-                    <span>{this.state.lastTime} hrs</span>
+                    <span>{this.state.lastTime== moment().format("HH:mm:ss") ? "00:00:00" : this.state.lastTime} hrs</span>
                   </li>
                   <li className="list-group-item">
                     <div className="row">
@@ -411,6 +410,7 @@ class EmployeeAttendance extends Component {
                           let data = this.breaktime(attendance && attendance.items)
                           if (data) {
                             let breakTime = data.BreakTime
+                            // console.log('breakTime :: ', breakTime);
                             let firstTime = data.FirstTime
                             let lastTime = data.LastTime
                             let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
@@ -419,7 +419,7 @@ class EmployeeAttendance extends Component {
                               <tr key={attendance._id}>
                                 <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
                                 <td>{firstTime}</td>
-                                <td>{lastTime}</td>
+                                <td>{lastTime == moment().format("HH:mm:ss") ? "00:00:00" : lastTime}</td>
                                 <td>{total}</td>
                                 <td>{workHrs}</td>
                                 <td>{breakTime}</td>

@@ -202,11 +202,11 @@ export default class LeaveApproveList extends Component {
     cancel(e) {
         $('.hover_bkgr_fricc').hide();
     }
-    declineLeave(e, id , leavename, rId) {
+    declineLeave(e, id, leavename, rId) {
         e.preventDefault();
         const self = this;
         let declineByName = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName;
-        Meteor.call('updateLeaveDecline', id,declineByName, function (err, res) {
+        Meteor.call('updateLeaveDecline', id, declineByName, function (err, res) {
             if (!err) {
                 $('#decline').show();
                 let leaveApproveNotification = {
@@ -273,7 +273,7 @@ export default class LeaveApproveList extends Component {
                                         </thead>
                                         <tbody>
                                             {displayedLeave.map((le, i) => {
-                                                
+
                                                 let noofDay = this.noOfDayLeave(le.startDate, le.endDate)
                                                 return (
                                                     <tr key={i}>
@@ -283,8 +283,12 @@ export default class LeaveApproveList extends Component {
                                                         <td>{moment(new Date(le.endDate)).format('YYYY-MM-DD hh:mm')}</td>
                                                         <td>{le.reason}</td>
                                                         <td>{noofDay}</td>
-                                                        <td> <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.declineLeave(e, le._id, le.leavetype.leaveTypeName, le.username._id)}> <i className="fa fa-times-rectangle-o"> Declined</i></a>
-                                                            {le.isApprove ? <a className="btn btn-xs btn-primary " disabled><i className="fa fa-check-square-o"> Approved</i></a>
+                                                        <td>
+                                                            {!le.isApprove ?
+                                                                <a id="delete" className="btn btn-xs btn-danger" disabled> <i className="fa fa-times-rectangle-o"> Declined</i></a>
+                                                                :<a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.declineLeave(e, le._id, le.leavetype.leaveTypeName, le.username._id)}> <i className="fa fa-times-rectangle-o"> Declined</i></a>
+                                                            }
+                                                            {le.isApprove ? <a className="btn btn-xs btn-primary " disabled><i className="fa fa-check-square-o"> Approved</i></a> 
                                                                 : <a className="btn btn-xs btn-success " onClick={(e) => this.ApprovedLeave(e, le._id, le.leavetype.leaveTypeName, le.username._id)}><i className="fa fa-check-square-o"> Approve</i></a>
                                                             }
 

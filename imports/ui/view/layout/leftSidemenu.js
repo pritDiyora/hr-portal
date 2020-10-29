@@ -61,35 +61,35 @@ class LeftSidemenu extends Component {
                 <li><a href="/dashboard">Dashboard v.1</a></li>
               </ul>
             </li>
-            {AccessPermission() ? <li><a href="/insertuser"><i className="fa fa-diamond"></i> <span className="nav-label">Insert User</span></a></li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/insertuser"><i className="fa fa-user"></i> <span className="nav-label">Insert User</span></a></li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/listuser"><i className="fa fa-diamond"></i> <span className="nav-label">List User</span></a></li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/listuser"><i className="fa fa-users"></i> <span className="nav-label">List User</span></a></li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/country"><i className="fa fa-globe"></i> <span className="nav-label">Country</span></a></li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li> <a href="/state"><i className="fa fa-diamond"></i> <span className="nav-label">State</span></a></li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li> <a href="/state"><i className="fa fa-flag"></i> <span className="nav-label">State</span></a></li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/city"><i className="fa fa-diamond"></i> <span className="nav-label">City</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/leaveType"><i className="fa fa-diamond"></i> <span className="nav-label">Leave Type</span></a> </li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/leaveType"><i className="fa fa-leaf"></i> <span className="nav-label">Leave Type</span></a> </li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/adminAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Admin Attendance</span></a> </li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/adminAttendance"><i className="fa fa-calendar"></i> <span className="nav-label">Admin Attendance</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/adminTodayAttendance"><i className="fa fa-diamond"></i> <span className="nav-label">Today Attendance</span></a> </li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/adminTodayAttendance"><i className="fa fa-calendar"></i> <span className="nav-label">Today Attendance</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/leaveApproveList"><i className="fa fa-diamond"></i> <span className="nav-label">Leave List</span></a> </li> : <a href="/accesspermission"></a>
+            {AccessPermission() ? <li><a href="/leaveApproveList"><i className="fa fa-leaf"></i> <span className="nav-label">Leave List</span></a> </li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
             }
             {AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
             <li>
-              <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-diamond"></i> <span className="nav-label">Employee Attendance</span></a>
+              <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
             </li>
             <li>
-              <a href="/leave"><i className="fa fa-diamond"></i> <span className="nav-label">Leave</span></a>
+              <a href="/leave"><img src="img/icon.png" alt="image" width="15px" /> <span className="nav-label">Leave</span></a>
             </li>
             
             {/* <li>
