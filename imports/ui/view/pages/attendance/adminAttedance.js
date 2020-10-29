@@ -9,7 +9,7 @@ import AdminAttendance from '../../../../api/attendance/adminAttendance'
 import Holiday from '../../../../api/holiday/holidaySchema';
 import Leave from '../../../../api/leave/leaveScheme';
 import { tr } from 'date-fns/locale';
-const moment = require('moment-holiday')
+
 class AdminAttendances extends Component {
   constructor(props) {
     super(props);
@@ -23,14 +23,9 @@ class AdminAttendances extends Component {
   componentDidMount() {
     this.getUser();
     this.getDaysArray();
-    this.getHoliday();
+    
 
   }
-  componentWillReceiveProps(nextProps) {
-    // this.state.holidaydate = nextProps.holidays && nextProps.holidays.map((holi) => moment(holi.holidaydate).format("DD")) 
-    // console.log('holidaydate :: ', this.state.holidaydate);
-  }
-
   getUser() {
     const self = this;
     let pipeline = [
@@ -72,10 +67,7 @@ class AdminAttendances extends Component {
     });
   }
 
-  getHoliday() {
-    const holidayList = moment().previousHolidays().isHoliday();
-    console.log('holidayList :: ', holidayList);
-  }
+  
 
   getDaysArray = (year, month) => {
     month = moment().format("MM");

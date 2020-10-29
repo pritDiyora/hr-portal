@@ -116,7 +116,7 @@ class ListUser extends Component {
                 })
                 self.setState({ displayedUser: res });
             } else {
-                toast.error(err);
+                toast.error(err.message);
             }
         });
 
@@ -161,10 +161,10 @@ class ListUser extends Component {
                 if (result) {
                     Meteor.call('deleteuser', self.state.leaveTypeId, function (err, res) {
                         if (!err) {
-                            toast.success("Record Deleted.." + res)
+                            toast.success("User deleted successfully.." , res)
                             self.getUserData();
                         } else {
-                            toast.error(err)
+                            toast.error(err.message)
                         }
                     });
                 }

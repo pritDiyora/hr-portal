@@ -58,7 +58,7 @@ export default class Holiday extends Component {
       if (this.state.button == true) {
         Meteor.call('updateholiday', holidayname, holidaydate, this.state.holidayid, function (err, result) {
           if (!err) {
-            toast.success("Record updates..." + result);
+            toast.success("Holiday updated successfully..." , result);
             $("#add-panel").modal("hide");
             self.setState({
               holidayname: "",
@@ -68,14 +68,14 @@ export default class Holiday extends Component {
             })
             self.getHolidayData();
           } else {
-            toast.error("Error ::" + err);
+            toast.error(err.message);
 
           }
         })
       } else {
         Meteor.call('addholiday', holidayname, holidaydate, function (err, result) {
           if (!err) {
-            toast.success("Record Inserted..." + result);
+            toast.success("Holiday added successfully..." , result);
             $("#add-panel").modal("hide");
             self.setState({
               holidayname: "",
@@ -85,7 +85,7 @@ export default class Holiday extends Component {
             })
             self.getHolidayData();
           } else {
-            toast.error("Error ::" + err);
+            toast.error(err.message);
           }
         })
       }
@@ -116,10 +116,10 @@ export default class Holiday extends Component {
         if (result) {
           Meteor.call('deleteholiday', self.state.holidayId, function (err, res) {
             if (!err) {
-              toast.success("Record Deleted.." + res)
+              toast.success("Holiday deleted successfully..." , res)
               self.getHolidayData();
             } else {
-              toast.error(err)
+              toast.error(err.message)
             }
           });
         }
@@ -180,7 +180,7 @@ export default class Holiday extends Component {
           displayedHoliday: res
         })
       } else {
-        toast.error(err);
+        toast.error(err.message);
       }
     });
 
@@ -217,7 +217,7 @@ export default class Holiday extends Component {
             </div>
             <div className="ibox-content">
               <div className="row text-center">
-                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add holiday</a>
+                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add holiday</a>
                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                   <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                     <div className="dataTables_length" id="example_length">

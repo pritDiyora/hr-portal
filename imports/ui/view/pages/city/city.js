@@ -38,7 +38,7 @@ class City extends Component {
         if (this.state.button == true) {
             Meteor.call('updatecitydata', countryid, stateid, cityname, this.state.cityid, function (err, result) {
                 if (!err) {
-                    toast.success("Record Updated..." + result);
+                    toast.success("City updated successfully ..." , result);
                     $("#add-panel").modal("hide");
                     self.setState({
                         countryid: "",
@@ -48,7 +48,7 @@ class City extends Component {
                     })
                     self.getCityData();
                 } else {
-                    toast.error("Error ::" + err);
+                    toast.error(err.message);
 
                 }
             })
@@ -56,7 +56,7 @@ class City extends Component {
         } else {
             Meteor.call('addcity', countryid, stateid, cityname, function (err, result) {
                 if (!err) {
-                    toast.success("Record Inserted..." + result);
+                    toast.success("City added successfully..." , result);
                     $("#add-panel").modal("hide");
                     self.setState({
                         countryid: "",
@@ -66,7 +66,7 @@ class City extends Component {
                     })
                     self.getCityData();
                 } else {
-                    toast.error("Error ::" + err);
+                    toast.error(err.message);
 
                 }
             })
@@ -143,7 +143,7 @@ class City extends Component {
                 })
                 self.setState({ displayedCity: res });
             } else {
-                toast.error(err);
+                toast.error(err.message);
             }
         });
 
@@ -189,10 +189,10 @@ class City extends Component {
                 if (result) {
                     Meteor.call('deletecity', self.state.cityId, function (err, res) {
                         if (!err) {
-                            toast.success("Record Deleted.." + res)
+                            toast.success("City deleted successfully..." , res)
                             self.getCityData();
                         } else {
-                            toast.error(err)
+                            toast.error(err.message)
                         }
                     });
                 }
@@ -225,7 +225,7 @@ class City extends Component {
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add City</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add City</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">

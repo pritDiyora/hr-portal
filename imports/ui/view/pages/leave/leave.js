@@ -279,7 +279,7 @@ class ApplyLeave extends Component {
                     }
                 });
             } else {
-                toast.error('Error', err);
+                toast.error(err.message);
             }
         });
     }
