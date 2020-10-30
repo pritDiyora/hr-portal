@@ -59,7 +59,7 @@ class AdminTodayAttendance extends Component {
       if (!err) {
         self.setState({ displayedUser: res });
       } else {
-        toast.error(err);
+        toast.error(err.message);
       }
     });
   }
@@ -72,17 +72,17 @@ class AdminTodayAttendance extends Component {
     if (this.state.button == true) {
       Meteor.call('updateAdminAttendance', userIds, this.state.adminId, function (err, result) {
         if (!err) {
-          toast.success('Record Updated.. ' + result)
+          toast.success('Adminattendance updated successfully...', result)
         } else {
-          toast.error('Record not updated..' + err)
+          toast.error(err.message)
         }
       })
     } else {
       Meteor.call('adminAttendance', userIds, date, function (err, result) {
         if (!err) {
-          toast.success("Record Inserted...", result)
+          toast.success("Adminattendance added successfully...", result)
         } else {
-          toast.error("Record not inserted..." + err);
+          toast.error(err.message);
         }
       })
     }
@@ -105,14 +105,13 @@ class AdminTodayAttendance extends Component {
     }
     this.setState({
       userAttendanceIds
-    }, () => console.log(this.state.userAttendanceIds))
+    })
   }
 
 
   render() {
     let { userAttendanceIds } = this.state;
     let { adminAttendance } = this.props
-    console.log('adminAttendance :: ', adminAttendance);
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -122,8 +121,9 @@ class AdminTodayAttendance extends Component {
                 <h5>Attendance</h5>
               </div>
               <div className="ibox-content">
-
-                <h3 className="text-center"> {moment().format('DD/MM/YYYY')} </h3>
+                <center>
+                  <h3 className="text-center bg-info p-xs b-r-sm" style={{width: "110px"}}> {moment().format('DD/MM/YYYY')} </h3>
+                </center>
 
                 <table className="table table-striped table-bordered table-hover dataTables-example dataTable">
                   <thead>

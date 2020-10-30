@@ -97,7 +97,7 @@ class Salary extends Component {
 
         self.setState({ displayedSalary: res });
       } else {
-        toast.error(err);
+        toast.error(err.message);
       }
     });
 
@@ -128,7 +128,7 @@ class Salary extends Component {
     if (this.state.button == true) {
       Meteor.call('updatesalarydata', userid, totalsalary, this.state.salaryid, function (err, result) {
         if (!err) {
-          toast.success("Record Updated..." + result);
+          toast.success("Salary updated successfully..." , result);
           $("#add-panel").modal("hide");
           self.setState({
             userid: "",
@@ -137,7 +137,7 @@ class Salary extends Component {
           })
           self.getSalaryData();
         } else {
-          toast.error("Error ::" + err);
+          toast.error(err.message);
 
         }
       })
@@ -145,7 +145,7 @@ class Salary extends Component {
     } else {
       Meteor.call('addsalary', userid, totalsalary, function (err, result) {
         if (!err) {
-          toast.success("Record Inserted..." + result);
+          toast.success("Salary added successfully..." , result);
           $("#add-panel").modal("hide");
           self.setState({
             userid: "",
@@ -154,7 +154,7 @@ class Salary extends Component {
           })
           self.getSalaryData();
         } else {
-          toast.error("Error ::" + err);
+          toast.error(err.message);
 
         }
       })
@@ -183,10 +183,10 @@ class Salary extends Component {
         if (result) {
           Meteor.call('deletesalary', self.state.salaryId, function (err, res) {
             if (!err) {
-              toast.success("Record Deleted.." + res)
+              toast.success("Salary deleted successfully..." , res)
               self.getSalaryData();
             } else {
-              toast.error(err)
+              toast.error(err.message)
             }
           });
         }
@@ -239,7 +239,7 @@ class Salary extends Component {
       if (!err) {
         self.setState({ displayedUser: res });
       } else {
-        toast.error(err);
+        toast.error(err.message);
       }
     });
   }
@@ -279,7 +279,7 @@ class Salary extends Component {
             </div>
             <div className="ibox-content">
               <div className="row text-center">
-                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add Salary</a>
+                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Salary</a>
                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                   <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                     <div className="dataTables_length" id="example_length">

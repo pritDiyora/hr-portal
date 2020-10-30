@@ -225,12 +225,12 @@ class EmployeeAttendance extends Component {
       if (!err) {
         Meteor.call("countAttendancedata", countpipeline, function (err1, res1) {
           if (!err1) {
-            self.setState({ totalpage: res1[0].count });
+            self.setState({ totalpage: res1[0] && res1[0].count || 0});
           }
         })
         self.setState({ attendanceData: res, totalpage: res.length });
       } else {
-        toast.error(err);
+        toast.error(err.message);
       }
     });
   }

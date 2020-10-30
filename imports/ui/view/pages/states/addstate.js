@@ -90,7 +90,7 @@ class State extends Component {
                 })
                 self.setState({ displayedState: res });
             } else {
-                toast.error(err);
+                toast.error(err.message);
             }
         });
 
@@ -121,7 +121,7 @@ class State extends Component {
         if (this.state.button == true) {
             Meteor.call('updatestatedata', countryid, statename, this.state.stateid, function (err, result) {
                 if (!err) {
-                    toast.success("Record Updated..." + result);
+                    toast.success("State updated successfullt..." , result);
                     $("#add-panel").modal("hide");
                     self.setState({
                         countryid: "",
@@ -130,7 +130,7 @@ class State extends Component {
                     })
                     self.getStateData();
                 } else {
-                    toast.error("Error ::" + err);
+                    toast.error(err.message);
 
                 }
             })
@@ -138,7 +138,7 @@ class State extends Component {
         } else {
             Meteor.call('addstate', countryid, statename, function (err, result) {
                 if (!err) {
-                    toast.success("Record Inserted..." + result);
+                    toast.success("State added successfully..." , result);
                     $("#add-panel").modal("hide");
                     self.setState({
                         countryid: "",
@@ -147,7 +147,7 @@ class State extends Component {
                     })
                     self.getStateData();
                 } else {
-                    toast.error("Error ::" + err);
+                    toast.error(err.message);
 
                 }
             })
@@ -176,10 +176,10 @@ class State extends Component {
                 if (result) {
                     Meteor.call('deletestate', self.state.stateId, function (err, res) {
                         if (!err) {
-                            toast.success("Record Deleted.." + res)
+                            toast.success("State deleted successfully..." , res)
                             self.getStateData();
                         } else {
-                            toast.error(err)
+                            toast.error(err.message)
                         }
                     });
                 }
@@ -208,7 +208,7 @@ class State extends Component {
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add States</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add States</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">

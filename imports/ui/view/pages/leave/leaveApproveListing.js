@@ -12,7 +12,6 @@ export default class LeaveApproveList extends Component {
         this.state = {
             button: false,
             displayedLeave: [],
-            //table (sorting,seraching,pagination)
             pageLength: 10,
             searchStr: "",
             sortKey: "createdAt",
@@ -42,43 +41,7 @@ export default class LeaveApproveList extends Component {
             this.getLeaveData();
         });
     }
-    addcountry(e) {
-        e.preventDefault();
-        FlowRouter.go('/leave');
-    }
-    //Delete Model
-    deletemodel(e, id) {
-        e.preventDefault();
-        $("#deletemodel").modal("show");
-        this.setState({ countryid: id })
-    }
-    deletrecord(e) {
-        e.preventDefault();
-        const self = this;
-        Meteor.call('deletecountry', this.state.countryid, function (err, res) {
-            if (!err) {
-                $("#deletemodel").modal("hide");
-                toast.success("Record Deleted.." + res)
-                self.getLeaveData();
-            } else {
-                toast.error(err)
-            }
-        })
-    }
-    //Insert and Edit Model
-    modelclick(event, id) {
-        event.preventDefault()
-        $("#add-panel").modal("show");
-    }
-    cancel(e) {
-        this.setState({
-            countryname: "",
-            countrycode: "",
-            countryid: "",
-            button: false
-        })
-        $("#add-panel").modal("hide");
-    }
+   
     search(e) {
         this.setState({
             currentPage: 1,
@@ -133,7 +96,7 @@ export default class LeaveApproveList extends Component {
                 })
                 self.setState({ displayedLeave: res });
             } else {
-                toast.error(err);
+                toast.error(err.message);
             }
         });
 
@@ -330,25 +293,7 @@ export default class LeaveApproveList extends Component {
                         <h2><b>Leave Rejected....</b></h2>
                     </div>
                 </div>
-                <div className="modal" tabIndex="-1" role="dialog" id="deletemodel">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Delete Model</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Are you sure you want to delete.. ?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={(e) => this.deletrecord(e)}>Delete record</button>
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div >
         )
     }

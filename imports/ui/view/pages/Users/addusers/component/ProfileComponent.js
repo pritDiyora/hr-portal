@@ -193,32 +193,7 @@ class ProfileComponent extends Component {
                         </div>
                         <div className="col-md-4">
                             <label>User Type  <sup style={{ color: "red" }}>*</sup></label><br />
-                            <div className="radio-inline form-check abc-radio abc-radio-success">
-                                {Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin" ?
-                                    <input className="form-check-input"
-                                        type="radio"
-                                        name="userType"
-                                        id="superadmin"
-                                        value="superadmin"
-                                        disabled
-                                        checked={this.props.userType === 'superadmin'}
-                                        onChange={this.props.profileChangeHandler}
-                                    />
-                                    :
-                                    <input className="form-check-input"
-                                        type="radio"
-                                        name="userType"
-                                        id="superadmin"
-                                        value="superadmin"
-                                        checked={this.props.userType === 'superadmin'}
-                                        onChange={this.props.profileChangeHandler}
-                                    />
-                                }
-
-                                <label className="form-check-label" htmlFor="superadmin">
-                                    Super Admin
-                                 </label>
-                            </div>&nbsp;&nbsp;&nbsp;
+                            
                             <div className="radio-inline  form-check abc-radio abc-radio-success">
                                 {Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin" ?
                                     <input

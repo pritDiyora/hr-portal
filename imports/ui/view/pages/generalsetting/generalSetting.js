@@ -55,9 +55,9 @@ class GeneralSettings extends Component {
     }
     Meteor.call('updateGeneraleSetting', generaleSetting, id, function (err, result) {
       if (!err) {
-        toast.success("Record updated..." + result);
+        toast.success("Recored updated successfully..." , result);
       } else {
-        toast.error("Error ::" + err);
+        toast.error(err.message);
       }
     })
   }

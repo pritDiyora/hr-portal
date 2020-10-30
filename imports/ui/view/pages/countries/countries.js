@@ -57,7 +57,7 @@ export default class Countries extends Component {
             if (this.state.button == true) {
                 Meteor.call('updatecountry', countryname, countrycode, this.state.countryid, function (err, result) {
                     if (!err) {
-                        toast.success("Record updates..." + result);
+                        toast.success("Country updated successfully..." , result);
                         $("#add-panel").modal("hide");
                         self.setState({
                             countryname: "",
@@ -67,14 +67,14 @@ export default class Countries extends Component {
                         })
                         self.getCountryData();
                     } else {
-                        toast.error("Error ::" + err);
+                        toast.error(err.message);
 
                     }
                 })
             } else {
                 Meteor.call('addcountry', countryname, countrycode, function (err, result) {
                     if (!err) {
-                        toast.success("Record Inserted..." + result);
+                        toast.success("Country added successfully..." , result);
                         $("#add-panel").modal("hide");
                         self.setState({
                             countryname: "",
@@ -84,7 +84,7 @@ export default class Countries extends Component {
                         })
                         self.getCountryData();
                     } else {
-                        toast.error("Error ::" + err);
+                        toast.error(err.message);
                     }
                 })
             }
@@ -115,10 +115,10 @@ export default class Countries extends Component {
                 if (result) {
                     Meteor.call('deletecountry', self.state.countryId, function (err, res) {
                         if (!err) {
-                            toast.success("Record Deleted.." + res)
+                            toast.success("Country deleted successfully..." , res)
                             self.getCountryData();
                         } else {
-                            toast.error(err)
+                            toast.error(err.message)
                         }
                     });
                 }
@@ -174,7 +174,7 @@ export default class Countries extends Component {
                 })
                 self.setState({ displayedCountries: res });
             } else {
-                toast.error(err);
+                toast.error(err.message);
             }
         });
 
@@ -211,7 +211,7 @@ export default class Countries extends Component {
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}>Add country</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add country</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
