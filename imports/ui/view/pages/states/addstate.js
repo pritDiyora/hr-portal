@@ -88,7 +88,6 @@ class State extends Component {
                         self.setState({ totalpage: res1 });
                     }
                 })
-                console.log('res ::::', res);
                 self.setState({ displayedState: res });
             } else {
                 toast.error(err);

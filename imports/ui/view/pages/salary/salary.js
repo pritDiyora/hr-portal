@@ -269,7 +269,6 @@ class Salary extends Component {
   render() {
     let { sortKey, sortValue } = this.state;
     let { gsetting, leave } = this.props
-    console.log('gsetting :: ', gsetting);
     return (
       <div>
         <div className="wrapper wrapper-content animated fadeInRight" >

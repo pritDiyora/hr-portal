@@ -65,9 +65,6 @@ class GeneralSettings extends Component {
     const { name, value } = event.target;
     this.setState({
       [`${name}`]: value
-    }, () => {
-      console.log('state :: ', this.state);
-
     });
   }
   render() {

@@ -102,8 +102,6 @@ export default class LeaveType extends Component {
             },
             callback: function (result) {
                 if (result) {
-
-                    console.log('self :: ', self);
                     Meteor.call('deleteLeaveType', self.state.leaveTypeId, function (err, res) {
                         if (!err) {
                             toast.success("Record Deleted.." + res)

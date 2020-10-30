@@ -97,7 +97,7 @@ class Profile extends Component {
                                                     currentUser && currentUser.profile && currentUser.profile.firstName + " " + currentUser.profile.lastName
                                                     : ""} className="img-circle" style={{ marginTop: "5px" }}
                                                 size="150" color="#ffcccc" fgColor="#990000" maxInitials={2} />
-                                            <span class="green-overlay"></span>
+                                            <span className="green-overlay"></span>
                                         </label>
 
                                     </center>
@@ -171,7 +171,7 @@ class Profile extends Component {
                                     </span>
                                 </div>
                                 <div className="ibox-content profile-content">
-                                    DS
+                                    
                                 </div>
                             </div>
                         </div>

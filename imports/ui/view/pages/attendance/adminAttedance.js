@@ -74,7 +74,6 @@ class AdminAttendances extends Component {
 
   getHoliday() {
     const holidayList = moment().previousHolidays().isHoliday();
-    console.log('holidayList :: ', holidayList);
   }
 
   getDaysArray = (year, month) => {

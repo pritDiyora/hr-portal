@@ -95,10 +95,10 @@ export default class Registration extends Component {
             if (flag) {
                 Meteor.call('registerUser', options, function (err, res) {
                     if (!err) {
-                        console.log("Registration success!");
+                        toast.success("Registration success!");
                         FlowRouter.go('/')
                     } else {
-                        console.log("getting error!", err);
+                        toast.error("getting error!", err);
                     }
                 });
             }

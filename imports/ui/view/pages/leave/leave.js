@@ -6,7 +6,6 @@ import FullCalendar, { formatDate } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { INITIAL_EVENTS, createEventId } from "./event";
 import { withTracker } from 'meteor/react-meteor-data';
 import LeaveType from '../../../../api/leave/leaveTypeSchema';
 import { FormControl } from "react-bootstrap";
@@ -14,15 +13,11 @@ import DateTimeRangeContainer from "react-advanced-datetimerange-picker";
 import moment from 'moment';
 import Leave from '../../../../api/leave/leaveScheme';
 import User from '../../../../api/user/users';
-import { th } from 'date-fns/locale';
 class ApplyLeave extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            from: undefined,
-            to: undefined,
             weekendsVisible: true,
-            currentEvents: [],
             leaveType: "",
             leaveReason: "",
             leavename: "",
@@ -88,10 +83,7 @@ class ApplyLeave extends Component {
             format: "DD-MM-YYYY HH:mm",
             sundayFirst: false
         };
-        let maxDate = moment(start).add(24, "hour");
-        let minDate = moment(new Date()).add(24, "hour");
-        const { leaveType, leaveReason, isHalf, currentEvents } = this.state;
-
+        const { leaveType, leaveReason, isHalf } = this.state;
         return (
             <div className="wrapper wrapper-content  animated fadeInRight">
                 <div className="ibox ">
@@ -112,7 +104,6 @@ class ApplyLeave extends Component {
                             selectable={true}
                             selectMirror={true}
                             dayMaxEvents={true}
-                            initialEvents={INITIAL_EVENTS}
                             weekends={this.state.weekendsVisible}
                             select={this.handleDateSelect}
                             eventContent={renderEventContent} // custom render function
@@ -290,9 +281,7 @@ class ApplyLeave extends Component {
             clickInfo.event.remove();
         }
     };
-
     componentWillReceiveProps(nextProps) {
-        const { currentEvents } = this.state;
         const self = this;
         let superadmin = nextProps.userType.find(user => user.profile.userType == 'superadmin');
         let admin = nextProps.userType.find(user => user.profile.userType == 'admin');
@@ -315,7 +304,7 @@ export default withTracker(() => {
     Meteor.subscribe('getUserType');
     return {
         leavetype: LeaveType.find({}).fetch(),
-        leaves: Leave.find({}).fetch(),
+        leaves: Leave.find({userId:Meteor.userId()}).fetch(),
         userType: User.find({}).fetch()
     }
 })(ApplyLeave);
