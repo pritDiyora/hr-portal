@@ -96,8 +96,8 @@ class Header extends Component {
 	}
 	getUserName(userid) {
 		const self = this;
-		let userInfo = this.props.userName.find(user => user._id == userid);
-		return userInfo.profile.firstName + ' ' + userInfo.profile.lastName;
+		let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
+		return userInfo && userInfo.profile.firstName + ' ' + userInfo && userInfo.profile.lastName;
 	}
 	handleLeaveItem(event, notificationId, notificationType) {
 		event.preventDefault();

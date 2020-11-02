@@ -117,7 +117,6 @@ class AdminAttendances extends Component {
             startdate.add(1, 'day');
           }
           dayOfDate.map((dayOfDate) => dayOfDate)
-          
         }
       }
     }

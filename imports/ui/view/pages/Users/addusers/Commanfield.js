@@ -66,38 +66,38 @@ class AddHR extends React.Component {
     nextProps.city.length > 0 && nextProps.city.map((cities) => city.push({ value: cities._id, label: cities.cityName }));
     self.setState({ countrie, states, city });
     if (self.props.flag == 1) {
-      self.updateUserDetails(nextProps, self);
+      self.updateUserDetails(nextProps.userdata, self,nextProps.countries,nextProps.statedata,nextProps.citiesdata);
     } else {
       self.setState({ flag: self.props.flag });
     }
   }
   
-  updateUserDetails(nextProps, self) {
+  updateUserDetails(userdata, self,countryData,stateData,cityData) {
     self.setState({ flag: self.props.flag, userid: FlowRouter.current("_id").params._id })
     let { profile } = self.state;
-    let userAddress = nextProps.userdata && nextProps.userdata.address || [],
-      userEducation = nextProps.userdata && nextProps.userdata.education || [],
-      userExperiance = nextProps.userdata && nextProps.userdata.experiance || [];
+    let userAddress = userdata && userdata.address || [],
+      userEducation = userdata && userdata.education || [],
+      userExperiance = userdata && userdata.experiance || [];
     //set User Profile
-    profile[`firstName`] = nextProps.userdata && nextProps.userdata && nextProps.userdata.profile.firstName;
-    profile[`lastName`] = nextProps.userdata && nextProps.userdata.profile.lastName;
-    profile[`fatherName`] = nextProps.userdata && nextProps.userdata.profile.fatherName;
-    profile[`motherName`] = nextProps.userdata && nextProps.userdata.profile.motherName;
-    profile[`gender`] = nextProps.userdata && nextProps.userdata.profile.gender;
-    profile[`birthDate`] = nextProps.userdata && nextProps.userdata.profile.birthDate;
-    profile[`officalEmailid`] = nextProps.userdata && nextProps.userdata.profile.officalEmailId;
-    profile[`userType`] = nextProps.userdata && nextProps.userdata.profile.userType;
-    profile[`phone`] = nextProps.userdata && nextProps.userdata.profile.phone;
-    profile[`joiningDate`] = nextProps.userdata && nextProps.userdata.profile.joiningDate;
-    profile[`description`] = nextProps.userdata && nextProps.userdata.profile.description;
-    self.setState({ email: nextProps.userdata && nextProps.userdata.emails[0].address, profile });
+    profile[`firstName`] = userdata && userdata && userdata.profile.firstName;
+    profile[`lastName`] = userdata && userdata.profile.lastName;
+    profile[`fatherName`] = userdata && userdata.profile.fatherName;
+    profile[`motherName`] = userdata && userdata.profile.motherName;
+    profile[`gender`] = userdata && userdata.profile.gender;
+    profile[`birthDate`] = userdata && userdata.profile.birthDate;
+    profile[`officalEmailid`] = userdata && userdata.profile.officalEmailId;
+    profile[`userType`] = userdata && userdata.profile.userType;
+    profile[`phone`] = userdata && userdata.profile.phone;
+    profile[`joiningDate`] = userdata && userdata.profile.joiningDate;
+    profile[`description`] = userdata && userdata.profile.description;
+    self.setState({ email: userdata && userdata.emails[0].address, profile });
     //set User Address
     userAddress.map((addresses) => {
-      let couobj = nextProps.countries && nextProps.countries.find(cou => cou._id == addresses.country);
+      let couobj = countryData && countryData.find(cou => cou._id == addresses.country);
       self.setState({ CountryOption: { value: couobj && couobj._id, label: couobj && couobj.countryname } });
-      let stateobj = nextProps.statedata && nextProps.statedata.find(state => state._id == addresses.state);
+      let stateobj = stateData && stateData.find(state => state._id == addresses.state);
       self.setState({ StateOption: { value: stateobj && stateobj._id, label: stateobj && stateobj.stateName } });
-      let cityobj = nextProps.citiesdata && nextProps.citiesdata.find(ci => ci._id == addresses.city);
+      let cityobj = cityData && cityData.find(ci => ci._id == addresses.city);
       self.setState({ CityOption: { value: cityobj && cityobj._id, label: cityobj && cityobj.cityName } });
       self.setState({ addressline1: addresses.addressline1, addressline2: addresses.addressline2, zipcode: addresses.zipcode });
     });
@@ -156,7 +156,8 @@ class AddHR extends React.Component {
   createUI() {
     return this.state.education.map((el, i) => {
       return (<EducationComponent
-        rowData={el} id={i} education={this.state.education} EducationaddmoreClick={this.EducationaddmoreClick}
+        rowData={el} id={i} education={this.state.education} 
+        EducationaddmoreClick={this.EducationaddmoreClick}
         previous={this.previous} Educationvalidator={this.Educationvalidator}
         EduucationremoveClick={this.EduucationremoveClick}
         EducationchangeHandler={this.EducationchangeHandler}
@@ -525,6 +526,7 @@ class AddHR extends React.Component {
             </div>
           </div>
         </div>
+      
       </div>
     )
   }

@@ -50,9 +50,9 @@ class ApplyLeave extends Component {
             let leavename = this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType);
             let leaveList = {
                 id: pos.toString(),
-                title: "Reason :" + leave.reason + '  (' + leavename.leaveTypeName + ')',
-                start: moment(leave.startDate).format('YYYY-MM-DD'),
-                end: moment(leave.endDate).format('YYYY-MM-DD')
+                title: "Reason :" + leave &&  leave.reason + '  (' + leavename && leavename.leaveTypeName + ')',
+                start: moment(leave && leave.startDate).format('YYYY-MM-DD'),
+                end: moment(leave && leave.endDate).format('YYYY-MM-DD')
             };
             leaveEvents.push(leaveList);
         });
@@ -213,6 +213,7 @@ class ApplyLeave extends Component {
                         </div>
                     </div>
                 </div>
+            
             </div>
         )
     }

@@ -7,9 +7,21 @@ class LeftSidemenu extends Component {
   constructor(props) {
     super(props);
   }
-
   componentDidMount() {
     $('#side-menu').metisMenu();
+  }
+  AccessPermission() {
+    let user = JSON.parse(localStorage.getItem('user')) || {};
+    if (!user || !user.profile || !user.profile.userType) {
+      return false;
+    }
+    var usertype = user && user.profile && user.profile.userType;
+    if (usertype == "superadmin"
+      || usertype == "admin") {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   profUpdate(e) {
@@ -61,8 +73,8 @@ class LeftSidemenu extends Component {
                 <li><a href="/dashboard">Dashboard v.1</a></li>
               </ul>
             </li>
-            {AccessPermission() ?
-              <li className="">
+            {this.AccessPermission() ?
+              <li>
                 <a><i className="fa fa-users"></i> <span className="nav-label">Users</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
                   <li><a href="/insertuser">Add Employee</a></li>
@@ -71,8 +83,8 @@ class LeftSidemenu extends Component {
               </li> :
               <a href="/accesspermission"></a>
             }
-            
-            {AccessPermission() ?
+
+            {this.AccessPermission() ?
               <li>
                 <a><i className="fa fa-map-marker"></i> <span className="nav-label">Location</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
@@ -80,35 +92,35 @@ class LeftSidemenu extends Component {
                   <li> <a href="/state">State</a></li>
                   <li><a href="/city">City</a> </li>
                 </ul>
-              </li> : 
-            <a href="/accesspermission"></a>
+              </li> :
+              <a href="/accesspermission"></a>
             }
-            
-            {AccessPermission() ? 
+
+            {this.AccessPermission() ?
               <li>
-                <a><img src="img/icon.png" alt="image" width="15px" />  <span className="nav-label">Leave</span><span className="fa arrow"></span></a> 
+                <a><img src="img/icon.png" alt="image" width="15px" />  <span className="nav-label">Leave</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
                   <li><a href="/leaveType">Leave Type</a></li>
-                  <li><a href="/leaveApproveList">Leave List</a> </li>
+                  <li><a href="/leaveApproveList">Leave Approve List</a> </li>
                 </ul>
-              </li> : 
-            <a href="/accesspermission"></a>
+              </li> :
+              <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? 
+            {this.AccessPermission() ?
               <li>
-                <a href="#"><i className="fa fa-calendar"></i> <span className="nav-label">Admin Attendance</span></a> 
+                <a href="#"><i className="fa fa-calendar"></i> <span className="nav-label">Admin Attendance</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
                   <li><a href="/adminAttendance">Admin Attendance</a></li>
                   <li><a href="/adminTodayAttendance">Today Attendance</a> </li>
                 </ul>
-                </li> : 
-            <a href="/accesspermission"></a>
+              </li> :
+              <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a> </li> : <a href="/accesspermission"></a>
+            {this.AccessPermission() ? <li><a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
+            {this.AccessPermission() ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
+            {this.AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
@@ -117,7 +129,7 @@ class LeftSidemenu extends Component {
               <a href="/leave"><img src="img/icon.png" alt="image" width="15px" /> <span className="nav-label">Leave</span></a>
             </li>
 
-            
+
           </ul>
 
         </div>
@@ -134,12 +146,4 @@ export default withTracker(() => {
   }
 })(LeftSidemenu);
 
-function AccessPermission() {
-  // debugger
-  if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "superadmin"
-    || Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == "admin") {
-    return true;
-  } else {
-    return false;
-  }
-}
+
