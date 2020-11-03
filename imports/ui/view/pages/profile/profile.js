@@ -93,7 +93,7 @@ class Profile extends Component {
   educationListing() {
     if (this.props.userdata && this.props.userdata.education && this.props.userdata.education.length > 0) {
       return (
-        <div className="ibox">
+        <div className="panel-body">
           <div className="card profile-box flex-fill">
             <div className="card-body">
               <h3 className="card-title">Education Informations <a onClick={(e) => this.editEducation(e)} className="edit-icon" data-toggle="modal" ><i className="fa fa-pencil"></i></a></h3>
@@ -121,9 +121,7 @@ class Profile extends Component {
       )
     } else {
       return (
-        <div className="container-fluid" style={{ padding: "0px" }}>
-          <div className="card" style={{ padding: "10px" }}><a onClick={(e) => this.education(e)}><i className="fa fa-plus-circle addmore"><b>Add More</b></i></a></div>
-        </div>
+          <div className="panel-body" style={{ padding: "10px" }}><a onClick={(e) => this.education(e)}><i className="fa fa-plus-circle addmore"><b>Add More</b></i></a></div>
       );
     }
   }
@@ -324,7 +322,7 @@ class Profile extends Component {
   experianceListing() {
     if (this.props.userdata && this.props.userdata.experiance && this.props.userdata.experiance.length > 0) {
       return (
-        <div className="ibox">
+        <div className="panel-body">
           <div className="card profile-box flex-fill">
             <div className="card-body">
               <h3 className="card-title">Experiance Informations <a onClick={(e) => this.editExperience(e)} className="edit-icon" data-toggle="modal" ><i className="fa fa-pencil"></i></a></h3>
@@ -354,7 +352,7 @@ class Profile extends Component {
     } else {
       return (
         <div className="container-fluid" style={{ padding: "0px" }}>
-          <div className="card" style={{ padding: "10px" }}>
+          <div className="panel-body" style={{ padding: "10px" }}>
             <a onClick={(e) => this.experiance(e)}><i className="fa fa-plus-circle addmore"><b>Add More</b></i></a>
           </div>
         </div>

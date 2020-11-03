@@ -9272,9 +9272,9 @@ input {
 }
 .card {
   background-color: #fff;
-  border: 1px solid #e7eaec;
+  /* border: 1px solid #e7eaec;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
-  margin-bottom: 30px;
+  margin-bottom: 30px; */
 }
 .card-title {
   color: #555555;

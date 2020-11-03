@@ -23,7 +23,7 @@ import NotFoundPage from '../../imports/ui/view/pages/notFoundPage/NotFoundPage'
 import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPage/AccessPermissionPage';
 import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
 import Leave from '../../imports/ui/view/pages/leave/leave';
-import { de } from 'date-fns/locale';
+import TaskAssign from '../../imports/ui/view/pages/taskasssign/taskassign';
 import AdminAttendance from '../../imports/ui/view/pages/attendance/adminAttedance.js';
 import AdminTodayAttendance from '../../imports/ui/view/pages/attendance/adminTodayAttendance.js';
 
@@ -39,7 +39,8 @@ const accessRoute = [
     { routeName: 'state', roles: ['superadmin', 'admin'] },
     { routeName: 'city', roles: ['superadmin', 'admin'] },
     { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
-    { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] }
+    { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] },
+    { routeName: 'taskAssign', roles: ['superadmin', 'admin'] }
 ]
 
 // Accounts
@@ -272,7 +273,18 @@ FlowRouter.route('/leaveApproveList', {
                 }
             })
         }
-
+    }
+});
+FlowRouter.route('/taskAssign', {
+    name: 'taskAssign',
+    action() {
+        if (requiredLogin()) {
+            mount(MainLayout, {
+                content() {
+                    return <TaskAssign />
+                }
+            })
+        }
     }
 });
 // 400 Access Permission
@@ -351,9 +363,9 @@ FlowRouter.route('/generalSetting', {
 
 FlowRouter.route('/adminAttendance', {
     name: 'AdminAttendance',
-    action(){
+    action() {
         mount(MainLayout, {
-            content(){
+            content() {
                 return <AdminAttendance />
             }
         })
@@ -362,7 +374,7 @@ FlowRouter.route('/adminAttendance', {
 
 FlowRouter.route('/adminTodayAttendance', {
     name: 'AdminTodayAttendance',
-    action(){
+    action() {
         mount(MainLayout, {
             content() {
                 return <AdminTodayAttendance />
@@ -384,9 +396,9 @@ FlowRouter.route('/WrapperDate', {
 
 FlowRouter.route('/holiday', {
     name: 'Holiday',
-    action(){
+    action() {
         mount(MainLayout, {
-            content(){
+            content() {
                 return <Holiday />
             }
         })
@@ -395,9 +407,9 @@ FlowRouter.route('/holiday', {
 
 FlowRouter.route('/salary', {
     name: 'Salary',
-    action(){
+    action() {
         mount(MainLayout, {
-            content(){
+            content() {
                 return <Salary />
             }
         })
