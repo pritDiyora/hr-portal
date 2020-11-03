@@ -27,7 +27,7 @@ export default class LeaveApproveList extends Component {
             pageLength: parseInt(event.target.value)
         }, () => {
             this.getLeaveData();
-        })
+        });
     }
     componentDidMount() {
         this.getLeaveData();

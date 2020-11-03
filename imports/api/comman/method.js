@@ -79,7 +79,6 @@ if (Meteor.isServer) {
             } else {
                 return LeaveType.update({ _id: lid }, { $set: { isPaid: true } })
             }
-
         },
         'deleteLeaveType': (lid) => {
             return LeaveType.remove({ _id: lid });

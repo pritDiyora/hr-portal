@@ -2919,8 +2919,9 @@ a.forum-item-title:hover {
 .tabs-container .nav-tabs > li.active > a,
 .tabs-container .nav-tabs > li.active > a:hover,
 .tabs-container .nav-tabs > li.active > a:focus {
-  border: 1px solid #e7eaec;
+  border: 2px solid #e7eaec;
   border-bottom-color: transparent;
+  border-top-color: #1ab394;
 }
 .tabs-container .nav-tabs {
   border-bottom: 1px solid #e7eaec;
@@ -3962,12 +3963,25 @@ code {
   border-style: solid solid none;
   border-width: 1px 0;
 }
+.ibox-content1 {
+  background-color: #ffffff;
+  color: inherit;
+  padding: 15px 20px 20px 20px;
+  margin: 0;
+}
 .ibox-footer {
   color: inherit;
   border-top: 1px solid #e7eaec;
   font-size: 90%;
   background: #ffffff;
   padding: 10px 15px;
+}
+.ibox-footer1 {
+  color: inherit;
+  font-size: 90%;
+  border-top: 1px solid #e7eaec;
+  background: #ffffff;
+ margin-top: 320px;
 }
 table.table-mail tr td {
   padding: 12px;
@@ -9060,7 +9074,6 @@ input {
   font-size: 15px;
   background-color: #fff;
   color: #333;
-  height: 34px;
 }
 .modal .modal-body {
   padding: 30px;
@@ -9102,11 +9115,11 @@ input {
 
 .reason{
   border-color: #e3e3e3;
-    border-radius: 0;
-    box-shadow: none;
-    font-size: 15px;
-    background-color: #fff;
-    color: #333;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 15px;
+  background-color: #fff;
+  color: #333;
   height: 70px;
   width: 100%;
 }
@@ -9177,3 +9190,141 @@ input {
     font-weight: bold;
 }
 /* Popup box BEGIN */
+
+
+ .header-title {
+  font-size: 22px;
+  color: #1d244f;
+  font-weight: 800;
+  padding-bottom: 10px;
+  margin-left:15px ;
+}
+
+.main-form-wrapper {
+  border-radius: 4px;
+  box-shadow: 0 4px 26px 0 rgba(0, 0, 0, 0.14);
+  background-color: #ffffff;
+  padding-top: 10px;
+  min-height: 500px;
+  margin-top: 100px;
+}
+.main-form-header {
+  display: flex;
+  justify-content: space-between;
+}
+.main-form-header .header-subtitle {
+  color: #b0b2c1;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 5px;
+}
+
+.addmore{
+  color: #006621;
+}
+
+.experience-box {
+  position: relative;
+  margin: 10px;
+}
+.experience-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.experience-list > li .experience-user {
+  background: transparent;
+  height: 10px;
+  left: 4px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 4px;
+  width: 10px;
+}
+.before-circle {
+  background-color: #555555;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+}
+.experience-list > li {
+  position: relative;
+}
+.experience-list > li .experience-content {
+  background-color: transparent;
+  margin: 0 0 20px 40px;
+  padding: 0;
+  position: relative;
+}
+.experience-list > li .experience-content .timeline-content {
+  color: #bbc4cc;
+}
+.experience-list::before {
+  background: #555555;
+  bottom: 0;
+  content: "";
+  left: 8px;
+  position: absolute;
+  top: 8px;
+  width: 2px;
+}
+.card {
+  background-color: #fff;
+  border: 1px solid #e7eaec;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+.card-title {
+  color: #555555;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  margin-left: 15px;
+  margin-top: 15px;
+  margin-right: 10px;
+}
+.profile-box {
+  min-height: auto;
+}
+.flex-fill {
+  -ms-flex: 1 1 auto!important;
+  flex: 1 1 auto!important;
+}
+.edit-icon {
+  background-color: transparent;
+  border: 1px solid #555555;
+  border-radius: 24px;
+  color: #bbb;
+  float: right;
+  font-size: 12px;
+  line-height: 24px;
+  min-height: 26px;
+  text-align: center;
+  width: 26px;
+  margin-right: 5px;
+}
+.experience-list > li .experience-content .timeline-content a.name {
+  color: #555555;
+  font-weight: bold;
+}
+.card-body{
+  margin-left: 20px;
+}
+
+.modal-content1{
+  position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    outline: 0;
+}
+

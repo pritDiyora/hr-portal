@@ -146,8 +146,8 @@ class EmployeeAttendance extends Component {
       })
       let value = {
         BreakTime: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes((Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
-        FirstTime: moment(first).format("HH:mm:ss"),
-        LastTime: moment(last).format("HH:mm:ss")
+        FirstTime: moment(first).format("hh:mm:ss a"),
+        LastTime: moment(last).format("hh:mm:ss a")
       }
       return value
     } else {

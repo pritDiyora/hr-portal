@@ -326,4 +326,3 @@ export default class Holiday extends Component {
   }
 }
 
-

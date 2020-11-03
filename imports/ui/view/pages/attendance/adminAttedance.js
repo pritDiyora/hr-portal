@@ -66,9 +66,6 @@ class AdminAttendances extends Component {
       }
     });
   }
-
-  
-
   getDaysArray = (year, month) => {
     month = moment().format("MM");
     year = moment().format("YYYY")
@@ -120,7 +117,6 @@ class AdminAttendances extends Component {
             startdate.add(1, 'day');
           }
           dayOfDate.map((dayOfDate) => dayOfDate)
-          
         }
       }
     }

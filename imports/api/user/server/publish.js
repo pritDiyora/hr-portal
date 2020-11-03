@@ -48,7 +48,7 @@ if (Meteor.isServer) {
 
 
   Meteor.publish('updateprofile', function (id) {
-    return User.find({ _id: id });
+    return User.findOne({ _id: id });
   })
 
 

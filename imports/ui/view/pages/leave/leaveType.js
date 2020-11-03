@@ -102,8 +102,6 @@ export default class LeaveType extends Component {
             },
             callback: function (result) {
                 if (result) {
-
-                    console.log('self :: ', self);
                     Meteor.call('deleteLeaveType', self.state.leaveTypeId, function (err, res) {
                         if (!err) {
                             toast.success("Leavetype deleted successfully..." , res)
@@ -235,7 +233,7 @@ export default class LeaveType extends Component {
                         </div>
                         <div className="ibox-content">
                             <div className="row text-center">
-                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i class="fa fa-plus"></i> Add LeaveType</a>
+                                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i> Add LeaveType</a>
                                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                                     <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                                         <div className="dataTables_length" id="example_length">
