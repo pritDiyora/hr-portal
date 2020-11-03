@@ -30,11 +30,6 @@ Schemas.Attendance =  new SimpleSchema({
   },
   createdBy: {
     type: String,
-    autoValue() {
-      if (this.isInsert) {
-        return this.userId;
-      }
-    }
   },
   modifiedAt: {
     type: Date,
@@ -46,11 +41,6 @@ Schemas.Attendance =  new SimpleSchema({
   },
   modifiedBy: {
     type: String,
-    autoValue() {
-      if (this.isInsert) {
-        return this.userId;
-      }
-    }
   },
   
 })

@@ -137,7 +137,7 @@ class EmployeeAttendance extends Component {
       let first = getPunchInTime[0];
       let last = moment(getPunchOutTime[getPunchOutTime.length - 1])
       getPunchInTime.shift();
-      // getPunchOutTime.splice(-1, 1)
+      getPunchOutTime.splice(-1, 1)
       getPunchOutTime.map((t, index) => {
         let getInTime = moment(getPunchInTime[index]);
         let getOutTime = moment(t);
@@ -412,14 +412,18 @@ class EmployeeAttendance extends Component {
                             let breakTime = data.BreakTime
                             // console.log('breakTime :: ', breakTime);
                             let firstTime = data.FirstTime
-                            let lastTime = data.LastTime
+                            let lastTime = data.LastTime == moment().format("HH:mm:ss") ? "00:00:00" : data.LastTime
+                            // console.log('total :: ', lastTime);
                             let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
+                            // console.log('total :: ', total);
+                            
                             let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(breakTime, "HH:mm:ss"))).format("HH:mm:ss")
+                            
                             return (
                               <tr key={attendance._id}>
                                 <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
                                 <td>{firstTime}</td>
-                                <td>{lastTime == moment().format("HH:mm:ss") ? "00:00:00" : lastTime}</td>
+                                <td>{lastTime}</td>
                                 <td>{total}</td>
                                 <td>{workHrs}</td>
                                 <td>{breakTime}</td>

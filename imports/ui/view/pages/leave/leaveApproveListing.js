@@ -151,7 +151,9 @@ export default class LeaveApproveList extends Component {
                     sendId: Meteor.userId(),
                     receiverId: [rId],
                     type: 'leaveApproved',
-                    createdAtDate: new Date()
+                    createdAtDate: new Date(),
+                    createdBy: Meteor.userId(),
+                    modifiedBy: Meteor.userId()
                 }
                 Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
                     if (!err) {
@@ -178,7 +180,9 @@ export default class LeaveApproveList extends Component {
                     sendId: Meteor.userId(),
                     receiverId: [rId],
                     type: 'leaveDecline',
-                    createdAtDate: new Date()
+                    createdAtDate: new Date(),
+                    createdBy: Meteor.userId(),
+                    modifiedBy: Meteor.userId()
                 }
                 Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
                     if (!err) {

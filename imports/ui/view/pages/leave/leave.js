@@ -271,7 +271,9 @@ class ApplyLeave extends Component {
                     sendId: Meteor.userId(),
                     receiverId: self.state.user,
                     type: 'leaveApproveList',
-                    createdAtDate: new Date()
+                    createdAtDate: new Date(),
+                    createdBy: Meteor.userId(),
+                    modifiedBy: Meteor.userId()
                 }
                 Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
                     if (!err) {

@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/index';
 import GeneralSetting from '../imports/api/generalsetting/generalsetting';
+
 Meteor.startup(async () => {
     process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
 
@@ -29,8 +30,12 @@ Meteor.startup(async () => {
             carryForwardLeave: 3,
             yearlyLeave: 12,
             // noOfLeave:"month",
-            workDayOfMonth: 26
+            workDayOfMonth: 26,
+            from: "10 AM",
+            to: "19 PM"
+            
         };
-         GeneralSetting.insert(general);
+        GeneralSetting.insert(general);
     }
+   
 });

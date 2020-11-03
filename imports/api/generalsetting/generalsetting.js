@@ -31,6 +31,12 @@ Schemas.GeneralSetting = new SimpleSchema({
   workDayOfMonth: {
     type: Number
   },
+  from: {
+    type: String
+  },
+  to: {
+    type: String
+  }, 
   isActive: {
     type: Boolean,
     defaultValue: true
