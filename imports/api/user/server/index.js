@@ -5,14 +5,15 @@ import GeneralSetting from '../../generalsetting/generalsetting';
 import Notification from '../../notification/notification';
 import Attendance from '../../attendance/attendance';
 import { Promise } from "meteor/promise";
+var CronJob = require('cron').CronJob;
 
 if (Meteor.isServer) {
-  var CronJob = require('cron').CronJob;
-  var job = new CronJob('52 18 * * 1-6', function () {
-    
+  let officeTime = GeneralSetting.findOne({ 'isActive': true }, { fields: { 'to': 1 } })
+  let officetime = officeTime.to
+  var job = new CronJob(`0 15 ${officetime} * * 1-6`, function () {
     sendNotificationToUserForClockOut();
     console.log('You will see this message every minutes', new Date());
-  }, null, true, 'America/Los_Angeles');
+  });
   job.start();
 
   async function sendNotificationToUserForClockOut() {
@@ -37,11 +38,11 @@ if (Meteor.isServer) {
       })
     }
   }
-  var CronJob = require('cron').CronJob;
-  var job = new CronJob('54 18 * * 1-6', function () {
+
+  var job = new CronJob(`0 45 ${officetime} * * 1-6`, function () {
     autometicallyClockout();
     console.log('You will see this message every minutes', new Date());
-  }, null, true, 'America/Los_Angeles');
+  });
   job.start();
 
   async function autometicallyClockout(){
@@ -65,6 +66,5 @@ if (Meteor.isServer) {
       })
     }
   }
-  // let officeTime = GeneralSetting.findOne({ 'isActive': true }, { fields: { 'to': 1 } })
-  // console.log('officeTime :: ', officeTime);
+  
 }

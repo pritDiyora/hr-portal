@@ -55,8 +55,8 @@ class GeneralSettings extends Component {
       yearlyLeave: parseInt(yearlyleave),
       // noOfLeave: noofleave,
       workDayOfMonth: parseInt(workDayOfMonth),
-      from: from,
-      to: to
+      from: parseInt(from),
+      to: parseInt(to)
     }
     Meteor.call('updateGeneraleSetting', generaleSetting, id, function (err, result) {
       if (!err) {
@@ -208,7 +208,7 @@ class GeneralSettings extends Component {
                   <div className="col-md-12">
                     <div className="col-md-6">
                       <label>From</label>
-                      <input type="text"
+                      <input type="number"
                         name="from"
                         className="form-control"
                         value={this.state.from}
@@ -217,7 +217,7 @@ class GeneralSettings extends Component {
                     </div>
                     <div className="col-md-6">
                       <label>To</label>
-                      <input type="text"
+                      <input type="number"
                         name="to"
                         className="form-control"
                         value={this.state.to}

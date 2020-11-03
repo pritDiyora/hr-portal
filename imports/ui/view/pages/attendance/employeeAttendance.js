@@ -254,7 +254,7 @@ class EmployeeAttendance extends Component {
                   </li>
                   <li className="list-group-item">
                     <h4>Punch Out at</h4>
-                    <span>{this.state.lastTime== moment().format("HH:mm:ss a") ? "00:00:00" : this.state.lastTime} hrs</span>
+                    <span>{this.state.lastTime== moment().format("hh:mm:ss a") ? "00:00:00" : this.state.lastTime} hrs</span>
                   </li>
                   <li className="list-group-item">
                     <div className="row">
@@ -412,15 +412,9 @@ class EmployeeAttendance extends Component {
                             let breakTime = data.BreakTime
                             // console.log('breakTime :: ', breakTime);
                             let firstTime = data.FirstTime
-                            console.log(firstTime);
-                            
-                            let lastTime = data.LastTime == moment().format("HH:mm:ss a") ? "00:00:00" : data.LastTime
-                            // console.log('total :: ', lastTime);
-                            let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
-                            console.log('total :: ', total);
-                            
-                            let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(breakTime, "HH:mm:ss"))).format("HH:mm:ss")
-                            
+                            let lastTime = data.LastTime == moment().format("hh:mm:ss a") ? "---" : data.LastTime
+                            let total = lastTime == "---" ? "---" : moment.utc(moment(lastTime, "hh:mm:ss a").diff(moment(firstTime, "hh:mm:ss a"))).format("HH:mm:ss")
+                            let workHrs = total == "---" ? "---" : moment.utc(moment(total, "hh:mm:ss").diff(moment(breakTime, "hh:mm:ss"))).format("HH:mm:ss")
                             return (
                               <tr key={attendance._id}>
                                 <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
@@ -481,10 +475,6 @@ export default withTracker(() => {
   let firstDay = new Date(first)
   let lastDay = new Date(last)
 
-  //month
-  let monthData = new Date()
-  monthData.setMonth(monthData.getMonth())
-
   //let user 
   let userId = Meteor.userId();
   if (FlowRouter.current().queryParams.id) {
@@ -494,7 +484,7 @@ export default withTracker(() => {
     todayInOutList: Attendance.find({ "userId": userId, "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": -1 } }).fetch(),
     todayBreakList: Attendance.find({ "userId": userId, "dateTime": { $gte: start, $lt: end } }, { sort: { "dateTime": +1 } }).fetch(),
     weekInOutList: Attendance.find({ "userId": userId, "dateTime": { $gte: firstDay, $lt: lastDay } }).fetch(),
-    monthInOutList: Attendance.find({ "userId": userId, "dateTime": { $lte: monthData } }).fetch(),
+    monthInOutList: Attendance.find({ "userId": userId, $where : 'this.dateTime.getMonth() == new Date().getMonth()'}).fetch(),
     hoursData: GeneralSetting.findOne({})
   }
 })(EmployeeAttendance); 
