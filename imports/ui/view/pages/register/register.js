@@ -111,11 +111,11 @@ export default class Registration extends Component {
         <div className="container">
           <div className="col-md-6"></div>
           <div className="col-md-6">
-            <div class="ibox main-form-wrapper">
+            <div className="ibox main-form-wrapper">
               <div className="ibox-content1">
-                <div class="main-form-header">
-                  <h3 class="header-title">Create an Account</h3>
-                  <span class="header-subtitle">Already have an account? <a href="/">Sign In</a></span>
+                <div className="main-form-header">
+                  <h3 className="header-title">Create an Account</h3>
+                  <span className="header-subtitle">Already have an account? <a href="/">Sign In</a></span>
                 </div>
                 <form className="m-t" onSubmit={(e) => this.registerSubmit(e)}>
                   <fieldset>
@@ -174,7 +174,7 @@ export default class Registration extends Component {
                     </div>
                     <div className="col-md-12 form-group no-padding" style={{ marginTop: "10px" }}>
                       <div className="col-md-6">
-                      <label>Password</label>
+                        <label>Password</label>
                         <input
                           type="password"
                           className="form-control"
@@ -186,7 +186,7 @@ export default class Registration extends Component {
                         />
                       </div>
                       <div className="col-md-6">
-                      <label>Confirm Password</label>
+                        <label>Confirm Password</label>
                         <input
                           type="password"
                           data-onblur

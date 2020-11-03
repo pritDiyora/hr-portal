@@ -122,7 +122,7 @@ class LeftSidemenu extends Component {
             }
             {this.AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {this.AccessPermission() ? <li><a href="/taskAssign"><i className="fa fa-tasks"></i> <span className="nav-label">Task Assign</span></a> </li> : <a href="/accesspermission"></a>
+            {this.AccessPermission() ? <li><a href="/TaskAssign"><i className="fa fa-tasks"></i> <span className="nav-label">Task Assign</span></a> </li> : <a href="/accesspermission"></a>
             }
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
@@ -130,7 +130,9 @@ class LeftSidemenu extends Component {
             <li>
               <a href="/leave"><img src="img/icon.png" alt="image" width="15px" /> <span className="nav-label">Leave</span></a>
             </li>
-
+            <li>
+              <a href="/task"><i className="fa fa-list"></i><span className="nav-label">Task</span></a>
+            </li>
 
           </ul>
 

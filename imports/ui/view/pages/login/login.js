@@ -33,11 +33,11 @@ export default class Login extends Component {
         <div className="container">
           <div className="col-md-6"></div>
           <div className="col-md-6">
-            <div class="ibox main-form-wrapper">
+            <div className="ibox main-form-wrapper">
               <div className="ibox-content1">
-                <div class="main-form-header">
-                  <h3 class="header-title">Sign In</h3>
-                  <span class="header-subtitle">Don't have an account? <a href="/register">Sign Up</a></span>
+                <div className="main-form-header">
+                  <h3 className="header-title">Sign In</h3>
+                  <span className="header-subtitle">Don't have an account? <a href="/register">Sign Up</a></span>
                 </div>
                 <div className="contanier">
                   <form className="m-t" role="form" onSubmit={(e) => { this.loginSubmit(e) }}>

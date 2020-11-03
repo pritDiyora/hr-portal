@@ -254,7 +254,7 @@ class EmployeeAttendance extends Component {
                   </li>
                   <li className="list-group-item">
                     <h4>Punch Out at</h4>
-                    <span>{this.state.lastTime== moment().format("HH:mm:ss") ? "00:00:00" : this.state.lastTime} hrs</span>
+                    <span>{this.state.lastTime== moment().format("HH:mm:ss a") ? "00:00:00" : this.state.lastTime} hrs</span>
                   </li>
                   <li className="list-group-item">
                     <div className="row">
@@ -412,10 +412,12 @@ class EmployeeAttendance extends Component {
                             let breakTime = data.BreakTime
                             // console.log('breakTime :: ', breakTime);
                             let firstTime = data.FirstTime
-                            let lastTime = data.LastTime == moment().format("HH:mm:ss") ? "00:00:00" : data.LastTime
+                            console.log(firstTime);
+                            
+                            let lastTime = data.LastTime == moment().format("HH:mm:ss a") ? "00:00:00" : data.LastTime
                             // console.log('total :: ', lastTime);
                             let total = moment.utc(moment(lastTime, "HH:mm:ss").diff(moment(firstTime, "HH:mm:ss"))).format("HH:mm:ss")
-                            // console.log('total :: ', total);
+                            console.log('total :: ', total);
                             
                             let workHrs = moment.utc(moment(total, "HH:mm:ss").diff(moment(breakTime, "HH:mm:ss"))).format("HH:mm:ss")
                             

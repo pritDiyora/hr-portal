@@ -23,7 +23,7 @@ import NotFoundPage from '../../imports/ui/view/pages/notFoundPage/NotFoundPage'
 import AccessPermissionPage from '../../imports/ui/view/pages/accessPermissionPage/AccessPermissionPage';
 import LeaveType from '../../imports/ui/view/pages/leave/leaveType';
 import Leave from '../../imports/ui/view/pages/leave/leave';
-import TaskAssign from '../../imports/ui/view/pages/taskasssign/taskassign';
+import Taskassign from '../../imports/ui/view/pages/taskasssign/taskassign';
 import AdminAttendance from '../../imports/ui/view/pages/attendance/adminAttedance.js';
 import AdminTodayAttendance from '../../imports/ui/view/pages/attendance/adminTodayAttendance.js';
 
@@ -40,7 +40,7 @@ const accessRoute = [
     { routeName: 'city', roles: ['superadmin', 'admin'] },
     { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
     { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] },
-    { routeName: 'taskAssign', roles: ['superadmin', 'admin'] }
+    { routeName: 'TaskAssign', roles: ['superadmin', 'admin'] }
 ]
 
 // Accounts
@@ -275,13 +275,13 @@ FlowRouter.route('/leaveApproveList', {
         }
     }
 });
-FlowRouter.route('/taskAssign', {
-    name: 'taskAssign',
+FlowRouter.route('/TaskAssign', {
+    name: 'TaskAssign',
     action() {
         if (requiredLogin()) {
             mount(MainLayout, {
                 content() {
-                    return <TaskAssign />
+                    return <Taskassign />
                 }
             })
         }
