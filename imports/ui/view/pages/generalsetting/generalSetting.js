@@ -16,11 +16,12 @@ class GeneralSettings extends Component {
       monthleave: "",
       carryForwardLeave: "",
       yearlyleave: "",
-      
       // noofleave: "",
       button: false,
       id: "",
-      workDayOfMonth: ""
+      workDayOfMonth: "",
+      from: "",
+      to: ""
     }
   }
 
@@ -35,13 +36,15 @@ class GeneralSettings extends Component {
       carryForwardLeave: nextpops.hoursData.carryForwardLeave,
       yearlyleave: nextpops.hoursData.yearlyLeave,
       // noofleave: nextpops.hoursData.noOfLeave,
-      workDayOfMonth: nextpops.hoursData.workDayOfMonth
+      workDayOfMonth: nextpops.hoursData.workDayOfMonth,
+      from: nextpops.hoursData.from,
+      to: nextpops.hoursData.to
     })
   }
 
   addHours() {
     let { todayHrs, weekHrs, monthHrs, yearlyleave,
-      overHrs, id, monthleave, carryForwardLeave, noofleave, workDayOfMonth } = this.state;
+      overHrs, id, monthleave, carryForwardLeave, noofleave, workDayOfMonth, from, to } = this.state;
     let generaleSetting = {
       todayHrs: parseInt(todayHrs),
       weekHrs: parseInt(weekHrs),
@@ -51,7 +54,9 @@ class GeneralSettings extends Component {
       carryForwardLeave: parseInt(carryForwardLeave),
       yearlyLeave: parseInt(yearlyleave),
       // noOfLeave: noofleave,
-      workDayOfMonth: parseInt(workDayOfMonth)
+      workDayOfMonth: parseInt(workDayOfMonth),
+      from: from,
+      to: to
     }
     Meteor.call('updateGeneraleSetting', generaleSetting, id, function (err, result) {
       if (!err) {
@@ -192,6 +197,35 @@ class GeneralSettings extends Component {
                   </div>
                 </div>
                 
+                <div className="row">
+                  <div className="col-sm-12">
+                    <div className="col-sm-4">
+                      <label className="mainheading">Office Time</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <div className="col-md-12">
+                    <div className="col-md-6">
+                      <label>From</label>
+                      <input type="text"
+                        name="from"
+                        className="form-control"
+                        value={this.state.from}
+                        onChange={(e) => this.generalSetting(e)}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label>To</label>
+                      <input type="text"
+                        name="to"
+                        className="form-control"
+                        value={this.state.to}
+                        onChange={(e) => this.generalSetting(e)}
+                      />
+                    </div>
+                  </div>
+                </div>
                 
                 <div className="form-group row">
                   <div className="col-md-6" style={{ textAlign: "right" }}>

@@ -12,11 +12,6 @@ Schemas.Notification = new SimpleSchema({
     },
     sendId: {
         type: String,
-        autoValue() {
-            if (this.isInsert) {
-                return this.userId;
-            }
-        }
     },
     receiverId: {
         type: Array
@@ -48,11 +43,6 @@ Schemas.Notification = new SimpleSchema({
     },
     createdBy: {
         type: String,
-        autoValue() {
-            if (this.isInsert) {
-                return this.userId;
-            }
-        }
     },
     modifiedAt: {
         type: Date,
@@ -64,11 +54,6 @@ Schemas.Notification = new SimpleSchema({
     },
     modifiedBy: {
         type: String,
-        autoValue() {
-            if (this.isInsert) {
-                return this.userId;
-            }
-        }
     },
     approveBy: {
         type: String,

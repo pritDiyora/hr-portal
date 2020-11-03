@@ -38,7 +38,8 @@ class Header extends Component {
 	}
 	setTiming() {
 		let chkInStatus = Meteor.user() && Meteor.user().profile.clockStatus;
-		if (chkInStatus) {
+		console.log('chkInStatus :: ', chkInStatus);
+		if (chkInStatus == true) {
 			this.countdown = setInterval(() => {
 				let { checkInOutList } = this.props;
 				let dateTime = checkInOutList && checkInOutList.dateTime && moment(checkInOutList.dateTime).format("HH:mm:ss");
@@ -90,7 +91,9 @@ class Header extends Component {
 			userId: Meteor.userId(),
 			isCheckIn: !Meteor.user().profile.clockStatus,
 			dateTime: new Date(),
-			date: moment().format("YYYY-MM-DD")
+			date: moment().format("YYYY-MM-DD"),
+			createdBy: Meteor.userId(),
+			modifiedBy: Meteor.userId()
 		}
 		Meteor.call('checkInOut', value);
 	}
