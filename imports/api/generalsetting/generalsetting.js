@@ -32,10 +32,10 @@ Schemas.GeneralSetting = new SimpleSchema({
     type: Number
   },
   from: {
-    type: String
+    type: Number
   },
   to: {
-    type: String
+    type: Number
   }, 
   isActive: {
     type: Boolean,
