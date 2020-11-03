@@ -122,6 +122,8 @@ class LeftSidemenu extends Component {
             }
             {this.AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
+            {this.AccessPermission() ? <li><a href="/taskAssign"><i className="fa fa-tasks"></i> <span className="nav-label">Task Assign</span></a> </li> : <a href="/accesspermission"></a>
+            }
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
             </li>
