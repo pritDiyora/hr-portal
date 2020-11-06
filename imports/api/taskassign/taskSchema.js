@@ -2,13 +2,13 @@ import { Mongo } from 'meteor/mongo';
 
 schema = {}
 
-const Taskassign = new Mongo.Collection('taskassign');
+const TaskAssign = new Mongo.Collection('TaskAssign');
 
-schema.Taskassign = new SimpleSchema({
+schema.TaskAssign = new SimpleSchema({
     userId: {
         type: String
     },
-    dateTime: {
+    taskDate: {
         type: Date
     },
     status: {
@@ -45,6 +45,6 @@ schema.Taskassign = new SimpleSchema({
         }
     }
 });
-Taskassign.attachSchema(schema.Taskassign);
+TaskAssign.attachSchema(schema.TaskAssign);
 
-export default Taskassign;
+export default TaskAssign;

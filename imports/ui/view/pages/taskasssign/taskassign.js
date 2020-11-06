@@ -7,19 +7,22 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import bootbox from 'bootbox';
-
-class TaskAssign extends Component {
+import { DatePicker, DatePickerInput } from 'rc-datepicker';
+import 'rc-datepicker/lib/style.css';
+import TaskAssign from '../../../../api/taskassign/taskSchema';
+class Taskassign extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       userid: "",
       status: "",
-      datetime: "",
+      taskdate: "",
       description: "",
       button: false,
       displayedTask: [],
       sortbutton: "default",
+      taskid: "",
       //table (sorting,seraching,pagination)
       pageLength: 10,
       searchStr: "",
@@ -31,14 +34,14 @@ class TaskAssign extends Component {
     }
   }
   componentDidMount() {
-    this.getStateData();
+    this.getTaskAssignData();
   }
   showhandle(event) {
     this.setState({
       currentPage: 1,
       pageLength: parseInt(event.target.value)
     }, () => {
-      this.getStateData();
+      this.getTaskAssignData();
     })
   }
   handlePageChange(pageNumber) {
@@ -47,7 +50,7 @@ class TaskAssign extends Component {
     this.setState({
       currentPage, totalpage
     }, () => {
-      this.getStateData();
+      this.getTaskAssignData();
     });
   }
   search(e) {
@@ -55,46 +58,47 @@ class TaskAssign extends Component {
       currentPage: 1,
       searchStr: e.target.value
     }, () => {
-      this.getStateData();
+      this.getTaskAssignData();
     })
   }
-  getStateData() {
+  getTaskAssignData() {
     const self = this;
     let pipeline = [
       {
         "$lookup": {
-          from: "country",
-          localField: "countryId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
-          as: "countryname"
+          as: "username"
         }
       },
-      { "$unwind": "$countryname" },
+      { "$unwind": "$username" },
       {
         "$match": {
           "$or": [
-            { "countryname.countryname": { $regex: this.state.searchStr, $options: 'i' } },
-            { stateName: { $regex: this.state.searchStr, $options: 'i' } }
+            { "username.profile.firstName": { $regex: self.state.searchStr, $options: 'i' } },
+            { "taskDate": { $regex: self.state.searchStr, $options: 'i' } },
+            { "status": { $regex: self.state.searchStr, $options: 'i' } },
+            { "description": { $regex: self.state.searchStr, $options: 'i' } }
           ]
         }
       },
-      { "$sort": { [this.state.sortKey]: this.state.sortValue } },
-      { "$skip": (this.state.currentPage - 1) * this.state.pageLength },
-      { "$limit": this.state.pageLength },
+      { "$sort": { [self.state.sortKey]: self.state.sortValue } },
+      { "$skip": (self.state.currentPage - 1) * self.state.pageLength },
+      { "$limit": self.state.pageLength },
     ];
-    Meteor.call("searchState", pipeline, function (err, res) {
+    Meteor.call("searchTask", pipeline, function (err, res) {
       if (!err) {
-        Meteor.call("countStatedata", res, function (err1, res1) {
+        Meteor.call("countTaskdata", res, function (err1, res1) {
           if (!err) {
             self.setState({ totalpage: res1 });
           }
         })
-        self.setState({ displayedState: res });
+        self.setState({ displayedTask: res });
       } else {
         toast.error(err.message);
       }
     });
-
   }
   ascDesc(e, keyName) {
     let { sortKey, sortValue } = this.state;
@@ -104,7 +108,7 @@ class TaskAssign extends Component {
         sortKey: keyName,
         currentPage: 1
       }, () => {
-        this.getStateData();
+        this.getTaskAssignData();
       })
     } else {
       this.setState({
@@ -112,41 +116,38 @@ class TaskAssign extends Component {
         sortKey: keyName,
         currentPage: 1
       }, () => {
-        this.getStateData();
+        this.getTaskAssignData();
       })
     }
   }
-  addstate(e) {
+  addTask(e) {
     e.preventDefault();
-    let { countryid, statename } = this.state, self = this;
+    let { userid, status, taskdate, description } = this.state, self = this;
+    let task = {
+      userId: userid,
+      status: status,
+      taskDate: taskdate,
+      description: description
+    };
     if (this.state.button == true) {
-      Meteor.call('updatestatedata', countryid, statename, this.state.stateid, function (err, result) {
+      Meteor.call('updateTaskdata', task, this.state.taskid, function (err, result) {
         if (!err) {
-          toast.success("State updated successfullt...", result);
+          toast.success("Task updated successfullt...", result);
           $("#add-panel").modal("hide");
-          self.setState({
-            countryid: "",
-            statename: "",
-            button: false
-          })
-          self.getStateData();
+          self.setState({ userid: "", status: "", taskdate: "", description: '', button: false, stateid: "" })
+          self.getTaskAssignData();
         } else {
           toast.error(err.message);
-
         }
       })
-      this.setState({ countryid: "", statename: "", button: false, stateid: "" })
+      self.setState({ userid: "", status: "", taskdate: "", description: '', button: false, stateid: "" })
     } else {
-      Meteor.call('addstate', countryid, statename, function (err, result) {
+      Meteor.call('addTaskOfUser', task, function (err, result) {
         if (!err) {
-          toast.success("State added successfully...", result);
+          toast.success("Task added successfully...", result);
           $("#add-panel").modal("hide");
-          self.setState({
-            countryid: "",
-            statename: "",
-            button: false
-          })
-          self.getStateData();
+          self.setState({ userid: "", status: "", taskdate: "", description: '' })
+          self.getTaskAssignData();
         } else {
           toast.error(err.message);
 
@@ -159,7 +160,7 @@ class TaskAssign extends Component {
   }
   openmodeldelete(e, id) {
     const self = this;
-    self.setState({ stateId: id })
+    self.setState({ taskid: id })
     bootbox.confirm({
       message: "Are you sure you want to delete.. ?",
       className: 'rubberBand animated',
@@ -175,10 +176,10 @@ class TaskAssign extends Component {
       },
       callback: function (result) {
         if (result) {
-          Meteor.call('deletestate', self.state.stateId, function (err, res) {
+          Meteor.call('deletetask', self.state.taskid, function (err, res) {
             if (!err) {
               toast.success("State deleted successfully...", res)
-              self.getStateData();
+              self.getTaskAssignData();
             } else {
               toast.error(err.message)
             }
@@ -189,8 +190,8 @@ class TaskAssign extends Component {
   }
 
   updaterecord(e, id) {
-    let state = this.state.displayedState.find(state => state._id == id);
-    this.setState({ countryid: state.countryId, statename: state.stateName, button: true, stateid: id })
+    let task = this.state.displayedTask.find(task => task._id == id);
+    this.setState({ userid: task.userId, status: task.status, taskdate: task.taskDate, description: task.description, button: true, taskid: id })
     $("#add-panel").modal("show");
   }
   cancel(e) {
@@ -210,70 +211,73 @@ class TaskAssign extends Component {
             <div className="ibox-content">
               <div className="row text-center">
                 <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add Task</a>
-                {/* <div className="col-sm-12" style={{ marginBottom: "15px" }}>
-                                    <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
-                                        <div className="dataTables_length" id="example_length">
-                                            <label className="dataTables_length text">Show <select name="example_length" value={this.state.pageLength}
-                                                className="form-control" onChange={this.showhandle.bind(this)}>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select> entries</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6" style={{ paddingRight: "0px" }}>
-                                        <div className="page1" id="example_length">
-                                            <label className="dataTables_length1 text">Search :
+                <div className="col-sm-12" style={{ marginBottom: "15px" }}>
+                  <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
+                    <div className="dataTables_length" id="example_length">
+                      <label className="dataTables_length text">Show <select name="example_length" value={this.state.pageLength}
+                        className="form-control" onChange={this.showhandle.bind(this)}>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select> entries</label>
+                    </div>
+                  </div>
+                  <div className="col-sm-6" style={{ paddingRight: "0px" }}>
+                    <div className="page1" id="example_length">
+                      <label className="dataTables_length1 text">Search :
                                             <input type="text" name="example_length" onChange={this.search.bind(this)}
-                                                    className="form-control" style={{ width: "200px" }} /></label>
-                                        </div>
+                          className="form-control" style={{ width: "200px" }} /></label>
+                    </div>
 
-                                    </div>
-                                </div>
+                  </div>
+                </div>
 
-                                <div className="container-fluid">
-                                    <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
-                                        <thead>
-                                            <tr>
-                                                <th onClick={(e) => this.ascDesc(e, "userName")}>User Name  <i className={`fa fa-sort mr-10 ${sortKey === 'userName' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
-                                                <th onClick={(e) => this.ascDesc(e, "status")}>Status  <i className={`fa fa-sort mr-10 ${sortKey === 'status' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                this.state.displayedState.map((state, i) => {
-                                                    return (
-                                                        <tr key={i}>
-                                                            <td>{state.countryname.countryname}</td>
-                                                            <td>{state.stateName}</td>
-                                                            <td>
-                                                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, state._id)}>
-                                                                    <i className="fa fa-trash-o"></i></a>
+                <div className="container-fluid">
+                  <table className="table table-striped table-bordered table-hover dataTables-example dataTable" id="dataTables-example">
+                    <thead>
+                      <tr>
+                        <th onClick={(e) => this.ascDesc(e, "userId")}>User Name  <i className={`fa fa-sort mr-10 ${sortKey === 'userId' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                        <th onClick={(e) => this.ascDesc(e, "status")}>Status  <i className={`fa fa-sort mr-10 ${sortKey === 'status' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                        <th onClick={(e) => this.ascDesc(e, "taskDate")}>Date <i className={`fa fa-sort mr-10 ${sortKey === 'taskDate' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                        <th onClick={(e) => this.ascDesc(e, "description")}>Description  <i className={`fa fa-sort mr-10 ${sortKey === 'description' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        this.state.displayedTask.map((task, i) => {
+                          return (
+                            <tr key={i}>
+                              <td>{task.username.profile.firstName}</td>
+                              <td>{task.status}</td>
+                              <td>{moment(task.taskDate).format("DD/MM/YYYY")}</td>
+                              <td>{task.description}</td>
+                              <td>
+                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, task._id)}>
+                                  <i className="fa fa-trash-o"></i></a>
+                                <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, task._id)}>
+                                  <i className="fa fa-edit"></i></a>
+                              </td>
+                            </tr>
+                          )
+                        })
+                      }
+                    </tbody>
+                  </table>
+                  <div style={{ textAlign: "right" }}>
+                    <Pagination
+                      activePage={this.state.currentPage}
+                      itemsCountPerPage={this.state.pageLength}
+                      totalItemsCount={this.state.totalpage}
+                      pageRangeDisplayed={5}
+                      onChange={this.handlePageChange.bind(this)}
 
-                                                                <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, state._id)}>
-                                                                    <i className="fa fa-edit"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-                                    <div style={{ textAlign: "right" }}>
-                                        <Pagination
-                                            activePage={this.state.currentPage}
-                                            itemsCountPerPage={this.state.pageLength}
-                                            totalItemsCount={this.state.totalpage}
-                                            pageRangeDisplayed={5}
-                                            onChange={this.handlePageChange.bind(this)}
+                    />
+                  </div>
+                </div>
 
-                                        />
-                                    </div>
-                                </div>
-                            */}
               </div>
             </div>
 
@@ -295,9 +299,8 @@ class TaskAssign extends Component {
                     <div className="form-group">
                       <label>User Name</label>
                       <select className="form-control"
-                        onChange={(e) => this.setState({ countryid: e.target.value })}
-                        value={this.state.countryid}
-                      >
+                        onChange={(e) => this.setState({ userid: e.target.value })}
+                        value={this.state.userid}>
                         <option defaultValue>Select Country</option>
                         {this.props.users.map((user) => (
                           <option value={user._id} key={user._id}>{user.profile.firstName}</option>
@@ -314,15 +317,21 @@ class TaskAssign extends Component {
                     </div>
                     <div className="form-group">
                       <label>Task Date</label>
-                      {/* <input type="text"
-                        className="form-control"
-                        onChange={(e) => this.setState({ status: e.target.value })}
-                        value={this.state.status}
-                      /> */}
+                      <DatePickerInput
+                        className='my-custom-datepicker-component'
+                        name="taskdate"
+                        //  minDate={new Date()}
+                        value={this.state.taskdate}
+                        onChange={(e) => this.setState({ taskdate: e })}
+                      />
                     </div>
                     <div className="form-group">
                       <label>Description <span className="text-danger">*</span></label>
-                      <textarea rows="4" className="reason" name="leaveReason" value={this.state.description} onChange={(e) => this.leaveHandlar(e)}></textarea>
+                      <textarea rows="4"
+                        className="reason"
+                        name="description"
+                        value={this.state.description}
+                        onChange={(e) => this.setState({ description: e.target.value })}></textarea>
                     </div>
                   </div>
 
@@ -332,8 +341,8 @@ class TaskAssign extends Component {
                 <button type="button" className="btn btn-default" id="cancel-button" data-dismiss="modal" onClick={(e) => this.cancel(e)}>Cancel</button>
                 {
                   this.state.button ?
-                    <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addstate(e) }}>Update State</button>
-                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addstate(e) }}>Add State</button>
+                    <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addTask(e) }}>Update State</button>
+                    : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addTask(e) }}>Add State</button>
                 }
               </div>
             </div>
@@ -346,8 +355,10 @@ class TaskAssign extends Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('user');
+  Meteor.subscribe('getTaskInfo');
   return {
-    users: User.find({}).fetch()
+    users: User.find({}).fetch(),
+    tasks: TaskAssign.find({}).fetch()
   }
-})(TaskAssign);
+})(Taskassign);
 

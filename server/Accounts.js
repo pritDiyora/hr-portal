@@ -3,7 +3,8 @@ import { SSR, Template } from 'meteor/meteorhacks:ssr';
 
 Accounts.config({
     forbidClientAccountCreation: true,
-    sendVerificationEmail: true
+    sendVerificationEmail: true,
+    // loginExpirationInDays: 0.02
 });
 Accounts.emailTemplates.siteName = 'ScaleTeam';
 Accounts.emailTemplates.from = 'ScaleTeam Techonolgy PVT LTD<hr@scale-team.com>';

@@ -11,6 +11,7 @@ import Leave from '../leave/leaveScheme';
 import Notification from '../notification/notification';
 import Holiday from '../holiday/holidaySchema';
 import Salary from '../salary/salarySchema';
+import TaskAssign from '../taskassign/taskSchema';
 if (Meteor.isServer) {
     Meteor.methods({
         //Add Country state and city 
@@ -91,13 +92,13 @@ if (Meteor.isServer) {
         },
         'searchAttendanceDate': (pipeline) => {
             return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
-            
+
         },
         'countUserdata': () => {
             return User.find({}).count();
         },
         'countAttendancedata': (pipeline) => {
-            
+
             return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
         },
         //general setting
@@ -108,11 +109,11 @@ if (Meteor.isServer) {
         //AdminAttendance
         'adminAttendance': (userIds, date) => {
             // date = moment().format("YYYY-MM-DD")
-            return AdminAttendance.insert({ userIds: userIds, date: date})
+            return AdminAttendance.insert({ userIds: userIds, date: date })
         },
         'updateAdminAttendance': (userIds, id) => {
-           return AdminAttendance.update({_id: id}, {$set: {userIds: userIds}})
-            
+            return AdminAttendance.update({ _id: id }, { $set: { userIds: userIds } })
+
         },
 
         'updateGeneraleSetting': (generaleSetting, id) => {
@@ -183,5 +184,21 @@ if (Meteor.isServer) {
         'countSalarydata': () => {
             return Salary.find({}).count();
         },
+        //Task
+        'addTaskOfUser': (task) => {
+            return TaskAssign.insert(task);
+        },
+        'updateTaskdata': (task, id) => {
+            return TaskAssign.update({ _id: id }, { $set: task })
+        },
+        'deletetask': (id) => {
+            return TaskAssign.remove({ _id: id });
+        },
+        'searchTask': (pipeline) => {
+            return Promise.await(TaskAssign.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countTaskdata': () => {
+            return TaskAssign.find({}).count();
+        }
     })
 }
