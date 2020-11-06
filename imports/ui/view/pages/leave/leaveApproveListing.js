@@ -125,8 +125,9 @@ export default class LeaveApproveList extends Component {
         var startDate = start || undefined, str, endDate, days;
         startDate = moment(start, "YYYY/MM/DD");
         endDate = moment(end, "YYYY/MM/DD");
-        days = endDate.diff(startDate, 'days');
+        days = endDate.diff(startDate, 'days') + 1;
         startDate.add(days, 'days');
+        console.log(days);
         if (moment(start).format('YYYY/MM/DD') == moment(end).format('YYYY/MM/DD')) {
             var startdate = new Date(start), enddate = new Date(end);
             let starthour = moment(startdate, "hh:mm"), endHour = moment(enddate, "hh:mm"), hour, minutes;

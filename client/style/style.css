@@ -8726,6 +8726,10 @@ body.md-skin {
   margin-left: 10px;
 }
 
+.rightside{
+  float: right;
+  text-align: left;
+}
 
 
 /* DayPicker styles */

@@ -1,67 +1,19 @@
 import React, { Component } from 'react'
 import { Meteor } from 'meteor/meteor'
-import Country from '../../../../api/country/country';
-import State from '../../../../api/states/states';
-import Cities from '../../../../api/cites/cites';
 import { toast } from 'react-toastify';
 import { withTracker } from 'meteor/react-meteor-data'
-import { id, tr } from 'date-fns/locale';
 import AdminAttendance from '../../../../api/attendance/adminAttendance'
 
 class AdminTodayAttendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayedUser: [],
       userAttendanceIds: [],
       userIds: '',
       date: '',
       button: false,
       adminId: ""
     }
-  }
-  componentDidMount() {
-    this.getUser();
-  }
-
-  getUser() {
-    const self = this;
-    let pipeline = [
-      {
-        "$lookup": {
-          from: "country",
-          localField: "address.0.country",
-          foreignField: "_id",
-          as: "countryname"
-        }
-      },
-      { "$unwind": "$countryname" },
-      {
-        "$lookup": {
-          from: "state",
-          localField: "address.0.state",
-          foreignField: "_id",
-          as: "statename"
-        }
-      },
-      { "$unwind": "$statename" },
-      {
-        "$lookup": {
-          from: "city",
-          localField: "address.0.city",
-          foreignField: "_id",
-          as: "cityname"
-        }
-      },
-      { "$unwind": "$cityname" },
-    ];
-    Meteor.call("searchUser", pipeline, function (err, res) {
-      if (!err) {
-        self.setState({ displayedUser: res });
-      } else {
-        toast.error(err.message);
-      }
-    });
   }
 
   addAttendance(e) {
@@ -111,7 +63,6 @@ class AdminTodayAttendance extends Component {
 
   render() {
     let { userAttendanceIds } = this.state;
-    let { adminAttendance } = this.props
     return (
       <div className="wrapper wrapper-content">
         <div className="row">
@@ -133,7 +84,8 @@ class AdminTodayAttendance extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.displayedUser.map((user) => {
+                    {this.props.users.map((user) => {
+                      console.log('user :: ', user);
                       let userId = user._id
                       let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName;
                       let isCheck = userAttendanceIds.find(d => d == userId);
@@ -165,14 +117,10 @@ class AdminTodayAttendance extends Component {
   }
 }
 export default withTracker(() => {
-  Meteor.subscribe('CountryData');
-  Meteor.subscribe('Statedata');
-  Meteor.subscribe('Citydata');
   Meteor.subscribe('adminAttendanceData');
+  Meteor.subscribe('user');
   return {
-    country: Country.find({}).fetch(),
-    states: State.find({}).fetch(),
-    city: Cities.find({}).fetch(),
+    users: User.find({'profile.userType': {$in:["admin","employee"]}}).fetch(),
     adminAttendance: AdminAttendance.findOne({ date: moment().format('YYYY/MM/DD') }),
   }
 })(AdminTodayAttendance)

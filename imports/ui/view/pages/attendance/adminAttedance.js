@@ -1,71 +1,23 @@
 import React, { Component } from 'react'
 import { Meteor } from 'meteor/meteor'
 import { withTracker } from 'meteor/react-meteor-data'
-import { toast } from 'react-toastify';
-import Country from '../../../../api/country/country';
-import State from '../../../../api/states/states';
-import Cities from '../../../../api/cites/cites';
 import AdminAttendance from '../../../../api/attendance/adminAttendance'
 import Holiday from '../../../../api/holiday/holidaySchema';
 import Leave from '../../../../api/leave/leaveScheme';
-import { tr } from 'date-fns/locale';
 
 class AdminAttendances extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayedUser: [],
       result: [],
       displayedHoliday: [],
       holidaydate: ''
     }
   }
   componentDidMount() {
-    this.getUser();
     this.getDaysArray();
-    
-
   }
-  getUser() {
-    const self = this;
-    let pipeline = [
-      {
-        "$lookup": {
-          from: "country",
-          localField: "address.0.country",
-          foreignField: "_id",
-          as: "countryname"
-        }
-      },
-      { "$unwind": "$countryname" },
-      {
-        "$lookup": {
-          from: "state",
-          localField: "address.0.state",
-          foreignField: "_id",
-          as: "statename"
-        }
-      },
-      { "$unwind": "$statename" },
-      {
-        "$lookup": {
-          from: "city",
-          localField: "address.0.city",
-          foreignField: "_id",
-          as: "cityname"
-        }
-      },
-      { "$unwind": "$cityname" },
-    ];
-    Meteor.call("searchUser", pipeline, function (err, res) {
-      if (!err) {
-
-        self.setState({ displayedUser: res });
-      } else {
-        toast.error(err);
-      }
-    });
-  }
+  
   getDaysArray = (year, month) => {
     month = moment().format("MM");
     year = moment().format("YYYY")
@@ -161,7 +113,7 @@ class AdminAttendances extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {this.state.displayedUser.map((user) => {
+                        {this.props.users.map((user) => {
                           let id = user._id
                           let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName
                           return (
@@ -216,17 +168,13 @@ class AdminAttendances extends Component {
   }
 }
 export default withTracker(() => {
-  Meteor.subscribe('CountryData');
-  Meteor.subscribe('Statedata');
-  Meteor.subscribe('Citydata');
+  Meteor.subscribe('user');
   Meteor.subscribe('adminAttendanceData');
   Meteor.subscribe('holiday')
   Meteor.subscribe('ListleaveApply')
   return {
     adminAttendance: AdminAttendance.find({}).fetch(),
-    country: Country.find({}).fetch(),
-    states: State.find({}).fetch(),
-    city: Cities.find({}).fetch(),
+    users: User.find({'profile.userType': {$in:["admin","employee"]}}).fetch(),
     holidays: Holiday.find({}).fetch(),
     leave: Leave.find({}).fetch()
   }

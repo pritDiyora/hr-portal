@@ -58,8 +58,8 @@ class LeftSidemenu extends Component {
                     <span className="text-muted text-xs block">{currentUser && currentUser.profile && currentUser.profile.designation}<b className="caret"></b></span> </span> </a>
                 <ul className="dropdown-menu animated fadeInRight m-t-xs">
                   <li><a href="/profile">Profile</a></li>
-                  <li><a href="#">Contacts</a></li>
-                  <li><a href="#">Mailbox</a></li>
+                  {/* <li><a href="#">Contacts</a></li>
+                  <li><a href="#">Mailbox</a></li> */}
                   <li className="divider"></li>
                   <li><a href="#" onClick={(e) => this.logout(e)}>Logout</a></li>
                 </ul>
@@ -99,7 +99,7 @@ class LeftSidemenu extends Component {
 
             {permission ?
               <li>
-                <a><img src="img/icon.png" alt="image" width="15px" />  <span className="nav-label">Leave</span><span className="fa arrow"></span></a>
+                <a><i className=" fa fa-calendar-minus-o"></i> <span className="nav-label">Leave</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
                   <li><a href="/leaveType">Leave Type</a></li>
                   <li><a href="/leaveApproveList">Leave Approve List</a> </li>
@@ -128,7 +128,7 @@ class LeftSidemenu extends Component {
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
             </li>
             <li>
-              <a href="/leave"><img src="img/icon.png" alt="image" width="15px" /> <span className="nav-label">Leave</span></a>
+              <a href="/leave"><i className=" fa fa-calendar-minus-o"></i><span className="nav-label">Leave</span></a>
             </li>
           </ul>
 

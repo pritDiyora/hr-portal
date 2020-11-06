@@ -90,6 +90,7 @@ class AddHR extends React.Component {
     profile[`phone`] = userdata && userdata.profile.phone;
     profile[`joiningDate`] = userdata && userdata.profile.joiningDate;
     profile[`description`] = userdata && userdata.profile.description;
+    profile[`designation`] = userdata && userdata.profile.designation;
     self.setState({ email: userdata && userdata.emails[0].address, profile });
     //set User Address
     userAddress.map((addresses) => {
@@ -336,14 +337,14 @@ class AddHR extends React.Component {
             Meteor.call('adddressadd', self.state.userid, address, function (err, res) {
               if (!err) {
                 $('.nav-tabs li a[href="#tab-2"]').tab('show');
-                toast.success("Update successfully...." + res);
+                toast.success("User updated successfully..." , res);
                 self.setState({ loading: false })
               } else {
-                toast.error(err);
+                toast.error(err.message);
               }
             })
           } else {
-            toast.error(err);
+            toast.error(err.message);
           }
         })
       } else {
@@ -354,14 +355,14 @@ class AddHR extends React.Component {
             Meteor.call('adddressadd', self.state.userid, address, function (err, res) {
               if (!err) {
                 $('.nav-tabs li a[href="#tab-2"]').tab('show');
-                toast.success("Insert successfully...." + res);
+                toast.success("User added successfully..." , res);
                 self.setState({ loading: false })
               } else {
-                toast.error(err);
+                toast.error(err.message);
               }
             })
           } else {
-            toast.error(err);
+            toast.error(err.message);
           }
         })
       }
@@ -387,12 +388,12 @@ class AddHR extends React.Component {
     Meteor.call('addeducation', this.state.userid, educations, function (err, result) {
       if (!err) {
         if (self.state.flag == 1) {
-          toast.success("Updated successfully...." + result);
+          toast.success("Education updated successfully..." , result);
         } else {
-          toast.success("Inserted successfully...." + result);
+          toast.success("Education added successfully..." , result);
         }
       } else {
-        toast.error(err);
+        toast.error(err.message);
       }
     })
     $('.nav-tabs li a[href="#tab-3"]').tab('show');
@@ -415,15 +416,14 @@ class AddHR extends React.Component {
       if (!err) {
         if (self.state.flag == 1) {
           $('.nav-tabs li a[href="#tab-1"]').tab('show');
-          toast.success("Updated Experiance successfully...." + result);
+          toast.success("Experiance updated successfully...." , result);
         } else {
           $('.nav-tabs li a[href="#tab-1"]').tab('show');
-          toast.success("Inserted Experiance successfully...." + result);
+          toast.success("Experiance added successfully...." , result);
         }
 
       } else {
         toast.error(err.message);
-
       }
     })
 
@@ -464,6 +464,7 @@ class AddHR extends React.Component {
                     gender={this.state.profile.gender}
                     userType={this.state.profile.userType}
                     description={this.state.profile.description}
+                    designation={this.state.profile.designation}
                     profileChangeHandler={this.profileChangeHandler}
                     EmailChangeHandler={this.EmailChangeHandler}
                   />

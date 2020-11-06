@@ -31,7 +31,7 @@ import WrapperDate from '../../imports/ui/view/layout/wrapperDate';
 import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveListing';
 import Holiday from '../../imports/ui/view/pages/holiday/holiday.js';
 import Salary from '../../imports/ui/view/pages/salary/salary.js';
-
+import SalarySlip from '../../imports/ui/view/pages/salary/salaryslip.js';
 const accessRoute = [
   { routeName: 'listuser', roles: ['superadmin', 'admin'] },
   { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
@@ -407,12 +407,23 @@ FlowRouter.route('/holiday', {
 })
 
 FlowRouter.route('/salary', {
-  name: 'Salary',
-  action() {
-    mount(MainLayout, {
-      content() {
-        return <Salary />
-      }
-    })
-  }
+    name: 'Salary',
+    action() {
+        mount(MainLayout, {
+            content() {
+                return <Salary />
+            }
+        })
+    }
+})
+
+FlowRouter.route('/salarySlip', {
+    name: 'SalarySlip',
+    action(){
+        mount(MainLayout, {
+            content(){
+                return <SalarySlip />
+            }
+        })
+    }
 })

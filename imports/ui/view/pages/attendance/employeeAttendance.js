@@ -400,7 +400,6 @@ class EmployeeAttendance extends Component {
                           <th>Date</th>
                           <th>Punch In</th>
                           <th>Punch Out</th>
-                          <th>Total Hours</th>
                           <th>Working Hours</th>
                           <th>Break</th>
                         </tr>
@@ -420,7 +419,6 @@ class EmployeeAttendance extends Component {
                                 <td>{moment(attendance._id).format("YYYY-MM-DD")}</td>
                                 <td>{firstTime}</td>
                                 <td>{lastTime}</td>
-                                <td>{total}</td>
                                 <td>{workHrs}</td>
                                 <td>{breakTime}</td>
                               </tr>
@@ -428,16 +426,7 @@ class EmployeeAttendance extends Component {
                           }
                         })}
                       </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Date</th>
-                          <th>Punch In</th>
-                          <th>Punch Out</th>
-                          <th>Total Hours</th>
-                          <th>Working Hours</th>
-                          <th>Break</th>
-                        </tr>
-                      </tfoot>
+                      
                     </table>
                     <div style={{ textAlign: "right" }}>
                       <Pagination

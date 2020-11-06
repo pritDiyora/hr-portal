@@ -7,9 +7,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "react-js-pagination";
 import Leave from '../../../../api/leave/leaveScheme';
-import Country from '../../../../api/country/country';
-import State from '../../../../api/states/states';
-import Cities from '../../../../api/cites/cites';
 import GeneralSetting from '../../../../api/generalsetting/generalsetting';
 import bootbox from 'bootbox'
 
@@ -30,12 +27,10 @@ class Salary extends Component {
       sortValue: 1,
       currentPage: 1,
       totalpage: 0,
-      displayedUser: [],
     }
   }
   componentDidMount() {
     this.getSalaryData();
-    this.getUser()
   }
   showhandle(event) {
     this.setState({
@@ -74,6 +69,7 @@ class Salary extends Component {
         }
       },
       { "$unwind": "$name" },
+
       {
         "$match": {
           "$or": [
@@ -128,7 +124,7 @@ class Salary extends Component {
     if (this.state.button == true) {
       Meteor.call('updatesalarydata', userid, totalsalary, this.state.salaryid, function (err, result) {
         if (!err) {
-          toast.success("Salary updated successfully..." , result);
+          toast.success("Salary updated successfully...", result);
           $("#add-panel").modal("hide");
           self.setState({
             userid: "",
@@ -138,14 +134,13 @@ class Salary extends Component {
           self.getSalaryData();
         } else {
           toast.error(err.message);
-
         }
       })
       this.setState({ userid: "", totalsalary: "", button: false, stateid: "" })
     } else {
       Meteor.call('addsalary', userid, totalsalary, function (err, result) {
         if (!err) {
-          toast.success("Salary added successfully..." , result);
+          toast.success("Salary added successfully...", result);
           $("#add-panel").modal("hide");
           self.setState({
             userid: "",
@@ -183,7 +178,7 @@ class Salary extends Component {
         if (result) {
           Meteor.call('deletesalary', self.state.salaryId, function (err, res) {
             if (!err) {
-              toast.success("Salary deleted successfully..." , res)
+              toast.success("Salary deleted successfully...", res)
               self.getSalaryData();
             } else {
               toast.error(err.message)
@@ -204,68 +199,6 @@ class Salary extends Component {
     $("#add-panel").modal("hide");
   }
 
-  getUser() {
-    const self = this;
-    let pipeline = [
-      {
-        "$lookup": {
-          from: "country",
-          localField: "address.0.country",
-          foreignField: "_id",
-          as: "countryname"
-        }
-      },
-      { "$unwind": "$countryname" },
-      {
-        "$lookup": {
-          from: "state",
-          localField: "address.0.state",
-          foreignField: "_id",
-          as: "statename"
-        }
-      },
-      { "$unwind": "$statename" },
-      {
-        "$lookup": {
-          from: "city",
-          localField: "address.0.city",
-          foreignField: "_id",
-          as: "cityname"
-        }
-      },
-      { "$unwind": "$cityname" },
-    ];
-    Meteor.call("searchUser", pipeline, function (err, res) {
-      if (!err) {
-        self.setState({ displayedUser: res });
-      } else {
-        toast.error(err.message);
-      }
-    });
-  }
-
-  noOfDayLeave(start, end, isApprove) {
-    let startDate, str, endDate, days;
-    startDate = moment(start, "YYYY/MM/DD");
-    endDate = moment(end, "YYYY/MM/DD");
-    if (isApprove == true) {
-      days = endDate.diff(startDate, 'days');
-      startDate.add(days, 'days');
-      if (startDate == endDate) {
-        var startdate = new Date(start), enddate = new Date(end);
-        let starthour = moment(startdate, "hh:mm"), endHour = moment(enddate, "hh:mm"), hour, minutes;
-        hour = endHour.diff(starthour, 'hours');
-        starthour.add(hour, 'days');
-        str = hour;
-      } else {
-        str = days;
-      }
-    } else {
-      str = 0;
-    }
-    return str;
-  }
-
   render() {
     let { sortKey, sortValue } = this.state;
     let { gsetting, leave } = this.props
@@ -279,7 +212,7 @@ class Salary extends Component {
             </div>
             <div className="ibox-content">
               <div className="row text-center">
-                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Salary</a>
+                <a data-toggle="modal" className="btn btn-primary addmodel" onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add Salary</a>
                 <div className="col-sm-12" style={{ marginBottom: "15px" }}>
                   <div className="col-sm-6" style={{ paddingLeft: "0px" }}>
                     <div className="dataTables_length" id="example_length">
@@ -311,44 +244,48 @@ class Salary extends Component {
                         <th onClick={(e) => this.ascDesc(e, "totalSalary")}>Total Salary  <i className={`fa fa-sort mr-10 ${sortKey === 'totalSalary' ? sortValue == 1 ? 'fa-sort-amount-asc' : 'fa-sort-amount-desc' : ''} `}></i> </th>
                         <th>Total Leave</th>
                         <th>Work Day of Month</th>
+                        <th>Working Salary</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {
                         this.state.displayedSalary.map((salary, i) => {
-                          let noofDay
+                          let noofDay = 0
                           let fullName = salary.name.profile.firstName + " " + salary.name.profile.lastName
-                          leave.map((le, i) => {
+                          let noofleave = leave && leave.find(le => le.userId == salary.userId);
+                          let month = moment().format("MM") - 1
+                          if (month == moment(noofleave && noofleave.startDate).format("MM") && month == moment(noofleave && noofleave.endDate).format("MM") && noofleave.isApprove == true) {
+                            let diffDay = moment(noofleave && noofleave.endDate, "YYYY/MM/DD").diff(moment(noofleave && noofleave.startDate, "YYYY/MM/DD"), "days")
+                            noofDay = diffDay + 1
 
-                            noofDay = this.noOfDayLeave(le.startDate, le.endDate, le.isApprove)
-                            if (salary.userId == le.userId) {
-                              noofDay
-                            } else {
-                              noofDay = 0
-                            }
-                            // return noofDay
-                          })
+
+                            // let startdate = moment(noofleave && noofleave.startDate, "YYYY/MM/DD")
+                            // let noofDays = startdate.add(diffDay + 1 , "days") 
+                            // noofDay = moment(noofDays).format("DD")
+                            // console.log('noofDay :: ', noofDay);
+
+                          }
+                          let workDay = gsetting[0] && gsetting[0].workDayOfMonth
+                          let diffWorkDay = workDay - noofDay
+                          let workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
                           return (
                             <tr key={i}>
                               <td>{fullName}</td>
                               <td>{salary.totalSalary}</td>
-
                               <td>{noofDay}</td>
-                              <td>{gsetting.map((e) => {
-                                let totalday = e.workDayOfMonth
-                                let diff = totalday - noofDay
-                                return diff
-                              })}</td>
+                              <td>{diffWorkDay}</td>
+                              <td>{workSalary}</td>
                               <td>
                                 <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, salary._id)}>
                                   <i className="fa fa-trash-o"></i></a>
                                 <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, salary._id)}>
-                                  <i className="fa fa-edit"></i></a>
+                                  <i className="fa fa-edit"></i></a>&nbsp;
+                                <a className="btn btn-xs btn-success " href={`/salarySlip?id=${salary.name._id}`}>
+                                  <i className="fa fa-eye"></i></a>
                               </td>
                             </tr>
                           )
-
                         })
                       }
                     </tbody>
@@ -360,15 +297,12 @@ class Salary extends Component {
                       totalItemsCount={this.state.totalpage}
                       pageRangeDisplayed={5}
                       onChange={this.handlePageChange.bind(this)}
-
                     />
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
         <div className="modal fade" id="add-panel" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
@@ -382,31 +316,26 @@ class Salary extends Component {
                 <div className="container-fluid">
                   <div className="form-group row">
                     <div className="col-md-12">
-
                       <label>Employee Name</label>
                       <select className="form-control"
                         onChange={(e) => this.setState({ userid: e.target.value })}
-                        value={this.state.userid}
-                      >
+                        value={this.state.userid}>
                         <option defaultValue>Select Employee</option>
-                        {this.state.displayedUser.map((user) => {
+                        {this.props.users.map((user) => {
                           let fullName = user.profile.firstName + " " + user.profile.lastName
                           return (
                             <option value={user._id} key={user._id}>{fullName}</option>
                           )
                         })}
                       </select><br />
-
                       <label>Total Salary</label>
                       <input type="text"
                         className="form-control"
                         onChange={(e) => this.setState({ totalsalary: e.target.value })}
                         value={this.state.totalsalary}
                       />
-
                     </div>
                   </div>
-
                 </div>
               </div>
               <div className="modal-footer">
@@ -416,27 +345,21 @@ class Salary extends Component {
                     <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addsalary(e) }}>Update Salary</button>
                     : <button type="button" className="btn btn-primary" id="confirm-button" onClick={(e) => { this.addsalary(e) }}>Add Salary</button>
                 }
-
               </div>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }
 export default withTracker(() => {
   Meteor.subscribe('ListleaveApply')
-  Meteor.subscribe('CountryData');
-  Meteor.subscribe('Statedata');
-  Meteor.subscribe('Citydata');
+  Meteor.subscribe('user');
   Meteor.subscribe('generaleSetting')
   return {
     leave: Leave.find({}).fetch(),
-    country: Country.find({}).fetch(),
-    states: State.find({}).fetch(),
-    city: Cities.find({}).fetch(),
+    users: User.find({ 'profile.userType': { $in: ["admin", "employee"] } }).fetch(),
     gsetting: GeneralSetting.find({}).fetch()
   }
 })(Salary);
