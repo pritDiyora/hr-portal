@@ -9,7 +9,7 @@ var CronJob = require('cron').CronJob;
 
 if (Meteor.isServer) {
   let officeTime = GeneralSetting.findOne({ 'isActive': true }, { fields: { 'to': 1 } })
-  let officetime = officeTime.to
+  let officetime = officeTime && officeTime.to
   var job = new CronJob(`0 15 ${officetime} * * 1-6`, function () {
     sendNotificationToUserForClockOut();
     console.log('You will see this message every minutes', new Date());
@@ -28,14 +28,14 @@ if (Meteor.isServer) {
           description: 'Reminder for  clockout',
           sendId: AdminId,
           receiverId: [user._id],
-          type: 'ReminderForColckout',
+          type: 'dashboard',
           createdAtDate: new Date(),
           createdBy: AdminId,
           modifiedBy: AdminId
         }
         let sendNoti = Notification.insert(userData);
         console.log('notification :: ', sendNoti);
-      })
+      });
     }
   }
 
@@ -65,6 +65,36 @@ if (Meteor.isServer) {
         }
       })
     }
+  }
+
+  var job = new CronJob(`0 0 10-19/2 * * *`, function () {
+    sendNotificationToUserForReport();
+    console.log('You will see this message every minutes', new Date());
+  });
+  job.start();
+
+  async function sendNotificationToUserForReport() {
+    let users = await User.find({ 'profile.userType': 'employee' }, { fields: { 'profile.firstName': 1, 'profile.lastName': 1} }).fetch()
+    let AdminId = User.findOne({ 'profile.userType': 'superadmin' })._id;
+   
+    if (users && users.length > 0) {
+      return await users.map((user) => {
+        let fullname = user.profile.firstName + " " + user.profile.lastName
+        let userData = {
+          title: fullname,
+          description: 'what do you work now?,add your task ',
+          sendId: AdminId,
+          receiverId: [user._id],
+          type: 'task',
+          createdAtDate: new Date(),
+          createdBy: AdminId,
+          modifiedBy: AdminId
+        }
+        let sendNoti = Notification.insert(userData);
+        console.log('notification :: ', sendNoti);
+      });
+    }
+
   }
   
 }

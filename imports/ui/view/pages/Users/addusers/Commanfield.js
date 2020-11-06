@@ -535,7 +535,6 @@ export default withTracker(() => {
   Meteor.subscribe('CountryData');
   Meteor.subscribe('Statedata1', Session.get('country'));
   Meteor.subscribe('citydata', Session.get('state'));
-  Meteor.subscribe('updateprofile', FlowRouter.current("_id").params._id);
   return {
     countries: Country.find({}).fetch(),
     state: State.find({ countryId: Session.get('country') }).fetch(),

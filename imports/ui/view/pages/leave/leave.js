@@ -46,11 +46,12 @@ class ApplyLeave extends Component {
     }
     render() {
         let leaveEvents = [];
-        this.props.leaves.map((leave, pos) => {
-            let leavename = this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType);
+        this.props.leaves && this.props.leaves.map((leave, pos) => {
+            let leavename = this.props.leavetype && this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType);
+            let leavetitle="Reason :" + leave.reason + '(' + leavename.leaveTypeName + ')';            
             let leaveList = {
                 id: pos.toString(),
-                title: "Reason :" + leave &&  leave.reason + '  (' + leavename && leavename.leaveTypeName + ')',
+                title: leavetitle,
                 start: moment(leave && leave.startDate).format('YYYY-MM-DD'),
                 end: moment(leave && leave.endDate).format('YYYY-MM-DD')
             };

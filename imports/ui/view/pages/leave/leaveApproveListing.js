@@ -150,7 +150,7 @@ export default class LeaveApproveList extends Component {
                     description: 'Leave Approved..',
                     sendId: Meteor.userId(),
                     receiverId: [rId],
-                    type: 'leaveApproved',
+                    type: 'leave',
                     createdAtDate: new Date(),
                     createdBy: Meteor.userId(),
                     modifiedBy: Meteor.userId()
@@ -179,7 +179,7 @@ export default class LeaveApproveList extends Component {
                     description: 'Leave Rejected..',
                     sendId: Meteor.userId(),
                     receiverId: [rId],
-                    type: 'leaveDecline',
+                    type: 'leave',
                     createdAtDate: new Date(),
                     createdBy: Meteor.userId(),
                     modifiedBy: Meteor.userId()

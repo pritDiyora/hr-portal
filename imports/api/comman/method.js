@@ -199,6 +199,9 @@ if (Meteor.isServer) {
         },
         'countTaskdata': () => {
             return TaskAssign.find({}).count();
+        },
+        'updateStatusOfTasks': (id, draggedOverCol) => {
+            return TaskAssign.update({ _id: id }, { $set: { status: draggedOverCol } });
         }
     })
 }

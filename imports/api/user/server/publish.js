@@ -48,7 +48,7 @@ if (Meteor.isServer) {
 
 
   Meteor.publish('updateprofile', function (id) {
-    return User.findOne({ _id: id });
+    return User.find({ _id: id });
   })
 
 
@@ -67,7 +67,7 @@ if (Meteor.isServer) {
     return Leave.find();
   })
 
-  Meteor.publish('userWisrLeave', function (id) {
+  Meteor.publish('userWiseLeave', function (id) {
     return Leave.find({ userId: id });
   })
 

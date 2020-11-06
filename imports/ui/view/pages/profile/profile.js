@@ -216,10 +216,11 @@ class Profile extends Component {
     Meteor.call('addeducation', Meteor.userId(), educations, function (err, result) {
       if (!err) {
         if (self.state.flag == 1) {
-          toast.success("Updated successfully...." + result);
-
+          toast.success("Updated Education successfully...." , result);
+          $("#add-panel").modal("hide");
         } else {
-          toast.success("Inserted successfully...." + result);
+          toast.success("Inserted Education successfully...." ,result);
+          $("#add-panel").modal("hide");
         }
       } else {
         toast.error(err);
@@ -424,16 +425,14 @@ class Profile extends Component {
     Meteor.call('addexperiance', Meteor.userId(), exp, function (err, result) {
       if (!err) {
         if (self.state.flag == 1) {
-          $('.nav-tabs li a[href="#tab-1"]').tab('show');
-          toast.success("Updated Experiance successfully...." + result);
+          toast.success("Updated Experiance successfully...." , result);
+          $("#add-panel1").modal("hide");
         } else {
-          $('.nav-tabs li a[href="#tab-1"]').tab('show');
-          toast.success("Inserted Experiance successfully...." + result);
+          toast.success("Inserted Experiance successfully...." , result);
+          $("#add-panel1").modal("hide");
         }
-
       } else {
         toast.error(err.message);
-
       }
     })
 
@@ -576,7 +575,6 @@ class Profile extends Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('updateprofile', Meteor.userId());
   return {
     countries: Country.find({}).fetch(),
     currentUser: Meteor.user(),

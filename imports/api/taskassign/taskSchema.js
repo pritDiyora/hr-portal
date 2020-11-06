@@ -13,6 +13,7 @@ schema.TaskAssign = new SimpleSchema({
     },
     status: {
         type: String,
+        defaultValue: "To-Do"
     },
     description: {
         type: String

@@ -45,13 +45,13 @@ class ExperieanceComponent extends Component {
               <div className="col-md-6">
                 <label>Work Experiance</label>
                 <input
-                  type="text"
+                  type="number"
                   className="form-control"
                   name={`experiance.workexperiance_${el.key}`}
                   onChange={(e) => this.props.ExperienceChangeHandler(e)}
                   value={this.props.workexpeience}
                 />
-                {this.props.Experiencevalidator.message('Workexperiance', this.props.workexpeience, 'required')}
+                {this.props.Experiencevalidator.message('Workexperiance', this.props.workexpeience, 'required|numeric')}
               </div>
 
             </div>
@@ -72,13 +72,13 @@ class ExperieanceComponent extends Component {
               <div className="col-md-4">
                 <label>Work Experiance</label>
                 <input
-                  type="text"
+                  type="number"
                   className="form-control"
                   name={`experiance.workexperiance_${el.key}`}
                   onChange={(e) => this.props.ExperienceChangeHandler(e)}
                   value={this.props.workexpeience}
                 />
-                {this.props.Experiencevalidator.message('Workexperiance', this.props.workexpeience, 'required')}
+                {this.props.Experiencevalidator.message('Workexperiance', this.props.workexpeience, 'required|numeric')}
               </div>
               <div className="col-md-4">
                 <label>Technlogoy</label><br />

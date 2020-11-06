@@ -6,6 +6,10 @@ class LeftSidemenu extends Component {
 
   constructor(props) {
     super(props);
+    this.state = { permission: false };
+  }
+  componentWillMount() {
+    this.AccessPermission()
   }
   componentDidMount() {
     $('#side-menu').metisMenu();
@@ -18,9 +22,9 @@ class LeftSidemenu extends Component {
     var usertype = user && user.profile && user.profile.userType;
     if (usertype == "superadmin"
       || usertype == "admin") {
-      return true;
+      this.setState({ permission: true });
     } else {
-      return false;
+      this.setState({ permission: false });
     }
   }
 
@@ -35,10 +39,8 @@ class LeftSidemenu extends Component {
       FlowRouter.go('/');
     });
   }
-
-
   render() {
-    let { currentUser } = this.props;
+    let { currentUser } = this.props, { permission } = this.state;
     return (
       <nav className="navbar-default navbar-static-side" role="navigation">
         <div className="sidebar-collapse">
@@ -48,7 +50,6 @@ class LeftSidemenu extends Component {
                 <span>
                   <Avatar className="img-circle" size="50" color="#ffcccc" fgColor="#990000" name={currentUser && currentUser.profile && currentUser.profile.firstName + " " + currentUser.profile.lastName} maxInitials={2} />
                 </span>
-
                 <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
                   <span className="clear"> <span className="block m-t-xs">
                     <strong className="font-bold">{currentUser && currentUser.profile && currentUser.profile.firstName}</strong>
@@ -73,7 +74,7 @@ class LeftSidemenu extends Component {
                 <li><a href="/dashboard">Dashboard v.1</a></li>
               </ul>
             </li>
-            {this.AccessPermission() ?
+            {permission ?
               <li>
                 <a><i className="fa fa-users"></i> <span className="nav-label">Users</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
@@ -84,7 +85,7 @@ class LeftSidemenu extends Component {
               <a href="/accesspermission"></a>
             }
 
-            {this.AccessPermission() ?
+            {permission ?
               <li>
                 <a><i className="fa fa-map-marker"></i> <span className="nav-label">Location</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
@@ -96,7 +97,7 @@ class LeftSidemenu extends Component {
               <a href="/accesspermission"></a>
             }
 
-            {this.AccessPermission() ?
+            {permission ?
               <li>
                 <a><img src="img/icon.png" alt="image" width="15px" />  <span className="nav-label">Leave</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
@@ -106,7 +107,7 @@ class LeftSidemenu extends Component {
               </li> :
               <a href="/accesspermission"></a>
             }
-            {this.AccessPermission() ?
+            {permission ?
               <li>
                 <a href="#"><i className="fa fa-calendar"></i> <span className="nav-label">Admin Attendance</span><span className="fa arrow"></span></a>
                 <ul className="nav nav-second-level collapse">
@@ -116,24 +117,19 @@ class LeftSidemenu extends Component {
               </li> :
               <a href="/accesspermission"></a>
             }
-            {this.AccessPermission() ? <li><a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a> </li> : <a href="/accesspermission"></a>
+            {permission ? <li><a href="/generalSetting"><i className="fa fa-gear"></i> <span className="nav-label">General Setting</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {this.AccessPermission() ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
+            {permission ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {this.AccessPermission() ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
+            {permission ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {this.AccessPermission() ? <li><a href="/TaskAssign"><i className="fa fa-tasks"></i> <span className="nav-label">Task Assign</span></a> </li> : <a href="/accesspermission"></a>
-            }
+            <li><a href="/task"><i className="fa fa-tasks"></i> <span className="nav-label">Task</span></a> </li>
             <li>
               <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
             </li>
             <li>
               <a href="/leave"><img src="img/icon.png" alt="image" width="15px" /> <span className="nav-label">Leave</span></a>
             </li>
-            <li>
-              <a href="/task"><i className="fa fa-list"></i><span className="nav-label">Task</span></a>
-            </li>
-
           </ul>
 
         </div>
