@@ -52,9 +52,11 @@ class ApplyLeave extends Component {
                 id: pos.toString(),
                 title: "Reason :" + leave &&  leave.reason + '  (' + leavename && leavename.leaveTypeName + ')',
                 start: moment(leave && leave.startDate).format('YYYY-MM-DD'),
-                end: moment(leave && leave.endDate).format('YYYY-MM-DD')
+                end: moment(leave.endDate + 1).format('YYYY-MM-DD')
+
             };
             leaveEvents.push(leaveList);
+            console.log('leaveEvents :: ', leaveEvents);
         });
         let disabled = true;
         let now = new Date();
@@ -229,7 +231,7 @@ class ApplyLeave extends Component {
         if (selectedDate >= todayDate) {
             this.setState({
                 start: moment(selectInfo.start),
-                end: moment(selectInfo.end),
+                end: moment(selectInfo.end - 1),
             });
             $("#add-panel").modal("show");
         } else {

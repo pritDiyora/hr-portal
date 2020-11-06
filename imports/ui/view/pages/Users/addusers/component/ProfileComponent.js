@@ -131,7 +131,7 @@ class ProfileComponent extends Component {
                 </div>
                 <div className="form-group row">
                     <div className="col-md-12">
-                        <div className="col-md-12">
+                        <div className="col-md-6">
                             <label>Description  <sup style={{ color: "red" }}>*</sup></label>
                             <input
                                 type="text"
@@ -139,6 +139,17 @@ class ProfileComponent extends Component {
                                 name="description"
                                 id="description"
                                 value={this.props.description || ''}
+                                onChange={this.props.profileChangeHandler}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label>Designation  <sup style={{ color: "red" }}>*</sup></label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="designation"
+                                id="designation"
+                                value={this.props.designation || ''}
                                 onChange={this.props.profileChangeHandler}
                             />
                         </div>
