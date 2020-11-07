@@ -12,6 +12,7 @@ schema.Salary = new SimpleSchema({
     totalSalary : {
         type: String
     },
+    
     isActive: {
         type: Boolean,
         defaultValue: true

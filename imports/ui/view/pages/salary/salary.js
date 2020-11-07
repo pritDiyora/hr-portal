@@ -9,6 +9,7 @@ import Pagination from "react-js-pagination";
 import Leave from '../../../../api/leave/leaveScheme';
 import GeneralSetting from '../../../../api/generalsetting/generalsetting';
 import bootbox from 'bootbox'
+var Sugar = require('sugar');
 
 class Salary extends Component {
 
@@ -199,6 +200,28 @@ class Salary extends Component {
     $("#add-panel").modal("hide");
   }
 
+  sendSalarySlip(event, rUserId) {
+    event.preventDefault();
+    const self = this;
+    let userFullname = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName
+    console.log('userFullname :: ', userFullname);
+    let sendSalarySlipNotification = {
+      title: userFullname,
+      description: 'Show the Salary Slip..',
+      sendId: Meteor.userId(),
+      receiverId: [rUserId],
+      type: 'salarySlip',
+      createdAtDate: new Date(),
+      createdBy: Meteor.userId(),
+      modifiedBy: Meteor.userId()
+    }
+    Meteor.call('LeaveApprove.Notification', sendSalarySlipNotification, function (err, res) {
+      if (!err) {
+        toast.success('Notification send successfully...', res)
+      }
+    });
+  }
+
   render() {
     let { sortKey, sortValue } = this.state;
     let { gsetting, leave } = this.props
@@ -251,24 +274,20 @@ class Salary extends Component {
                     <tbody>
                       {
                         this.state.displayedSalary.map((salary, i) => {
-                          let noofDay = 0
+                          let noofDay = 0,diffWorkDay = 0, workSalary = 0, noofDays = []
                           let fullName = salary.name.profile.firstName + " " + salary.name.profile.lastName
-                          let noofleave = leave && leave.find(le => le.userId == salary.userId);
-                          let month = moment().format("MM") - 1
-                          if (month == moment(noofleave && noofleave.startDate).format("MM") && month == moment(noofleave && noofleave.endDate).format("MM") && noofleave.isApprove == true) {
-                            let diffDay = moment(noofleave && noofleave.endDate, "YYYY/MM/DD").diff(moment(noofleave && noofleave.startDate, "YYYY/MM/DD"), "days")
-                            noofDay = diffDay + 1
-
-
-                            // let startdate = moment(noofleave && noofleave.startDate, "YYYY/MM/DD")
-                            // let noofDays = startdate.add(diffDay + 1 , "days") 
-                            // noofDay = moment(noofDays).format("DD")
-                            // console.log('noofDay :: ', noofDay);
-
-                          }
-                          let workDay = gsetting[0] && gsetting[0].workDayOfMonth
-                          let diffWorkDay = workDay - noofDay
-                          let workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
+                          leave.map((le) => {
+                            let month = moment().format("MM") - 1
+                            if (month == moment(le.startDate).format("MM") && month == moment(le.endDate).format("MM") && le.isApprove == true && le.userId == salary.userId) {
+                              let diffDay = moment(le.endDate, "YYYY/MM/DD").diff(moment(le.startDate, "YYYY/MM/DD"), "days")
+                              let diffDays = diffDay + 1
+                              noofDays.push(diffDays)
+                              noofDay = Sugar.Array.sum(noofDays)
+                            }
+                            let workDay = gsetting[0] && gsetting[0].workDayOfMonth
+                            diffWorkDay = workDay - noofDay
+                            workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
+                          });
                           return (
                             <tr key={i}>
                               <td>{fullName}</td>
@@ -277,12 +296,10 @@ class Salary extends Component {
                               <td>{diffWorkDay}</td>
                               <td>{workSalary}</td>
                               <td>
-                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, salary._id)}>
-                                  <i className="fa fa-trash-o"></i></a>
-                                <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, salary._id)}>
-                                  <i className="fa fa-edit"></i></a>&nbsp;
-                                <a className="btn btn-xs btn-success " href={`/salarySlip?id=${salary.name._id}`}>
-                                  <i className="fa fa-eye"></i></a>
+                                <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, salary._id)}><i className="fa fa-trash-o"></i></a>
+                                <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, salary._id)}><i className="fa fa-edit"></i></a>&nbsp;
+                                      <a className="btn btn-xs btn-success " href={`/salarySlip?id=${salary.name._id}`}><i className="fa fa-eye"></i></a>&nbsp;&nbsp;
+                                      <a className="btn btn-xs btn-info" onClick={(e) => this.sendSalarySlip(e, salary.userId, salary._id)}><i className="fa fa-send"></i></a>
                               </td>
                             </tr>
                           )

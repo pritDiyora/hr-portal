@@ -184,6 +184,7 @@ if (Meteor.isServer) {
         'countSalarydata': () => {
             return Salary.find({}).count();
         },
+        
         //Task
         'addTaskOfUser': (task) => {
             return TaskAssign.insert(task);

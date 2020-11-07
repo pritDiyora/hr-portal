@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Leave from '../../../../api/leave/leaveScheme';
 import GeneralSetting from '../../../../api/generalsetting/generalsetting';
 import Avatar from 'react-avatar';
+var Sugar = require('sugar');
 
 class Salaryslip extends Component {
   constructor(props) {
@@ -105,16 +106,19 @@ class Salaryslip extends Component {
                 </center>
               </div>
               {displayedSalary.map((salary, i) => {
-                let noofDay = 0
-                let noofleave = leave && leave.find(le => le.userId == salary.userId);
-                let month = moment().format("MM") - 1
-                if (month == moment(noofleave && noofleave.startDate).format("MM") && month == moment(noofleave && noofleave.endDate).format("MM") && noofleave.isApprove == true) {
-                  let diffDay = moment(noofleave && noofleave.endDate, "YYYY/MM/DD").diff(moment(noofleave && noofleave.startDate, "YYYY/MM/DD"), "days")
-                  noofDay = diffDay + 1
-                }
-                let workDay = gsetting[0] && gsetting[0].workDayOfMonth
-                let diffWorkDay = workDay - noofDay
-                let workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
+                let noofDay = 0,diffWorkDay = 0, workSalary = 0, noofDays = []
+                leave.map((le) => {
+                  let month = moment().format("MM") - 1
+                  if (month == moment(le.startDate).format("MM") && month == moment(le.endDate).format("MM") && le.isApprove == true && le.userId == salary.userId) {
+                    let diffDay = moment(le.endDate, "YYYY/MM/DD").diff(moment(le.startDate, "YYYY/MM/DD"), "days")
+                    let diffDays = diffDay + 1
+                    noofDays.push(diffDays)
+                    noofDay = Sugar.Array.sum(noofDays)
+                  }
+                  let workDay = gsetting[0] && gsetting[0].workDayOfMonth
+                  diffWorkDay = workDay - noofDay
+                  workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
+                });
                 return (
                   <div className="col-lg-12">
                     <div className="col-sm-12">
