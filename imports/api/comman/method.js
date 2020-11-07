@@ -92,10 +92,12 @@ if (Meteor.isServer) {
         },
         'searchAttendanceDate': (pipeline) => {
             return Promise.await(Attendance.rawCollection().aggregate(pipeline).toArray());
-
         },
         'countUserdata': () => {
             return User.find({}).count();
+        },
+        'countUserTaskdata':()=>{
+            return User.find({ "profile.userType": { $in: ["admin", "employee"] }}).count();
         },
         'countAttendancedata': (pipeline) => {
 
@@ -194,14 +196,9 @@ if (Meteor.isServer) {
         'deletetask': (id) => {
             return TaskAssign.remove({ _id: id });
         },
-        'searchTask': (pipeline) => {
-            return Promise.await(TaskAssign.rawCollection().aggregate(pipeline).toArray());
-        },
-        'countTaskdata': () => {
-            return TaskAssign.find({}).count();
-        },
         'updateStatusOfTasks': (id, draggedOverCol) => {
             return TaskAssign.update({ _id: id }, { $set: { status: draggedOverCol } });
-        }
+        },
+        
     })
 }

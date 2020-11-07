@@ -32,6 +32,7 @@ import LeaveApproveList from '../../imports/ui/view/pages/leave/leaveApproveList
 import Holiday from '../../imports/ui/view/pages/holiday/holiday.js';
 import Salary from '../../imports/ui/view/pages/salary/salary.js';
 import SalarySlip from '../../imports/ui/view/pages/salary/salaryslip.js';
+import UserTaskList from '../../imports/ui/view/pages/taskasssign/UserTaskList';
 const accessRoute = [
   { routeName: 'listuser', roles: ['superadmin', 'admin'] },
   { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
@@ -40,7 +41,7 @@ const accessRoute = [
   { routeName: 'city', roles: ['superadmin', 'admin'] },
   { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
   { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] },
-  { routeName: 'task', roles: ['admin', 'employee'] },
+  { routeName: 'employeetasklist', roles: ['superadmin', 'admin'] },
 ]
 
 // Accounts
@@ -426,4 +427,15 @@ FlowRouter.route('/salarySlip', {
             }
         })
     }
+})
+
+FlowRouter.route('/employeetasklist', {
+  name: 'employeetasklist',
+  action(){
+      mount(MainLayout, {
+          content(){
+              return <UserTaskList />
+          }
+      })
+  }
 })

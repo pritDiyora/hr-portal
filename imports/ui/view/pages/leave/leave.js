@@ -47,7 +47,7 @@ class ApplyLeave extends Component {
     render() {
         let leaveEvents = [];
         this.props.leaves && this.props.leaves.map((leave, pos) => {
-            let leavename = this.props.leavetype && this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType);
+            let leavename = this.props.leavetype && this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType) || "";
             let leavetitle="Reason :" + leave.reason + '(' + leavename.leaveTypeName + ')';            
             let leaveList = {
                 id: pos.toString(),
@@ -57,7 +57,6 @@ class ApplyLeave extends Component {
 
             };
             leaveEvents.push(leaveList);
-            console.log('leaveEvents :: ', leaveEvents);
         });
         let disabled = true;
         let now = new Date();

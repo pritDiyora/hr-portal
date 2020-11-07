@@ -123,10 +123,13 @@ class EducationComponent extends React.Component {
 
         </div>
         { education1.length - 1 === this.props.id && <button className="btn  btn-primary float-right" type='submit' value='add more' onClick={(e) => this.props.EducationaddmoreClick(e)} >Add More</button>}
-        {education1.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
-          <button name="firstnext" className="btn  btn-primary" value="Previous" onClick={(e) => { this.props.previous(e) }} >Previous</button> &nbsp;
-                         <button name="firstnext" className="btn  btn-primary" value="Next" onClick={(e) => { this.props.usereducation(e) }} >Next</button>
-        </div>}
+        { FlowRouter.getRouteName() == 'Profile' ? education1.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
+          <button name="firstnext" className="btn  btn-primary" value="Next" onClick={(e) => { this.props.usereducation(e) }} >Next</button>
+        </div>
+        : education1.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
+        <button name="firstnext" className="btn  btn-primary" value="Previous" onClick={(e) => { this.props.previous(e) }} >Previous</button> &nbsp;
+        <button name="firstnext" className="btn  btn-primary" value="Next" onClick={(e) => { this.props.usereducation(e) }} >Next</button>
+      </div>}
       </div>
     );
   }

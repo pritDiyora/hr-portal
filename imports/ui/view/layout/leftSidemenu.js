@@ -6,10 +6,11 @@ class LeftSidemenu extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { permission: false };
+    this.state = { permission: false, superAdminPermissiom: false };
   }
   componentWillMount() {
     this.AccessPermission()
+    this.Permission()
   }
   componentDidMount() {
     $('#side-menu').metisMenu();
@@ -27,6 +28,19 @@ class LeftSidemenu extends Component {
       this.setState({ permission: false });
     }
   }
+  Permission() {
+    let user = JSON.parse(localStorage.getItem('user')) || {};
+    if (!user || !user.profile || !user.profile.userType) {
+      return false;
+    }
+    var usertype = user && user.profile && user.profile.userType;
+    if (usertype == "employee"
+      || usertype == "admin") {
+      this.setState({ superAdminPermissiom: true });
+    } else {
+      this.setState({ superAdminPermissiom: false });
+    }
+  }
 
   profUpdate(e) {
     e.preventDefault();
@@ -40,7 +54,7 @@ class LeftSidemenu extends Component {
     });
   }
   render() {
-    let { currentUser } = this.props, { permission } = this.state;
+    let { currentUser } = this.props, { permission, superAdminPermissiom } = this.state;
     return (
       <nav className="navbar-default navbar-static-side" role="navigation">
         <div className="sidebar-collapse">
@@ -123,13 +137,17 @@ class LeftSidemenu extends Component {
             }
             {permission ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
-            <li><a href="/task"><i className="fa fa-tasks"></i> <span className="nav-label">Task</span></a> </li>
-            <li>
-              <a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a>
-            </li>
-            <li>
-              <a href="/leave"><i className=" fa fa-calendar-minus-o"></i><span className="nav-label">Leave</span></a>
-            </li>
+            {superAdminPermissiom ? 
+            <li><a href={`/task?id=${Meteor.userId()}`}><i className="fa fa-tasks"></i> <span className="nav-label">Task</span></a> </li> 
+            : <a href="/accesspermission"></a>}
+            {superAdminPermissiom ? 
+            <li><a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a> </li>
+             : <a href="/accesspermission"></a>}
+            {superAdminPermissiom ? 
+            <li><a href="/leave"><i className=" fa fa-calendar-minus-o"></i><span className="nav-label">Leave</span></a></li> 
+            : <a href="/accesspermission"></a>}
+            {permission ? <li>
+              <a href="/employeetasklist"><i className="fa fa-list-alt"></i><span className="nav-label">EmployeeTask List</span></a></li> : <a href="/accesspermission"></a>}
           </ul>
 
         </div>

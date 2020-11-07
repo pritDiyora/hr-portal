@@ -8,8 +8,7 @@ class ExperieanceComponent extends Component {
   constructor(props) {
     super(props);
     this.showFromMonth = this.showFromMonth.bind(this);
-  }
-
+  } 
   showFromMonth() {
     const { startdate, enddate } = this.props;
     if (!startdate) {
@@ -158,10 +157,14 @@ class ExperieanceComponent extends Component {
           </div>
           : <p></p>}
         {this.props.experiance.length - 1 === this.props.id && <button className="btn  btn-primary float-right" value='add more' onClick={this.props.ExperienceaddmoreClick} >Add More</button>}
-        {this.props.experiance.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
-          <button name="firstnext" className="btn  btn-primary" value="Previous" onClick={(e) => { this.props.previous(e) }} >Previous</button> &nbsp;
+        {FlowRouter.getRouteName() == "Profile" ? this.props.experiance.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
                     <button name="firstnext" className="btn  btn-primary float-right" value="Finish" onClick={(e) => { this.props.userexperiance(e) }}>Finish</button>
-        </div>}
+        </div>:
+        this.props.experiance.length - 1 === this.props.id && <div style={{ textAlign: "right" }} className="col-md-6">
+        <button name="firstnext" className="btn  btn-primary" value="Previous" onClick={(e) => { this.props.previous(e) }} >Previous</button> &nbsp;
+        <button name="firstnext" className="btn  btn-primary float-right" value="Finish" onClick={(e) => { this.props.userexperiance(e) }}>Finish</button>
+      </div>
+        }
       </div>
     );
   }
