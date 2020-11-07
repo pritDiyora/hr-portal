@@ -175,7 +175,7 @@ class Header extends Component {
                     }
                     <li>
                       <div className="text-center link-block">
-                        <a href="mailbox.html" className="dropdown-item">
+                        <a href="/notificationList" className="dropdown-item">
                           <i className="fa fa-bell"></i> <strong>Read All Notofication</strong>
                         </a>
                       </div>

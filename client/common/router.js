@@ -33,6 +33,7 @@ import Holiday from '../../imports/ui/view/pages/holiday/holiday.js';
 import Salary from '../../imports/ui/view/pages/salary/salary.js';
 import SalarySlip from '../../imports/ui/view/pages/salary/salaryslip.js';
 import UserTaskList from '../../imports/ui/view/pages/taskasssign/UserTaskList';
+import NotificationList from '../../imports/ui/view/pages/notification/notificationList.js';
 const accessRoute = [
   { routeName: 'listuser', roles: ['superadmin', 'admin'] },
   { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
@@ -408,34 +409,44 @@ FlowRouter.route('/holiday', {
 })
 
 FlowRouter.route('/salary', {
-    name: 'Salary',
-    action() {
-        mount(MainLayout, {
-            content() {
-                return <Salary />
-            }
-        })
-    }
+  name: 'Salary',
+  action() {
+    mount(MainLayout, {
+      content() {
+        return <Salary />
+      }
+    })
+  }
 })
 
 FlowRouter.route('/salarySlip', {
-    name: 'SalarySlip',
-    action(){
-        mount(MainLayout, {
-            content(){
-                return <SalarySlip />
-            }
-        })
-    }
+  name: 'SalarySlip',
+  action() {
+    mount(MainLayout, {
+      content() {
+        return <SalarySlip />
+      }
+    })
+  }
 })
 
 FlowRouter.route('/employeetasklist', {
   name: 'employeetasklist',
-  action(){
-      mount(MainLayout, {
-          content(){
-              return <UserTaskList />
-          }
-      })
+  action() {
+    mount(MainLayout, {
+      content() {
+        return <UserTaskList />
+      }
+    })
+  }
+})
+FlowRouter.route('/notificationList', {
+  name: 'NotificationList',
+  action() {
+    mount(MainLayout, {
+      content() {
+        return <NotificationList />
+      }
+    })
   }
 })
