@@ -38,7 +38,6 @@ class Header extends Component {
   }
   setTiming() {
     let chkInStatus = Meteor.user() && Meteor.user().profile.clockStatus;
-    console.log('chkInStatus :: ', chkInStatus);
     if (chkInStatus == true) {
       this.countdown = setInterval(() => {
         let { checkInOutList } = this.props;

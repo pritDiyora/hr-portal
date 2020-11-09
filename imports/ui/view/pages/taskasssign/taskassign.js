@@ -29,17 +29,17 @@ class Taskassign extends Component {
       totalpage: 0
 
     }
-    this.updateTask=this.updateTask.bind(this);
-    this.deleteTask=this.deleteTask.bind(this);
+    this.updateTask = this.updateTask.bind(this);
+    this.deleteTask = this.deleteTask.bind(this);
   }
-  componentWillReceiveProps(nextProps){
-    this.setState({displayedTask:nextProps.tasks})
+  componentWillReceiveProps(nextProps) {
+    this.setState({ displayedTask: nextProps.tasks })
   }
   addTask(e) {
     e.preventDefault();
-    let {  description } = this.state, self = this;
+    let { description } = this.state, self = this;
     let task = {
-      userId: Meteor.userId(),
+      userId: FlowRouter._current.queryParams.id,
       taskDate: new Date(),
       description: description
     };
@@ -110,12 +110,11 @@ class Taskassign extends Component {
     $("#add-panel").modal("hide");
   }
   render() {
-    let { sortKey, sortValue } = this.state;
-
     return (
       <div>
         <div className="wrapper wrapper-content animated fadeInRight" >
-          <a data-toggle="modal" className="btn btn-primary addmodel" style={{marginLeft:"0px"}} onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add Task</a>
+          {Meteor.user() && Meteor.user().profile.userType == 'superadmin' ? <p></p> : <a data-toggle="modal" className="btn btn-primary addmodel" style={{ marginLeft: "0px" }} onClick={(e) => this.modelclick(e)}><i className="fa fa-plus"></i>&nbsp;&nbsp;Add Task</a>}
+
           <KanbanBoard
             tasks={this.state.displayedTask}
             updateTask={this.updateTask}
@@ -169,7 +168,7 @@ export default withTracker(() => {
   Meteor.subscribe('getTaskInfo');
   return {
     users: User.find({}).fetch(),
-    tasks: TaskAssign.find({userId:Meteor.userId()}).fetch()
+    tasks: TaskAssign.find({ userId: FlowRouter._current.queryParams.id }).fetch()
   }
 })(Taskassign);
 

@@ -5,7 +5,6 @@ class KanbanBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = ({
-      isLoading: true,
       tasks: [],
       draggedOverCol: "",
     });
@@ -18,7 +17,7 @@ class KanbanBoard extends React.Component {
     ];
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ tasks: nextProps.tasks, isLoading: false });
+    this.setState({ tasks: nextProps.tasks });
   }
 
   handleOnDragEnter(e, stageValue) {
@@ -33,10 +32,6 @@ class KanbanBoard extends React.Component {
   }
 
   render() {
-    if (this.state.isLoading) {
-      return (<h3>Loading...</h3>);
-    }
-
     return (
       <div className="row">
         
