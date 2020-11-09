@@ -33,6 +33,7 @@ import Holiday from '../../imports/ui/view/pages/holiday/holiday.js';
 import Salary from '../../imports/ui/view/pages/salary/salary.js';
 import SalarySlip from '../../imports/ui/view/pages/salary/salaryslip.js';
 import NotificationList from '../../imports/ui/view/pages/notification/notificationList.js';
+import RequestMail from '../../imports/ui/view/pages/requestmail/requestMail.js';
 const accessRoute = [
   { routeName: 'listuser', roles: ['superadmin', 'admin'] },
   { routeName: 'insertuser', roles: ['superadmin', 'admin'] },
@@ -435,6 +436,17 @@ FlowRouter.route('/notificationList', {
     mount(MainLayout, {
       content(){
         return <NotificationList />
+      }
+    })
+  }
+})
+
+FlowRouter.route('/requestMail', {
+  name: 'RequestMail',
+  action(){
+    mount(MainLayout, {
+      content(){
+        return <RequestMail />
       }
     })
   }

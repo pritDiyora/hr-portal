@@ -32,10 +32,10 @@ Meteor.startup(async () => {
             // noOfLeave:"month",
             workDayOfMonth: 26,
             from: 10,
-            to: 19 
-            
+            to: 19
+
         };
         GeneralSetting.insert(general);
     }
-   
+
 });

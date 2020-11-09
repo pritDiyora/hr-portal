@@ -130,6 +130,9 @@ class LeftSidemenu extends Component {
             <li>
               <a href="/leave"><i className=" fa fa-calendar-minus-o"></i><span className="nav-label">Leave</span></a>
             </li>
+            <li>
+              <a href="/requestMail"><i className="fa fa-envelope"></i><span className="nav-label">Request Mail</span></a>
+            </li>
           </ul>
 
         </div>

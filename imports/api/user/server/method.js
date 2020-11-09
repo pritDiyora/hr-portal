@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import Attendance from './../../attendance/attendance';
 import User from '../users';
 process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
+import { Email } from 'meteor/email'
 if (Meteor.isServer) {
     Meteor.methods({
         'registerUser': (data) => {
@@ -66,8 +67,21 @@ if (Meteor.isServer) {
         'profileImageUploade': (profileImageUrl, userid) => {
             return User.update({ _id: userid }, { $set: { profile: { profilePic: profileImageUrl } } });
         },
-    
 
+        "sendEmail": function (to, from, subject, text) {
+            // check([to, from, subject, text], [String]);
+
+            // Let other method calls from the same client start running,
+            // without waiting for the email sending to complete.
+            // this.unblock();
+
+            Email.send({
+                to: to,
+                from: from,
+                subject: subject,
+                text: text
+            });
+        }
     })
 }
 
