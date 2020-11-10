@@ -152,6 +152,9 @@ class LeftSidemenu extends Component {
               : <a href="/accesspermission"></a>}
             {permission ? <li>
               <a href="/employeetasklist"><i className="fa fa-list-alt"></i><span className="nav-label">EmployeeTask List</span></a></li> : <a href="/accesspermission"></a>}
+            <li>
+              <a href="/requestMail"><i className="fa fa-envelope"></i><span className="nav-label">Request Mail</span></a>
+            </li>
           </ul>
 
         </div>

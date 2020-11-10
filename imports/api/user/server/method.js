@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import Attendance from './../../attendance/attendance';
 import User from '../users';
 process.env.MAIL_URL = `smtp://superadmi12@gmail.com:prathana@smtp.gmail.com:587/`;
+import { Email } from 'meteor/email'
 if (Meteor.isServer) {
     Meteor.methods({
         'registerUser': (data) => {
@@ -66,8 +67,15 @@ if (Meteor.isServer) {
         'profilePicUploade': (userid, profileImageUrl,) => {
             return User.update({ _id: userid }, { $set: { 'profile.profilePic': profileImageUrl } });
         },
-
-
+        sendEmail: function (to, subject, text) {
+            check([to, subject, text], [String]);
+            this.unblock();
+            Email.send({
+                to: to,
+                subject: subject,
+                text: text
+            });
+        }
     })
 }
 

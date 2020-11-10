@@ -8731,7 +8731,15 @@ body.md-skin {
   text-align: left;
 }
 
+.mailbox{
+  float: right;
+  text-align: right;
+}
 
+.textarea-mailbox{
+  height: 120px;
+  width: 1560px;
+}
 /* DayPicker styles */
 
 .DayPicker {
