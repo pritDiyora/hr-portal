@@ -6,7 +6,7 @@ class LeftSidemenu extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { permission: false, superAdminPermissiom: false };
+    this.state = { permission: false, superAdminPermissiom: false, src: "" };
   }
   componentWillMount() {
     this.AccessPermission()
@@ -55,6 +55,10 @@ class LeftSidemenu extends Component {
   }
   render() {
     let { currentUser } = this.props, { permission, superAdminPermissiom } = this.state;
+    let profilepic = currentUser && currentUser.profile && currentUser.profile.profilePic;
+    let lastname = `${currentUser && currentUser.profile && currentUser.profile.lastName}`;
+    let firsname=`${currentUser && currentUser.profile && currentUser.profile.firstName}`;
+    let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
     return (
       <nav className="navbar-default navbar-static-side" role="navigation">
         <div className="sidebar-collapse">
@@ -62,7 +66,9 @@ class LeftSidemenu extends Component {
             <li className="nav-header">
               <div id="profile" className="dropdown profile-element">
                 <span>
-                  <Avatar className="img-circle" size="50" color="#ffcccc" fgColor="#990000" name={currentUser && currentUser.profile && currentUser.profile.firstName + " " + currentUser.profile.lastName} maxInitials={2} />
+                  {profilepic == undefined ? <p style={{fontSize:"16px"}} data-letters={`${firsname.charAt(0)}${lastname.charAt(0)}`} /> : <img src={profilephoto}
+                    className="img-circle"  height="50" width="50"
+                  />}
                 </span>
                 <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
                   <span className="clear"> <span className="block m-t-xs">
@@ -72,8 +78,6 @@ class LeftSidemenu extends Component {
                     <span className="text-muted text-xs block">{currentUser && currentUser.profile && currentUser.profile.designation}<b className="caret"></b></span> </span> </a>
                 <ul className="dropdown-menu animated fadeInRight m-t-xs">
                   <li><a href="/profile">Profile</a></li>
-                  {/* <li><a href="#">Contacts</a></li>
-                  <li><a href="#">Mailbox</a></li> */}
                   <li className="divider"></li>
                   <li><a href="#" onClick={(e) => this.logout(e)}>Logout</a></li>
                 </ul>
@@ -137,15 +141,15 @@ class LeftSidemenu extends Component {
             }
             {permission ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {superAdminPermissiom ? 
-            <li><a href={`/task?id=${Meteor.userId()}`}><i className="fa fa-tasks"></i> <span className="nav-label">Task</span></a> </li> 
-            : <a href="/accesspermission"></a>}
-            {superAdminPermissiom ? 
-            <li><a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a> </li>
-             : <a href="/accesspermission"></a>}
-            {superAdminPermissiom ? 
-            <li><a href="/leave"><i className=" fa fa-calendar-minus-o"></i><span className="nav-label">Leave</span></a></li> 
-            : <a href="/accesspermission"></a>}
+            {superAdminPermissiom ?
+              <li><a href={`/task?id=${Meteor.userId()}`}><i className="fa fa-tasks"></i> <span className="nav-label">Task</span></a> </li>
+              : <a href="/accesspermission"></a>}
+            {superAdminPermissiom ?
+              <li><a href={`/employeeAttendance?id=${Meteor.userId()}`}><i className="fa fa-clock-o"></i> <span className="nav-label">Employee Attendance</span></a> </li>
+              : <a href="/accesspermission"></a>}
+            {superAdminPermissiom ?
+              <li><a href="/leave"><i className=" fa fa-calendar-minus-o"></i><span className="nav-label">Leave</span></a></li>
+              : <a href="/accesspermission"></a>}
             {permission ? <li>
               <a href="/employeetasklist"><i className="fa fa-list-alt"></i><span className="nav-label">EmployeeTask List</span></a></li> : <a href="/accesspermission"></a>}
           </ul>

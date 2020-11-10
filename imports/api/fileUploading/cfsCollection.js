@@ -1,15 +1,33 @@
-import { FilesCollection } from 'meteor/ostrio:files';
-import { tr } from 'date-fns/locale';
-const Images = new FilesCollection({
-  collectionName: 'Images',
-  debug: true,
-  allowClientCode: true, // Disallow remove files from Client
-  onBeforeUpload(file) {
-    if (file.size <= 10485760 && /png|jpg|jpeg/i.test(file.extension)) {
-      return true;
+switch (Meteor.absoluteUrl()) {
+  case "http://localhost:3000/":
+    fileUploadPath = "~/Desktop/HR-portal/images";
+    break;
+  case "http://localhost:5000/":
+    fileUploadPath = "~/Desktop/HR-portal/images";
+    break;
+  default:
+    fileUploadPath = '/root/HR-portal/image';
+}
+
+const Images = new FS.Collection("images", {
+  stores: [new FS.Store.FileSystem("images", { path: fileUploadPath})],
+  filter: {
+    maxSize: 3145728,
+    allow: {
+      contentTypes: ['image/*'],
+      extensions: ['png', 'PNG', 'jpg', 'JPG', 'jpeg', 'JPEG']
     }
-    return 'Please upload image, with size equal or less than 10MB';
   }
 });
+Images.allow({
+  'insert': function (userId, fileObj) {
+    // add custom authentication code here
+    return true;
+  }, 
+  'download': function (userId, fileObj) {
+    // add custom authentication code here
+    return true;
+  }, 
 
+});
 export default Images;

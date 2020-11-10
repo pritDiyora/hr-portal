@@ -12,6 +12,7 @@ import Notification from '../notification/notification';
 import Holiday from '../holiday/holidaySchema';
 import Salary from '../salary/salarySchema';
 import TaskAssign from '../taskassign/taskSchema';
+import { tr } from 'date-fns/locale';
 if (Meteor.isServer) {
     Meteor.methods({
         //Add Country state and city 
@@ -96,8 +97,8 @@ if (Meteor.isServer) {
         'countUserdata': () => {
             return User.find({}).count();
         },
-        'countUserTaskdata':()=>{
-            return User.find({ "profile.userType": { $in: ["admin", "employee"] }}).count();
+        'countUserTaskdata': () => {
+            return User.find({ "profile.userType": { $in: ["admin", "employee"] } }).count();
         },
         'countAttendancedata': (pipeline) => {
 
@@ -152,7 +153,26 @@ if (Meteor.isServer) {
         'statusReadable': (nid) => {
             return Notification.update({ _id: nid }, { $set: { isRead: true } });
         },
-
+        'AllNotificationData': (nid) => {
+            return Notification.find({ receiverId: nid }).fetch();
+        },
+        'statusReadableFalse':(nid,notificationisRead)=>{
+            if(notificationisRead == true){
+                return  Notification.update({ _id: nid }, { $set: { isRead: false } });
+            }else{
+                return  Notification.update({ _id: nid }, { $set: { isRead: true } });
+            }
+        },
+        'notificationDelete':(nid)=>{
+            return Notification.remove({_id:nid})
+        },
+        'isChecked':(checked,nid)=>{
+            if(checked == true){
+                return  Notification.update({ _id: nid }, { $set: { isChecked: false } });
+            }else{
+                return  Notification.update({ _id: nid }, { $set: { isChecked: true } });
+            }
+        },
         //holiday 
         'addholiday': (holidayname, holidaydate) => {
             return Holiday.insert({ holidayname: holidayname, holidaydate: holidaydate });
@@ -186,7 +206,7 @@ if (Meteor.isServer) {
         'countSalarydata': () => {
             return Salary.find({}).count();
         },
-        
+
         //Task
         'addTaskOfUser': (task) => {
             return TaskAssign.insert(task);
@@ -200,6 +220,6 @@ if (Meteor.isServer) {
         'updateStatusOfTasks': (id, draggedOverCol) => {
             return TaskAssign.update({ _id: id }, { $set: { status: draggedOverCol } });
         },
-        
+
     })
 }

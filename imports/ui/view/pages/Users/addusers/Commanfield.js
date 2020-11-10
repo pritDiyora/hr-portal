@@ -16,13 +16,14 @@ import ExperieanceComponent from './component/ExperienceComponent';
 import AddressComponent from './component/AddressComponent';
 import User from '../../../../../api/user/users';
 import Images from '../../../../../api/fileUploading/cfsCollection';
+import { th } from 'date-fns/locale';
 class AddHR extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       profile: {}, email: "", loading: false, CountryOption: {}, StateOption: {}, CityOption: {},
       education: [{ key: Random.id(), index: 0 }],
-      flag: null,
+      flag: null, profileimage: '',
       experiance: [{ key: Random.id(), index: 0 }],
       lastIndex: 0, countrie: [], states: [], city: [], zipcode: "", addressline1: "", addressline2: "", userid: ""
     }
@@ -34,7 +35,7 @@ class AddHR extends React.Component {
     this.previous = this.previous.bind(this);
     this.EducationchangeHandler = this.EducationchangeHandler.bind(this);
     this.EducationaddmoreClick = this.EducationaddmoreClick.bind(this);
-    this.EduucationremoveClick = this.EduucationremoveClick.bind(this);
+    this.EducationremoveClick = this.EducationremoveClick.bind(this);
     this.usereducation = this.usereducation.bind(this);
     this.ExperienceaddmoreClick = this.ExperienceaddmoreClick.bind(this);
     this.ExperienceChangeHandler = this.ExperienceChangeHandler.bind(this);
@@ -58,78 +59,83 @@ class AddHR extends React.Component {
       changeYear: true,
       yearRange: "2005:2015"
     });
+    let self = this;
+    self.updateUserDetails(self.props.userdata, self, self.props.countries, self.props.statedata, self.props.citiesdata, self.props.state, self.props.city)
   }
   componentWillReceiveProps(nextProps) {
-    let self = this, countrie = [], states = [], city = [];
-    nextProps.countries.length > 0 && nextProps.countries.map((country) => countrie.push({ value: country._id, label: country.countryname }));
-    nextProps.state.length > 0 && nextProps.state.map((state) => states.push({ value: state._id, label: state.stateName }));
-    nextProps.city.length > 0 && nextProps.city.map((cities) => city.push({ value: cities._id, label: cities.cityName }));
+    let self = this;
+    self.updateUserDetails(nextProps.userdata, self, nextProps.countries, nextProps.statedata, nextProps.citiesdata, nextProps.state, nextProps.city);
+  }
+
+  updateUserDetails(userdata, self, countryData, stateData, cityData, stateWill, cityWill) {
+    let countrie = [], states = [], city = [];
+    countryData.length > 0 && countryData.map((country) => countrie.push({ value: country._id, label: country.countryname }));
+    stateWill.length > 0 && stateWill.map((state) => states.push({ value: state._id, label: state.stateName }));
+    cityWill.length > 0 && cityWill.map((cities) => city.push({ value: cities._id, label: cities.cityName }));
+    self.setState({ flag: self.props.flag, userid: FlowRouter.current("_id").params._id })
     self.setState({ countrie, states, city });
     if (self.props.flag == 1) {
-      self.updateUserDetails(nextProps.userdata, self,nextProps.countries,nextProps.statedata,nextProps.citiesdata);
+      let { profile } = self.state;
+      let userAddress = userdata && userdata.address || [],
+        userEducation = userdata && userdata.education || [],
+        userExperiance = userdata && userdata.experiance || [];
+      //set User Profile
+      profile[`firstName`] = userdata && userdata && userdata.profile.firstName;
+      profile[`lastName`] = userdata && userdata.profile.lastName;
+      profile[`fatherName`] = userdata && userdata.profile.fatherName;
+      profile[`motherName`] = userdata && userdata.profile.motherName;
+      profile[`gender`] = userdata && userdata.profile.gender;
+      profile[`birthDate`] = userdata && userdata.profile.birthDate;
+      profile[`officalEmailid`] = userdata && userdata.profile.officalEmailId;
+      profile[`userType`] = userdata && userdata.profile.userType;
+      profile[`phone`] = userdata && userdata.profile.phone;
+      profile[`joiningDate`] = userdata && userdata.profile.joiningDate;
+      profile[`description`] = userdata && userdata.profile.description;
+      profile[`designation`] = userdata && userdata.profile.designation;
+      self.setState({ email: userdata && userdata.emails[0].address, profile });
+      //set User Address
+      userAddress.map((addresses) => {
+        let couobj = countryData && countryData.find(cou => cou._id == addresses.country);
+        self.setState({ CountryOption: { value: couobj && couobj._id, label: couobj && couobj.countryname } });
+        let stateobj = stateData && stateData.find(state => state._id == addresses.state);
+        self.setState({ StateOption: { value: stateobj && stateobj._id, label: stateobj && stateobj.stateName } });
+        let cityobj = cityData && cityData.find(ci => ci._id == addresses.city);
+        self.setState({ CityOption: { value: cityobj && cityobj._id, label: cityobj && cityobj.cityName } });
+        self.setState({ addressline1: addresses.addressline1, addressline2: addresses.addressline2, zipcode: addresses.zipcode });
+      });
+      //set User Education
+      let education = []
+      userEducation.map((edu, i) => {
+        let value = { key: Random.id(), index: i };
+        education.push(value)
+        this.setState({
+          [`education.coursename_${value.key}`]: edu.cousrseName,
+          [`education.coursetype_${value.key}`]: edu.cousrseType,
+          [`education.institutename_${value.key}`]: edu.instituteName,
+          [`education.acedemicyear_${value.key}`]: edu.academicYear,
+          [`education.certificate_${value.key}`]: edu.certificate,
+          education
+        });
+      });
+      //set User Excperiance
+      let experiance = [];
+      userExperiance.map((exp, i) => {
+        let value = { key: Random.id(), index: i };
+        experiance.push(value)
+        self.setState({
+          [`experiance.companyname_${value.key}`]: exp.companyName,
+          [`experiance.workexperiance_${value.key}`]: exp.workExpeience,
+          [`experiance.startdate_${value.key}`]: exp.startAt,
+          [`experiance.enddate_${value.key}`]: exp.endAt,
+          [`experiance.techonology_${value.key}`]: exp.technology || [],
+          experiance
+        })
+      });
     } else {
       self.setState({ flag: self.props.flag });
     }
-  }
-  
-  updateUserDetails(userdata, self,countryData,stateData,cityData) {
-    self.setState({ flag: self.props.flag, userid: FlowRouter.current("_id").params._id })
-    let { profile } = self.state;
-    let userAddress = userdata && userdata.address || [],
-      userEducation = userdata && userdata.education || [],
-      userExperiance = userdata && userdata.experiance || [];
-    //set User Profile
-    profile[`firstName`] = userdata && userdata && userdata.profile.firstName;
-    profile[`lastName`] = userdata && userdata.profile.lastName;
-    profile[`fatherName`] = userdata && userdata.profile.fatherName;
-    profile[`motherName`] = userdata && userdata.profile.motherName;
-    profile[`gender`] = userdata && userdata.profile.gender;
-    profile[`birthDate`] = userdata && userdata.profile.birthDate;
-    profile[`officalEmailid`] = userdata && userdata.profile.officalEmailId;
-    profile[`userType`] = userdata && userdata.profile.userType;
-    profile[`phone`] = userdata && userdata.profile.phone;
-    profile[`joiningDate`] = userdata && userdata.profile.joiningDate;
-    profile[`description`] = userdata && userdata.profile.description;
-    profile[`designation`] = userdata && userdata.profile.designation;
-    self.setState({ email: userdata && userdata.emails[0].address, profile });
-    //set User Address
-    userAddress.map((addresses) => {
-      let couobj = countryData && countryData.find(cou => cou._id == addresses.country);
-      self.setState({ CountryOption: { value: couobj && couobj._id, label: couobj && couobj.countryname } });
-      let stateobj = stateData && stateData.find(state => state._id == addresses.state);
-      self.setState({ StateOption: { value: stateobj && stateobj._id, label: stateobj && stateobj.stateName } });
-      let cityobj = cityData && cityData.find(ci => ci._id == addresses.city);
-      self.setState({ CityOption: { value: cityobj && cityobj._id, label: cityobj && cityobj.cityName } });
-      self.setState({ addressline1: addresses.addressline1, addressline2: addresses.addressline2, zipcode: addresses.zipcode });
-    });
-    //set User Education
-    let education = []
-    userEducation.map((edu, i) => {
-      let value = { key: Random.id(), index: i };
-      education.push(value)
-      this.setState({
-        [`education.coursename_${value.key}`]: edu.cousrseName,
-        [`education.coursetype_${value.key}`]: edu.cousrseType,
-        [`education.institutename_${value.key}`]: edu.instituteName,
-        [`education.acedemicyear_${value.key}`]: edu.academicYear,
-        [`education.certificate_${value.key}`]: edu.certificate,
-        education
-      });
-    });
-    //set User Excperiance
-    let experiance = [];
-    userExperiance.map((exp, i) => {
-      let value = { key: Random.id(), index: i };
-      experiance.push(value)
-      self.setState({
-        [`experiance.companyname_${value.key}`]: exp.companyName,
-        [`experiance.workexperiance_${value.key}`]: exp.workExpeience,
-        [`experiance.startdate_${value.key}`]: exp.startAt,
-        [`experiance.enddate_${value.key}`]: exp.endAt,
-        [`experiance.techonology_${value.key}`]: exp.technology || [],
-        experiance
-      })
-    });
+
+
   }
 
   //Addmore Education
@@ -157,10 +163,10 @@ class AddHR extends React.Component {
   createUI() {
     return this.state.education.map((el, i) => {
       return (<EducationComponent
-        rowData={el} id={i} education={this.state.education} 
+        rowData={el} id={i} education={this.state.education}
         EducationaddmoreClick={this.EducationaddmoreClick}
         previous={this.previous} Educationvalidator={this.Educationvalidator}
-        EduucationremoveClick={this.EduucationremoveClick}
+        EducationremoveClick={this.EducationremoveClick}
         EducationchangeHandler={this.EducationchangeHandler}
         filechangeHandler={this.filechangeHandler}
         usereducation={this.usereducation}
@@ -182,7 +188,7 @@ class AddHR extends React.Component {
     });
 
   }
-  EduucationremoveClick(event, i) {
+  EducationremoveClick(event, i) {
     event.preventDefault();
     let education = [...this.state.education];
     education.splice(i, 1);
@@ -206,25 +212,23 @@ class AddHR extends React.Component {
     });
   }
   //file upload
-  filechangeHandler(e, key) {
+  filechangeHandler(event, key) {
+    event.preventDefault();
     var self = this;
-    // let filess = e.target.files;
     self.setState({ loading: true })
-    const upload = Images.insert({
-      file: e.target.files[0],
-      streams: 'dynamic',
-      chunkSize: 'dynamic'
-    }, false);
-    upload.on('start', function () {
+    FS.Utility.eachFile(event, function (filess) {
+      var yourFile = new FS.File(filess);
+      // yourFile.creatorId = Meteor.userId(); // add custom data
+      Images.insert(yourFile, function (err, fileObj) {
+        if (!err) {
+          toast.success("File Uploaded...",fileObj);
+          self.setState({
+            [`education.certificate_${key}`]: fileObj._id,
+            loading:false
+          });
+        }
+      });
     });
-    upload.on('end', function (error, fileObj) {
-      if (error) {
-        alert('Error during upload: ' + error);
-      } else {
-        alert('File "' + fileObj.name + '" successfully uploaded');
-      }
-    });
-    upload.start();
   }
   EducationchangeHandler(event) {
     this.setState({
@@ -337,7 +341,7 @@ class AddHR extends React.Component {
             Meteor.call('adddressadd', self.state.userid, address, function (err, res) {
               if (!err) {
                 $('.nav-tabs li a[href="#tab-2"]').tab('show');
-                toast.success("User updated successfully..." , res);
+                toast.success("User updated successfully...", res);
                 self.setState({ loading: false })
               } else {
                 toast.error(err.message);
@@ -355,7 +359,7 @@ class AddHR extends React.Component {
             Meteor.call('adddressadd', self.state.userid, address, function (err, res) {
               if (!err) {
                 $('.nav-tabs li a[href="#tab-2"]').tab('show');
-                toast.success("User added successfully..." , res);
+                toast.success("User added successfully...", res);
                 self.setState({ loading: false })
               } else {
                 toast.error(err.message);
@@ -388,9 +392,9 @@ class AddHR extends React.Component {
     Meteor.call('addeducation', this.state.userid, educations, function (err, result) {
       if (!err) {
         if (self.state.flag == 1) {
-          toast.success("Education updated successfully..." , result);
+          toast.success("Education updated successfully...", result);
         } else {
-          toast.success("Education added successfully..." , result);
+          toast.success("Education added successfully...", result);
         }
       } else {
         toast.error(err.message);
@@ -416,10 +420,10 @@ class AddHR extends React.Component {
       if (!err) {
         if (self.state.flag == 1) {
           $('.nav-tabs li a[href="#tab-1"]').tab('show');
-          toast.success("Experiance updated successfully...." , result);
+          toast.success("Experiance updated successfully....", result);
         } else {
           $('.nav-tabs li a[href="#tab-1"]').tab('show');
-          toast.success("Experiance added successfully...." , result);
+          toast.success("Experiance added successfully....", result);
         }
 
       } else {
@@ -527,7 +531,7 @@ class AddHR extends React.Component {
             </div>
           </div>
         </div>
-      
+
       </div>
     )
   }

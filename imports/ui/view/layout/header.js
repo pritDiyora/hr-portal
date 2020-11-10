@@ -99,7 +99,7 @@ class Header extends Component {
   getUserName(userid) {
     const self = this;
     let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
-    return userInfo.profile.firstName + ' ' + userInfo.profile.lastName;
+    return userInfo && userInfo.profile && userInfo.profile.firstName + ' ' + userInfo && userInfo.profile && userInfo.profile.lastName;
   }
   handleLeaveItem(event, notificationId, notificationType) {
     event.preventDefault();
@@ -146,42 +146,41 @@ class Header extends Component {
                 <i className="fa fa-bell"></i>
                 {this.state.count == 0 ? " " : <span className="label label-warning">{this.state.count}</span>}
               </a>
-              {
-                this.state.count == 0 ? "" :
-                  <ul className="dropdown-menu dropdown-alerts">
-                    {
-                      notificationlist.map((notification) => {
-                        let firstname = this.getUserName(notification.sendId)
-                        return (<li key={notification._id} >
-                          <div className="dropdown-messages-box">
-                            <a href="profile.html" className="pull-left">
-                              <Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
-                              />
-                            </a>
-                            <div className="media-body" onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
-                              <small className="pull-right">{moment(notification.createdAtDate).fromNow()}</small>
-                              <strong>{firstname}</strong>  <br />
-                              <small className="text-muted">{notification.description}</small><br />
-                              <small className="text-muted">{moment(notification.createdAtDate).fromNow()} at {moment(notification.createdAtDate).format('hh:mm')}
-                           - {moment(notification.createdAtDate).format('DD.MM.YYYY')}</small>
-                            </div>
-                          </div>
-                          <ul>
-                            <li className="divider"></li>
-                          </ul>
-                        </li>
-                        )
-                      })
-                    }
-                    <li>
-                      <div className="text-center link-block">
-                        <a href="/notificationList" className="dropdown-item">
-                          <i className="fa fa-bell"></i> <strong>Read All Notofication</strong>
+
+              <ul className="dropdown-menu dropdown-alerts">
+                {
+                  notificationlist.map((notification) => {
+                    let firstname = this.getUserName(notification.sendId)
+                    return (<li key={notification._id} >
+                      <div className="dropdown-messages-box">
+                        <a href="profile.html" className="pull-left">
+                          <Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
+                          />
                         </a>
+                        <div className="media-body" onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
+                          <small className="pull-right">{moment(notification.createdAtDate).fromNow()}</small>
+                          <strong>{firstname}</strong>  <br />
+                          <small className="text-muted">{notification.description}</small><br />
+                          <small className="text-muted">{moment(notification.createdAtDate).fromNow()} at {moment(notification.createdAtDate).format('hh:mm')}
+                           - {moment(notification.createdAtDate).format('DD.MM.YYYY')}</small>
+                        </div>
                       </div>
+                      <ul>
+                        <li className="divider"></li>
+                      </ul>
                     </li>
-                  </ul>
-              }
+                    )
+                  })
+                }
+                <li>
+                  <div className="text-center link-block">
+                    <a href="/notificationList" className="dropdown-item">
+                      <i className="fa fa-bell"></i> <strong>Read All Notofication</strong>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+
             </li>
             <li>
               <a href="/changePassword">
