@@ -68,16 +68,11 @@ if (Meteor.isServer) {
             return User.update({ _id: userid }, { $set: { profile: { profilePic: profileImageUrl } } });
         },
 
-        "sendEmail": function (to, from, subject, text) {
-            // check([to, from, subject, text], [String]);
-
-            // Let other method calls from the same client start running,
-            // without waiting for the email sending to complete.
-            // this.unblock();
-
+        sendEmail: function (to, subject, text) {
+            check([to, subject, text], [String]);
+            this.unblock();
             Email.send({
                 to: to,
-                from: from,
                 subject: subject,
                 text: text
             });

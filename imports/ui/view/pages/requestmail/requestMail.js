@@ -1,35 +1,45 @@
 import React, { Component } from 'react'
 import { toast } from 'react-toastify';
-import { Accounts } from 'meteor/accounts-base'
-import {Meteor} from 'meteor/meteor';
+import { Meteor } from 'meteor/meteor';
+import User from '../../../../api/user/users';
 export default class RequestMail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       to: "",
-      from: "",
       subject: "",
       text: ""
     }
   }
-
   requestMail(e) {
     e.preventDefault();
-    let {to, from, subject, text} =this.state
-    let sendEmail ={
-      to: to,
-      from: from,
-      subject: subject,
-      text: text
-    }
-    Meteor.call('sendEmail', sendEmail, function(err, res){
-      if(!err){
+    let { to, subject, text } = this.state
+    let superAdminId = User.findOne({ 'profile.userType': 'superadmin' })._id;
+    let AdminId = User.findOne({ 'profile.userType': 'admin' })._id;
+    Meteor.call('sendEmail', to, subject, text, function (err, res) {
+      if (!err) {
         toast.success("Email send successfully...");
-      }else{
+        let leaveApproveNotification = {
+          title: 'Email',
+          description: 'Check your email...',
+          sendId: Meteor.userId(),
+          receiverId: [superAdminId, AdminId],
+          type: 'dashboard',
+          createdAtDate: new Date(),
+          createdBy: Meteor.userId(),
+          modifiedBy: Meteor.userId()
+        }
+        Meteor.call('LeaveApprove.Notification', leaveApproveNotification, function (err, res) {
+          if (!err) {
+            console.log('notification send', res);
+          }
+        });
+
+      } else {
         toast.error("Email not send ...")
       }
     });
-    
+
   }
   render() {
     return (
@@ -50,14 +60,13 @@ export default class RequestMail extends Component {
                   <div className="form-group row"><label className="col-sm-2 col-form-label">To:</label>
                     <div className="col-sm-10"><input type="text" className="form-control" name="to" onChange={(e) => this.setState({ to: e.target.value })} /></div>
                   </div><br />
-                  <div className="form-group row"><label className="col-sm-2 col-form-label">From:</label>
-                    <div className="col-sm-10"><input type="text" className="form-control" name="from" onChange={(e) => this.setState({ from: e.target.value })} /></div>
-                  </div><br />
                   <div className="form-group row"><label className="col-sm-2 col-form-label">Subject:</label>
                     <div className="col-sm-10"><input type="text" className="form-control" name="subject" onChange={(e) => this.setState({ subject: e.target.value })} /></div>
                   </div><br />
-                  <div className="note-editing-area">
-                    <textarea className="note-codable textarea-mailbox" role="textbox" aria-multiline="true" onChange={(e) => this.setState({ text: e.target.value })}></textarea>
+                  <div className="form-group row">
+                    <div className="col-sm-12">
+                      <textarea type="text" className="textarea-mailbox" role="textbox" aria-multiline="true" onChange={(e) => this.setState({ text: e.target.value })}></textarea>
+                    </div>
                   </div><br />
                   <center>
                     <input
