@@ -9418,3 +9418,85 @@ margin-top: 10px;
   margin-bottom: 20px;
   margin-top: 10px;
 }
+
+.notificationlist{
+  border-top: 1px solid #1ab394 ;
+  border-bottom: 1px solid #C7D7E6;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.desc{
+  font-weight: 500;
+  font-size: 15px;
+}
+.notificationsBody {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 280px);
+  border-top: 2px solid #C7D7E6;
+}
+.ibox-content-notification{
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0;
+
+}
+[data-letters]:before {
+  content:attr(data-letters);
+  display:inline-block;
+  width:3.5em;
+  height:3.5em;
+  line-height:3.5em;
+  text-align:center;
+  border-radius:50%;
+  background:#ffcccc;
+  vertical-align:middle;
+  color:#990000;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150;
+  width: 150;
+  opacity: 0;
+  border-radius:50%;
+  transition: .5s ease;
+  border-style: dotted;
+  background-color: #FFFFFF;
+}
+.profile {
+  position: relative;
+  width: 150;
+}
+.profile:hover .overlay{
+  opacity: 0.9;
+}
+
+.image {
+  border-radius: 50%;
+  display: block;
+  overflow:hidden;
+}
+
+.textprofile {
+  color: #555;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: 25px;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+

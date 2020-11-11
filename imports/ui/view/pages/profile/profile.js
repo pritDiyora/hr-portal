@@ -14,6 +14,7 @@ import SimpleReactValidator from 'simple-react-validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Images from '../../../../api/fileUploading/cfsCollection';
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -26,52 +27,63 @@ class Profile extends Component {
     this.EducationchangeHandler = this.EducationchangeHandler.bind(this);
     this.filechangeHandler = this.filechangeHandler.bind(this);
     this.usereducation = this.usereducation.bind(this);
-    this.EduucationremoveClick = this.EduucationremoveClick.bind(this);
+    this.EducationremoveClick = this.EducationremoveClick.bind(this);
     this.handleFromChange = this.handleFromChange.bind(this);
     this.handleToChange = this.handleToChange.bind(this);
     this.TaghandleChange = this.TaghandleChange.bind(this);
     this.removeClickexperiance = this.removeClickexperiance.bind(this)
     this.userexperiance = this.userexperiance.bind(this);
     this.ExperienceChangeHandler = this.ExperienceChangeHandler.bind(this);
-    this.ExperienceaddmoreClick=this.ExperienceaddmoreClick.bind(this);
+    this.ExperienceaddmoreClick = this.ExperienceaddmoreClick.bind(this);
     this.reactTags = React.createRef(); this.child = React.createRef();
     this.Experiencevalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
     this.Educationvalidator = new SimpleReactValidator({ autoForceUpdate: this, className: "text-danger" });
+  }
+  componentDidMount() {
+    this.profilePicSet(this.props.currentUser);
   }
   componentWillReceiveProps(nextProps) {
     let userCountry = nextProps.currentUser && nextProps.currentUser.address && nextProps.currentUser.address[0].country || [],
       userState = nextProps.currentUser && nextProps.currentUser.address && nextProps.currentUser.address[0].state || [],
       userCity = nextProps.currentUser && nextProps.currentUser.address && nextProps.currentUser.address[0].city || [],
-      userZipCode = nextProps.currentUser && nextProps.currentUser.address && nextProps.currentUser.address[0].zipcode || [];
+      userZipCode = nextProps.currentUser && nextProps.currentUser.address && nextProps.currentUser.address[0].zipcode || [],
+      userProfilePic = nextProps.currentUser && nextProps.currentUser.profile && nextProps.currentUser.profile.profilePic;
     let cou = nextProps.countries.find(cou => cou._id == userCountry) || {};
     let stat = nextProps.statedata.find(st => st._id == userState) || {};
     let cities = nextProps.citiesdata.find(city => city._id == userCity) || {};
-    this.setState({ country: cou.countryname, states: stat.stateName, city: cities.cityName, zipcode: userZipCode });
+    this.setState({
+      country: cou.countryname,
+      states: stat.stateName,
+      city: cities.cityName,
+      zipcode: userZipCode,
+      profileimage: userProfilePic
+    });
     this.totalLeaveCaculation(nextProps);
   }
- 
-  profilePicUploade(e) {
-    var self = this;
-    let filess = e.target.files;
-    S3.upload({
-      files: filess,
-      path: "profileImage"
-    }, function (err, r) {
-      if (!err) {
-        Meteor.call('profileImageUploade', r.url, Meteor.userId(), function (err1, res1) {
-          if (!err1) {
-            console.log("Uploaded Successfully...");
-            self.setState({
-              profileimage: r.url,
-              loading: false
-            }, () => {
-              console.log("df :: ", self.state);
-            });
-          }
-        });
-      }
+  profilePicSet(currentUser) {
+    let userProfilePic = currentUser && currentUser.profile && currentUser.profile.profilePic;
+    this.setState({
+      profileimage: userProfilePic
     });
+  }
 
+  profilePicUploade(event) {
+    let self = this;
+    FS.Utility.eachFile(event, function (filess) {
+      var yourFile = new FS.File(filess);
+      // yourFile.creatorId = Meteor.userId(); // add custom data
+      Images.insert(yourFile, function (err, fileObj) {
+        if (!err) {
+          Meteor.call('profilePicUploade', Meteor.userId(), fileObj._id, function (err, res) {
+            if (!err) {
+              toast.success("Inserted Successfully...", fileObj);
+              self.setState({ profileimage: fileObj._id });
+              self.profilePicSet();
+            }
+          })
+        }
+      });
+    });
   }
   totalLeaveCaculation(nextProps) {
     let count = 0;
@@ -121,7 +133,7 @@ class Profile extends Component {
       )
     } else {
       return (
-          <div className="panel-body" style={{ padding: "10px" }}><a onClick={(e) => this.education(e)}><i className="fa fa-plus-circle addmore"><b>Add More</b></i></a></div>
+        <div className="panel-body" style={{ padding: "10px" }}><a onClick={(e) => this.education(e)}><i className="fa fa-plus-circle addmore"><b>Add More</b></i></a></div>
       );
     }
   }
@@ -150,25 +162,22 @@ class Profile extends Component {
       [`${event.target.name}`]: event.target.value
     });
   }
-  filechangeHandler(e, key) {
+  //file upload
+  filechangeHandler(event, key) {
+    event.preventDefault();
     var self = this;
-    // let filess = e.target.files;
     self.setState({ loading: true })
-    const upload = Images.insert({
-      file: e.target.files[0],
-      streams: 'dynamic',
-      chunkSize: 'dynamic'
-    }, false);
-    upload.on('start', function () {
+    FS.Utility.eachFile(event, function (filess) {
+      var yourFile = new FS.File(filess);
+      Images.insert(yourFile, function (err, fileObj) {
+        if (!err) {
+          self.setState({
+            [`education.certificate_${key}`]: fileObj._id,
+            loading: false
+          });
+        }
+      });
     });
-    upload.on('end', function (error, fileObj) {
-      if (error) {
-        alert('Error during upload: ' + error);
-      } else {
-        alert('File "' + fileObj.name + '" successfully uploaded');
-      }
-    });
-    upload.start();
   }
   createUIEducation() {
     return this.state.education.map((el, i) => {
@@ -176,7 +185,7 @@ class Profile extends Component {
         <EducationComponent
           rowData={el} id={i} education={this.state.education} EducationaddmoreClick={this.EducationaddmoreClick}
           previous={this.previous} Educationvalidator={this.Educationvalidator}
-          EduucationremoveClick={this.EduucationremoveClick}
+          EducationremoveClick={this.EducationremoveClick}
           EducationchangeHandler={this.EducationchangeHandler}
           filechangeHandler={this.filechangeHandler}
           usereducation={this.usereducation}
@@ -192,8 +201,7 @@ class Profile extends Component {
       );
     });
   }
-  EduucationremoveClick(event, i) {
-    event.preventDefault();
+  EducationremoveClick(event, i) {
     let education = [...this.state.education];
     education.splice(i, 1);
     this.setState({ education });
@@ -216,10 +224,10 @@ class Profile extends Component {
     Meteor.call('addeducation', Meteor.userId(), educations, function (err, result) {
       if (!err) {
         if (self.state.flag == 1) {
-          toast.success("Updated Education successfully...." , result);
+          toast.success("Updated Education successfully....", result);
           $("#add-panel").modal("hide");
         } else {
-          toast.success("Inserted Education successfully...." ,result);
+          toast.success("Inserted Education successfully....", result);
           $("#add-panel").modal("hide");
         }
       } else {
@@ -395,7 +403,6 @@ class Profile extends Component {
     }
   }
   removeClickexperiance(event, i) {
-    event.preventDefault();
     let experiance = [...this.state.experiance];
     experiance.splice(i, 1);
     this.setState({ experiance });
@@ -425,10 +432,10 @@ class Profile extends Component {
     Meteor.call('addexperiance', Meteor.userId(), exp, function (err, result) {
       if (!err) {
         if (self.state.flag == 1) {
-          toast.success("Updated Experiance successfully...." , result);
+          toast.success("Updated Experiance successfully....", result);
           $("#add-panel1").modal("hide");
         } else {
-          toast.success("Inserted Experiance successfully...." , result);
+          toast.success("Inserted Experiance successfully....", result);
           $("#add-panel1").modal("hide");
         }
       } else {
@@ -440,6 +447,9 @@ class Profile extends Component {
   render() {
     let { currentUser } = this.props;
     let { country, states, city, zipcode, profileimage } = this.state;
+    let lastname = `${currentUser && currentUser.profile && currentUser.profile.lastName}`;
+    let firsname = `${currentUser && currentUser.profile && currentUser.profile.firstName}`;
+    let profilepic = `${Meteor.absoluteUrl()}cfs/files/images/${profileimage}`;
     return (
       <div className="wrapper wrapper-content">
         <div className="row animated fadeInRight">
@@ -450,14 +460,28 @@ class Profile extends Component {
               </div>
               <div>
                 <div className="ibox-content no-padding border-left-right">
-                  <center>
+                  <center >
                     <label htmlFor="profileimage" className="img-circle img">
                       <input type="file" name="profileimage" id="profileimage" style={{ display: "none" }} onChange={(e) => this.profilePicUploade(e)} />
-                      <Avatar src={profileimage == "" ? " "
-                        : profileimage} className="img-circle" style={{ marginTop: "5px" }} value={profileimage} name={profileimage == "" ?
-                          currentUser && currentUser.profile && currentUser.profile.firstName + " " + currentUser.profile.lastName
-                          : ""} className="img-circle" style={{ marginTop: "5px" }}
-                        size="150" color="#ffcccc" fgColor="#990000" maxInitials={2} />
+                      {profileimage == undefined ?
+                        <div className="profile">
+                          <p style={{ marginTop: "5px", fontSize: "44px" }} data-letters={`${firsname.charAt(0)}${lastname.charAt(0)}`} />
+                          <div class="overlay">
+                            <i className="fa fa-plus fa-3x" style={{ marginTop: "30px", color: "#1ab394" }} />
+                            <div class="textprofile">
+                              Your Profile Photo come here
+                            </div>
+                          </div>
+                        </div>
+                        :
+                        <div className="profile">
+                          <img class="image" style={{ marginTop: "5px" }} src={profilepic} height="150" width="150" id="" ></img>
+                          <div class="overlay">
+                            <i className="fa fa-plus fa-3x" style={{ marginTop: "30px", color: "#1ab394" }} />
+                            <div class="textprofile">
+                              Your Profile Photo come here</div>
+                          </div>
+                        </div>}
                       <span className="green-overlay"></span>
                     </label>
 
@@ -466,7 +490,7 @@ class Profile extends Component {
                 </div>
                 <div className="ibox-content profile-content">
                   <center>
-                    <h4>{currentUser && currentUser.profile && currentUser.profile.firstName + " " + currentUser.profile.lastName}</h4>
+                    <h4>{name == " " ? " " : firsname + " " + lastname}</h4>
                     {country == undefined ? " " :
                       <p><i className="fa fa-map-marker"></i>&nbsp;
                                             {currentUser && currentUser.address && currentUser.address[0].addressline1}

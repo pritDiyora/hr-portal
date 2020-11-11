@@ -64,10 +64,9 @@ if (Meteor.isServer) {
         'deleteuser': (id) => {
             return User.remove({ _id: id });
         },
-        'profileImageUploade': (profileImageUrl, userid) => {
-            return User.update({ _id: userid }, { $set: { profile: { profilePic: profileImageUrl } } });
+        'profilePicUploade': (userid, profileImageUrl,) => {
+            return User.update({ _id: userid }, { $set: { 'profile.profilePic': profileImageUrl } });
         },
-
         sendEmail: function (to, subject, text) {
             check([to, subject, text], [String]);
             this.unblock();

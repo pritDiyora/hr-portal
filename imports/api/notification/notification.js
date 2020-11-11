@@ -26,6 +26,10 @@ Schemas.Notification = new SimpleSchema({
         type: Boolean,
         defaultValue: false
     },
+    isChecked:{
+        type: Boolean,
+        defaultValue: false
+    },
     createdAtDate: {
         type: String
     },
