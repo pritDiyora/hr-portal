@@ -8,6 +8,39 @@ import { Promise } from "meteor/promise";
 var CronJob = require('cron').CronJob;
 
 if (Meteor.isServer) {
+
+  let officestartTime = GeneralSetting.findOne({ 'isActive': true }, { fields: { 'from': 1 } })
+  let officeStartTime = officestartTime && officestartTime.from
+  var job = new CronJob(`0 15 ${officeStartTime} * * 1-6`, function () {
+    sendNotificationToUserForClockIn();
+    console.log('You will see this message every minutes', new Date());
+  });
+  job.start();
+
+  async function sendNotificationToUserForClockIn() {
+    let users = await User.find({ 'profile.clockStatus': true }, { fields: { 'profile.firstName': 1, 'profile.lastName': 1} }).fetch()
+    let AdminId = User.findOne({ 'profile.userType': 'superadmin' })._id;
+   
+    if (users && users.length > 0) {
+      return await users.map((user) => {
+        let fullname = user.profile.firstName + " " + user.profile.lastName
+        let userData = {
+          title: fullname,
+          description: 'Reminder for  clockin',
+          sendId: AdminId,
+          receiverId: [user._id],
+          type: 'dashboard',
+          createdAtDate: new Date(),
+          createdBy: AdminId,
+          modifiedBy: AdminId
+        }
+        let sendNoti = Notification.insert(userData);
+        console.log('notification :: ', sendNoti);
+      });
+    }
+  }
+
+  
   let officeTime = GeneralSetting.findOne({ 'isActive': true }, { fields: { 'to': 1 } })
   let officetime = officeTime && officeTime.to
   var job = new CronJob(`0 15 ${officetime} * * 1-6`, function () {
@@ -38,6 +71,8 @@ if (Meteor.isServer) {
       });
     }
   }
+
+
 
   var job = new CronJob(`0 45 ${officetime} * * 1-6`, function () {
     autometicallyClockout();
