@@ -97,7 +97,6 @@ class Salary extends Component {
         toast.error(err.message);
       }
     });
-
   }
   ascDesc(e, keyName) {
     let { sortKey, sortValue } = this.state;
@@ -246,16 +245,15 @@ class Salary extends Component {
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                      </select> entries</label>
+                      </select>entries</label>
                     </div>
                   </div>
                   <div className="col-sm-6" style={{ paddingRight: "0px" }}>
                     <div className="page1" id="example_length">
                       <label className="dataTables_length1 text">Search :
-                                            <input type="text" name="example_length" onChange={this.search.bind(this)}
-                          className="form-control" style={{ width: "200px" }} /></label>
+                          <input type="text" name="example_length" onChange={this.search.bind(this)} className="form-control" style={{ width: "200px" }} />
+                      </label>
                     </div>
-
                   </div>
                 </div>
 
@@ -274,13 +272,26 @@ class Salary extends Component {
                     <tbody>
                       {
                         this.state.displayedSalary.map((salary, i) => {
-                          let noofDay = 0,diffWorkDay = 0, workSalary = 0, noofDays = []
+                          let noofDay = 0, diffWorkDay = 0, workSalary = 0, noofDays = [], months = []
                           let fullName = salary.name.profile.firstName + " " + salary.name.profile.lastName
                           leave.map((le) => {
-                            let month = moment().format("MM") - 1
+                            let month = moment().subtract(1, "month").format('MM');
+                            const previousMonth = moment().subtract(1-3, 'month').startOf('month').format('MM');
+                            console.log('previousMonth :: ' ,previousMonth);
+                            let getmonths = Array.apply(0, Array(12)).map(function (_, i) { return parseInt(moment().month(i).format('MM')) })
+                            // console.log('getmonths :: ', getmonths);
+                            let monthleave = moment(le.startDate).format("MM")
+                            months.push(parseInt(monthleave))
+                            // console.log('months :: ', months);
+                            let filterMonth = getmonths.filter((month) => !months.includes(month))
+                            // console.log('filterMonth :: ', filterMonth);
+
                             if (month == moment(le.startDate).format("MM") && month == moment(le.endDate).format("MM") && le.isApprove == true && le.userId == salary.userId) {
                               let diffDay = moment(le.endDate, "YYYY/MM/DD").diff(moment(le.startDate, "YYYY/MM/DD"), "days")
-                              let diffDays = diffDay + 1
+                              let monthlyLeave = gsetting[0] && gsetting[0].monthlyLeave
+                              let diffDays = ((diffDay + 1) - monthlyLeave)
+                              let curryForwordLeave = gsetting[0] && gsetting[0].carryForwardLeave
+
                               noofDays.push(diffDays)
                               noofDay = Sugar.Array.sum(noofDays)
                             }
@@ -288,6 +299,7 @@ class Salary extends Component {
                             diffWorkDay = workDay - noofDay
                             workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
                           });
+
                           return (
                             <tr key={i}>
                               <td>{fullName}</td>
@@ -298,8 +310,8 @@ class Salary extends Component {
                               <td>
                                 <a id="delete" className="btn btn-xs btn-danger" onClick={(e) => this.openmodeldelete(e, salary._id)}><i className="fa fa-trash-o"></i></a>
                                 <a className="btn btn-xs btn-primary " onClick={(e) => this.updaterecord(e, salary._id)}><i className="fa fa-edit"></i></a>&nbsp;
-                                      <a className="btn btn-xs btn-success " href={`/salarySlip?id=${salary.name._id}`}><i className="fa fa-eye"></i></a>&nbsp;&nbsp;
-                                      <a className="btn btn-xs btn-info" onClick={(e) => this.sendSalarySlip(e, salary.userId, salary._id)}><i className="fa fa-send"></i></a>
+                                <a className="btn btn-xs btn-success " href={`/salarySlip?id=${salary.name._id}`}><i className="fa fa-eye"></i></a>&nbsp;&nbsp;
+                                <a className="btn btn-xs btn-info" onClick={(e) => this.sendSalarySlip(e, salary.userId, salary._id)}><i className="fa fa-send"></i></a>
                               </td>
                             </tr>
                           )

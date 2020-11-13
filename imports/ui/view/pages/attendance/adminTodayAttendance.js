@@ -85,7 +85,6 @@ class AdminTodayAttendance extends Component {
                   </thead>
                   <tbody>
                     {this.props.users.map((user) => {
-                      console.log('user :: ', user);
                       let userId = user._id
                       let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName;
                       let isCheck = userAttendanceIds.find(d => d == userId);

@@ -466,19 +466,19 @@ class Profile extends Component {
                       {profileimage == undefined ?
                         <div className="profile">
                           <p style={{ marginTop: "5px", fontSize: "44px" }} data-letters={`${firsname.charAt(0)}${lastname.charAt(0)}`} />
-                          <div class="overlay">
+                          <div className="overlay">
                             <i className="fa fa-plus fa-3x" style={{ marginTop: "30px", color: "#1ab394" }} />
-                            <div class="textprofile">
+                            <div className="textprofile">
                               Your Profile Photo come here
                             </div>
                           </div>
                         </div>
                         :
                         <div className="profile">
-                          <img class="image" style={{ marginTop: "5px" }} src={profilepic} height="150" width="150" id="" ></img>
-                          <div class="overlay">
+                          <img className="image" style={{ marginTop: "5px" }} src={profilepic} height="150" width="150" id="" ></img>
+                          <div className="overlay">
                             <i className="fa fa-plus fa-3x" style={{ marginTop: "30px", color: "#1ab394" }} />
-                            <div class="textprofile">
+                            <div className="textprofile">
                               Your Profile Photo come here</div>
                           </div>
                         </div>}

@@ -108,10 +108,10 @@ class NotificationList extends Component {
                 <div className="col-md-12">
                   <div className="col-md-6">
                     <ul className="list-unstyled">
-                      <li class="col-md-12" style={{ paddingLeft: "7px" }}>
-                        <div class="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="false" />
-                          <label class="form-check-label" for="inlineCheckbox2" style={{ paddingLeft: "15px" }}> Select All  </label>
+                      <li className="col-md-12" style={{ paddingLeft: "7px" }}>
+                        <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                          <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value="false" />
+                          <label className="form-check-label" htmlFor="inlineCheckbox2" style={{ paddingLeft: "15px" }}> Select All  </label>
                         </div>
                       </li>
                     </ul>

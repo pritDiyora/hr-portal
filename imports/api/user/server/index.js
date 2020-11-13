@@ -18,7 +18,7 @@ if (Meteor.isServer) {
   job.start();
 
   async function sendNotificationToUserForClockIn() {
-    let users = await User.find({ 'profile.clockStatus': true }, { fields: { 'profile.firstName': 1, 'profile.lastName': 1} }).fetch()
+    let users = await User.find({ 'profile.clockStatus': false, 'profile.userType': 'employee'}, { fields: { 'profile.firstName': 1, 'profile.lastName': 1} }).fetch()
     let AdminId = User.findOne({ 'profile.userType': 'superadmin' })._id;
    
     if (users && users.length > 0) {
@@ -35,7 +35,7 @@ if (Meteor.isServer) {
           modifiedBy: AdminId
         }
         let sendNoti = Notification.insert(userData);
-        console.log('notification :: ', sendNoti);
+        console.log('notificationClockIn :: ', sendNoti);
       });
     }
   }

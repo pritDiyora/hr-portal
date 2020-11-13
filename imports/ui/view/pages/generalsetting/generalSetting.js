@@ -142,7 +142,7 @@ class GeneralSettings extends Component {
                       />
                     </div>
                     <div className="col-md-6">
-                      <label>Curry Forword Leave</label>
+                      <label>Curry Forword Leave (Month wise)</label>
                       <input type="number"
                         name="carryForwardLeave"
                         className="form-control"

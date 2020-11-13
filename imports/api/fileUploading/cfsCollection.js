@@ -1,12 +1,12 @@
 switch (Meteor.absoluteUrl()) {
   case "http://localhost:3000/":
-    fileUploadPath = "~/Desktop/HR-portal/images";
+    fileUploadPath = "~/Desktop/HRportal/images";
     break;
   case "http://localhost:5000/":
-    fileUploadPath = "~/Desktop/HR-portal/images";
+    fileUploadPath = "~/Desktop/HRportal/images";
     break;
   default:
-    fileUploadPath = '/root/HR-portal/image';
+    fileUploadPath = '/root/HRportal/image';
 }
 
 const Images = new FS.Collection("images", {
