@@ -4,7 +4,6 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Country from '../../../../api/country/country';
 import State from '../../../../api/states/states';
 import Cities from '../../../../api/cites/cites';
-import Avatar from 'react-avatar';
 import GeneralSetting from '../../../../api/generalsetting/generalsetting';
 import Leave from '../../../../api/leave/leaveScheme';
 import EducationComponent from '../Users/addusers/component/EducationComponent';
@@ -14,7 +13,7 @@ import SimpleReactValidator from 'simple-react-validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Images from '../../../../api/fileUploading/cfsCollection';
-
+import Avatar from 'react-avatar';
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -78,6 +77,7 @@ class Profile extends Component {
             if (!err) {
               toast.success("Inserted Successfully...", fileObj);
               self.setState({ profileimage: fileObj._id });
+              Meteor.subscribe('fileuploadelist');
               self.profilePicSet();
             }
           })
@@ -171,6 +171,7 @@ class Profile extends Component {
       var yourFile = new FS.File(filess);
       Images.insert(yourFile, function (err, fileObj) {
         if (!err) {
+          Meteor.subscribe('fileuploadelist');
           self.setState({
             [`education.certificate_${key}`]: fileObj._id,
             loading: false
@@ -254,7 +255,6 @@ class Profile extends Component {
   education() {
     $("#add-panel").modal("show");
   }
-
   //Experiance
   createUIExperiance() {
     return this.state.experiance.map((el, i) => {
@@ -442,13 +442,11 @@ class Profile extends Component {
         toast.error(err.message);
       }
     })
-
   }
   render() {
     let { currentUser } = this.props;
     let { country, states, city, zipcode, profileimage } = this.state;
-    let lastname = `${currentUser && currentUser.profile && currentUser.profile.lastName}`;
-    let firsname = `${currentUser && currentUser.profile && currentUser.profile.firstName}`;
+    let firstname = `${currentUser && currentUser.profile && currentUser.profile.firstName} ${currentUser && currentUser.profile && currentUser.profile.lastName}`;
     let profilepic = `${Meteor.absoluteUrl()}cfs/files/images/${profileimage}`;
     return (
       <div className="wrapper wrapper-content">
@@ -465,7 +463,8 @@ class Profile extends Component {
                       <input type="file" name="profileimage" id="profileimage" style={{ display: "none" }} onChange={(e) => this.profilePicUploade(e)} />
                       {profileimage == undefined ?
                         <div className="profile">
-                          <p style={{ marginTop: "5px", fontSize: "44px" }} data-letters={`${firsname.charAt(0)}${lastname.charAt(0)}`} />
+                         <Avatar src={firstname} style={{marginTop:"5px"}} className="img-circle" size="150" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
+                            /> 
                           <div class="overlay">
                             <i className="fa fa-plus fa-3x" style={{ marginTop: "30px", color: "#1ab394" }} />
                             <div class="textprofile">
@@ -490,7 +489,7 @@ class Profile extends Component {
                 </div>
                 <div className="ibox-content profile-content">
                   <center>
-                    <h4>{name == " " ? " " : firsname + " " + lastname}</h4>
+                    <h4>{name == " " ? " " : firstname}</h4>
                     {country == undefined ? " " :
                       <p><i className="fa fa-map-marker"></i>&nbsp;
                                             {currentUser && currentUser.address && currentUser.address[0].addressline1}

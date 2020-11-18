@@ -97,9 +97,13 @@ class Header extends Component {
     Meteor.call('checkInOut', value);
   }
   getUserName(userid) {
-    const self = this;
     let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
-    return userInfo && userInfo.profile && userInfo.profile.firstName + ' ' + userInfo && userInfo.profile && userInfo.profile.lastName;
+    return `${userInfo && userInfo.profile && userInfo.profile.firstName} ${userInfo && userInfo.profile && userInfo.profile.lastName}`;
+  }
+  getUserProfileImage(userid)
+  {
+    let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
+    return `${userInfo && userInfo.profile && userInfo.profile.profilePic}`;
   }
   handleLeaveItem(event, notificationId, notificationType) {
     event.preventDefault();
@@ -107,7 +111,11 @@ class Header extends Component {
     Meteor.call('statusReadable', notificationId, function (err, res) {
       if (!err) {
         self.notificationCount();
-        FlowRouter.go(`/${notificationType}`);
+        if(notificationType == "task"){
+          FlowRouter.go(`/${notificationType}?id=${Meteor.userId()}`);
+        }else{
+          FlowRouter.go(`/${notificationType}`);
+        }
       }
     })
   }
@@ -151,11 +159,14 @@ class Header extends Component {
                 {
                   notificationlist.map((notification) => {
                     let firstname = this.getUserName(notification.sendId)
+                    let profilepic=this.getUserProfileImage(notification.sendId);                    
+                    let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
                     return (<li key={notification._id} >
                       <div className="dropdown-messages-box">
-                        <a href="profile.html" className="pull-left">
-                          <Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
-                          />
+                        <a href="/profile" className="pull-left">
+                          {profilepic == "undefined" ? <Avatar src={firstname} className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
+                            /> : <img src={profilephoto}
+                            className="img-circle" height="50" width="50"/>}
                         </a>
                         <div className="media-body" onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
                           <small className="pull-right">{moment(notification.createdAtDate).fromNow()}</small>

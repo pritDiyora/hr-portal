@@ -56,8 +56,7 @@ class LeftSidemenu extends Component {
   render() {
     let { currentUser } = this.props, { permission, superAdminPermissiom } = this.state;
     let profilepic = currentUser && currentUser.profile && currentUser.profile.profilePic;
-    let lastname = `${currentUser && currentUser.profile && currentUser.profile.lastName}`;
-    let firsname=`${currentUser && currentUser.profile && currentUser.profile.firstName}`;
+    let firstname =`${currentUser && currentUser.profile && currentUser.profile.firstName} ${currentUser && currentUser.profile && currentUser.profile.lastName}`;
     let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
     return (
       <nav className="navbar-default navbar-static-side" role="navigation">
@@ -66,7 +65,8 @@ class LeftSidemenu extends Component {
             <li className="nav-header">
               <div id="profile" className="dropdown profile-element">
                 <span>
-                  {profilepic == undefined ? <p style={{fontSize:"16px"}} data-letters={`${firsname.charAt(0)}${lastname.charAt(0)}`} /> : <img src={profilephoto}
+                  {profilepic == undefined ? <Avatar src={firstname} className="img-circle" size="50" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
+                            /> : <img src={profilephoto}
                     className="img-circle"  height="50" width="50"
                   />}
                 </span>

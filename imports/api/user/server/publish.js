@@ -11,6 +11,7 @@ import Leave from '../../leave/leaveScheme';
 import Notification from '../../notification/notification';
 import Holiday from '../../holiday/holidaySchema';
 import TaskAssign from '../../taskassign/taskSchema';
+import Images from '../../fileUploading/cfsCollection';
 if (Meteor.isServer) {
 
   Meteor.publish('user', function () {
@@ -82,5 +83,8 @@ if (Meteor.isServer) {
   Meteor.publish('holiday', function() {
     return Holiday.find();
   })
+  Meteor.publish('fileuploadelist', function () {
+    return Images.find({});
+})
 
 }

@@ -30,6 +30,7 @@ class NotificationList extends Component {
       }
     });
   }
+ 
   handleLeaveItem(event, notificationId, notificationType) {
     event.preventDefault();
     const self = this;
@@ -78,23 +79,35 @@ class NotificationList extends Component {
   }
   checkBoxChangeHandlar(event, checked, id) {
     event.preventDefault();
-    const self = this, markRead = [];
+    const self = this;
     if (checked == true) {
+      this.state.markRead.pop(id);
       Meteor.call('isChecked', checked, id, function (err, res) {
         if (!err) {
-          // markRead.push(id);
-          // self.setState({ markRead });
           self.getNotificationData();
         }
       })
     } else {
+      this.state.markRead.push(id);
       Meteor.call('isChecked', checked, id, function (err, res) {
         if (!err) {
           self.getNotificationData();
         }
       })
     }
-
+  }
+  getUserName(userid) {
+    let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
+    return `${userInfo && userInfo.profile && userInfo.profile.firstName}  ${userInfo && userInfo.profile && userInfo.profile.lastName}`;
+  }
+  getUserProfileImage(userid) {
+    let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
+    return `${userInfo && userInfo.profile && userInfo.profile.profilePic}`;
+  }
+  markAsUsRead(event){
+    event.preventDefault();
+    console.log(this.state.markRead);
+    
   }
   render() {
     let { notificationlist } = this.state;
@@ -119,38 +132,47 @@ class NotificationList extends Component {
                   <div className="col-md-5" style={{ textAlign: "right" }}>
                     <ul className="list-unstyled">
                       <li>
-                        <i className="fa fa-envelope"> Mark as Unread</i>&nbsp;&nbsp;&nbsp;
+                        <i className="fa fa-envelope" onClick={(e) => this.markAsUsRead(e)}> Mark as Unread</i>&nbsp;&nbsp;&nbsp;
                           <i className="fa fa-envelope-open"> Mark as Read</i>&nbsp;&nbsp;&nbsp;
                           <i className="fa fa-trash-o"> Delete</i>
                       </li>
                     </ul>
                   </div>
-
                 </div>
               </div>
             </div>
             {
               notificationlist.map((notification) => {
                 let bgcolor = notification.isRead ? "#FFFFFF" : "#EFFBFF";
+                let firstname = this.getUserName(notification.sendId);
+                let profilepic = this.getUserProfileImage(notification.sendId);
+                let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
+                if(notification.isChecked == true){
+                  this.state.markRead.push(notification._id)
+                }else{
+                  this.state.markRead.pop(notification._id)
+                } 
                 return (
                   <div key={notification._id} className="ibox notificationlist">
                     <div className="ibox-content-notification" style={{ height: "70px", backgroundColor: bgcolor }}  >
                       <div className="col-md-12" style={{ paddingTop: "0px" }}>
                         <div className="col-md-2">
-                          <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline" style={{ marginLeft: "10px" }}>
+                          <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline" style={{ marginLeft: "10px",verticalAlign:'center' }}>
                             <input className="form-check-input"
                               type="checkbox"
                               name="markRead"
                               id={`${notification._id}`}
                               value={`${notification._id}`}
-                              checked={notification.isChecked == true}
+                              checked={notification.isChecked === true}
                               onChange={(e) => this.checkBoxChangeHandlar(e, notification.isChecked, notification._id)}
                             />
                             <label className="form-check-label" htmlFor={`${notification._id}`} style={{ paddingLeft: "15px" }}></label>
                           </div>
                           <a href="profile.html" style={{ marginLeft: "10px" }} >
-                            <Avatar className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name="d" maxInitials={2}
-                            />
+                            {profilepic == "undefined" ? <Avatar src={firstname} className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
+                            /> : <img src={profilephoto} style={{marginBottom:"10px"}}
+                              className="img-circle" height="40" width="40"
+                              />}
                           </a>
                         </div>
                         <div className="col-md-6" style={{ paddingLeft: "0px", cursor: "pointer" }} onClick={(e) => this.handleLeaveItem(e, notification._id, notification.type)}>
@@ -174,103 +196,10 @@ class NotificationList extends Component {
           </div>
           <div className="col-md-2"></div>
         </div>
-
       </div>
     )
   }
 }
-// function CheckBox({name, value, tick, onCheck}) {
-//   return (
-//       <label>
-//           <input
-//               name={name}
-//               type="checkbox"
-//               value={value}
-//               checked={tick || false}
-//               onChange={onCheck}
-//           />
-//           {value}
-//       </label>
-//   );
-// }
-
-// function CheckBoxList ({options, isCheckedAll, onCheck}) {
-//   const checkBoxOptions = (
-//       <div className="checkbox-list">
-//           {options.map((option, index) => {
-//               return (
-//                   <CheckBox key={index} name={option.name} value={option.value} tick={option.checked} onCheck={(e) => onCheck(option.value, e.target.checked)} />
-//               );
-//           })}
-//       </div>
-//   );
-
-//   return (
-//       <div className="checkbox-list">
-//           <CheckBox name="select-all" value="ALL" tick={isCheckedAll} onCheck={(e) => onCheck('all', e.target.checked)} />
-//           {checkBoxOptions}
-//       </div>
-//   );
-// }
-// class CityList extends React.Component {
-//   constructor(props) {
-//       super(props);
-
-//       this.state = {
-//           isAllSelected: false,
-//           checkList: [
-//               {
-//                   name: "city",
-//                   value: "bangalore",
-//                   checked: false,
-//               },
-//               {
-//                   name: "city",
-//                   value: "chennai",
-//                   checked: false,
-//               },
-//               {
-//                   name: "city",
-//                   value: "delhi",
-//                   checked: false,
-//               }
-//           ]
-//       };
-//   }
-
-//   onCheckBoxChange(checkName, isChecked) {
-//       let isAllChecked = (checkName === 'all' && isChecked);
-//       let isAllUnChecked = (checkName === 'all' && !isChecked);
-//       const checked = isChecked;
-
-//       const checkList = this.state.checkList.map((city, index) => {
-//           if(isAllChecked || city.value === checkName) {
-//               return Object.assign({}, city, {
-//                   checked,
-//               });
-//           } else if (isAllUnChecked) {
-//               return Object.assign({}, city, {
-//                   checked: false,
-//               });
-//           }
-
-//           return city;
-//       });
-
-//       let isAllSelected = (checkList.findIndex((item) => item.checked === false) === -1) || isAllChecked;
-
-//       this.setState({
-//           checkList,
-//           isAllSelected,
-//       });
-
-//   }
-
-//   render() {
-//       return (<CheckBoxList options={this.state.checkList} isCheckedAll={this.state.isAllSelected} onCheck={this.onCheckBoxChange.bind(this)} />);
-//   }
-// }
-
 
 export default withTracker(() => {
   Meteor.subscribe('notificationList');

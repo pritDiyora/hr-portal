@@ -60,10 +60,8 @@ class Taskassign extends Component {
           toast.success("Task added successfully...", result);
           $("#add-panel").modal("hide");
           self.setState({ userid: "", status: "", taskdate: "", description: '' })
-          self.getTaskAssignData();
         } else {
           toast.error(err.message);
-
         }
       })
     }

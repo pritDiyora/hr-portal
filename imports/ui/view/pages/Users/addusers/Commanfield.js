@@ -16,7 +16,6 @@ import ExperieanceComponent from './component/ExperienceComponent';
 import AddressComponent from './component/AddressComponent';
 import User from '../../../../../api/user/users';
 import Images from '../../../../../api/fileUploading/cfsCollection';
-import { th } from 'date-fns/locale';
 class AddHR extends React.Component {
   constructor(props) {
     super(props);
@@ -66,7 +65,6 @@ class AddHR extends React.Component {
     let self = this;
     self.updateUserDetails(nextProps.userdata, self, nextProps.countries, nextProps.statedata, nextProps.citiesdata, nextProps.state, nextProps.city);
   }
-
   updateUserDetails(userdata, self, countryData, stateData, cityData, stateWill, cityWill) {
     let countrie = [], states = [], city = [];
     countryData.length > 0 && countryData.map((country) => countrie.push({ value: country._id, label: country.countryname }));
@@ -134,10 +132,7 @@ class AddHR extends React.Component {
     } else {
       self.setState({ flag: self.props.flag });
     }
-
-
   }
-
   //Addmore Education
   EducationaddmoreClick(e) {
     e.preventDefault();
@@ -186,7 +181,6 @@ class AddHR extends React.Component {
     }, () => {
       console.log("tag", this.state);
     });
-
   }
   EducationremoveClick(event, i) {
     event.preventDefault();
@@ -425,12 +419,10 @@ class AddHR extends React.Component {
           $('.nav-tabs li a[href="#tab-1"]').tab('show');
           toast.success("Experiance added successfully....", result);
         }
-
       } else {
         toast.error(err.message);
       }
     })
-
   }
   previous(e) {
     e.preventDefault();
@@ -493,13 +485,11 @@ class AddHR extends React.Component {
                       this.state.flag ? <button className="btn btn-primary" id="insert" onClick={this.profile.bind(this)}>Update Profile</button>
                         : <button className="btn btn-primary" id="insert" onClick={this.profile.bind(this)}>Submit</button>
                     }
-
                   </div>
                 </div>
               </div>
               }
             </div>
-
             <div role="tabpanel" id="tab-2" className="tab-pane">
               {this.createUI()}
             </div>
@@ -531,7 +521,6 @@ class AddHR extends React.Component {
             </div>
           </div>
         </div>
-
       </div>
     )
   }

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-
+import Images from '../../../../api/fileUploading/cfsCollection';
 export default class Login extends Component {
 
   constructor(props) {
@@ -20,6 +20,8 @@ export default class Login extends Component {
         let user = Meteor.user();
         localStorage.setItem('user', JSON.stringify(user));
         FlowRouter.go('/dashboard');
+        console.log(Images.find({}).fetch());
+        
         // $('#btnModal').click();
       } else {
         alert('Incorrect password and email');

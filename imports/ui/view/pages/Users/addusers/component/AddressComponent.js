@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Select from 'react-select'
+import Select from "react-select";
 class AddressComponent extends Component {
     constructor(props) {
         super(props);}
