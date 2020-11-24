@@ -14,7 +14,7 @@ class KanbanCard extends React.Component {
         <div className="description">{this.props.task.description}
           <br /></div>
         <div className="agile-detail">
-        <i className="fa fa-calendar-o"></i> {moment(this.props.task.taskDate).format("DD.MM.YYYY")} &nbsp;&nbsp;<i className="fa fa-clock-o"></i> {moment(this.props.task.taskDate).format("hh:mm:ss a")}
+        <i className="fa fa-calendar-o"></i> {moment(this.props.task.taskDateTime).format("DD.MM.YYYY")} &nbsp;&nbsp;<i className="fa fa-clock-o"></i> {moment(this.props.task.taskDateTime).format("hh:mm:ss a")}
           <a className="delete-icon" data-toggle="modal" onClick={(e) => this.props.updateTask(e, this.props.task._id)}><i className="fa fa-pencil update"></i></a>
           <a className="delete-icon" data-toggle="modal" onClick={(e) => this.props.deleteTask(e, this.props.task._id)}><i className="fa fa-trash update"></i></a>
         </div>

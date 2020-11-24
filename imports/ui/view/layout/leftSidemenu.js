@@ -56,7 +56,7 @@ class LeftSidemenu extends Component {
   render() {
     let { currentUser } = this.props, { permission, superAdminPermissiom } = this.state;
     let profilepic = currentUser && currentUser.profile && currentUser.profile.profilePic;
-    let firstname =`${currentUser && currentUser.profile && currentUser.profile.firstName} ${currentUser && currentUser.profile && currentUser.profile.lastName}`;
+    let firstname = `${currentUser && currentUser.profile && currentUser.profile.firstName} ${currentUser && currentUser.profile && currentUser.profile.lastName}`;
     let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
     return (
       <nav className="navbar-default navbar-static-side" role="navigation">
@@ -66,9 +66,9 @@ class LeftSidemenu extends Component {
               <div id="profile" className="dropdown profile-element">
                 <span>
                   {profilepic == undefined ? <Avatar src={firstname} className="img-circle" size="50" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
-                            /> : <img src={profilephoto}
-                    className="img-circle"  height="50" width="50"
-                  />}
+                  /> : <img src={profilephoto}
+                    className="img-circle" height="50" width="50"
+                    />}
                 </span>
                 <a data-toggle="dropdown" className="dropdown-toggle" href="" onClick={(e) => this.profUpdate(e)}>
                   <span className="clear"> <span className="block m-t-xs">
@@ -86,12 +86,8 @@ class LeftSidemenu extends Component {
                 IN+
                   </div>
             </li>
-            <li className="active">
-              <a><i className="fa fa-th-large"></i> <span className="nav-label">Dashboards</span> <span className="fa arrow"></span></a>
-              <ul className="nav nav-second-level collapse">
-                <li><a href="/dashboard">Dashboard v.1</a></li>
-              </ul>
-            </li>
+            {permission ? <li><a href="/dashboard"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboard</span></a> </li> : <a href="/accesspermission"></a>
+            }
             {permission ?
               <li>
                 <a><i className="fa fa-users"></i> <span className="nav-label">Users</span><span className="fa arrow"></span></a>
@@ -152,9 +148,9 @@ class LeftSidemenu extends Component {
               : <a href="/accesspermission"></a>}
             {permission ? <li>
               <a href="/employeetasklist"><i className="fa fa-list-alt"></i><span className="nav-label">EmployeeTask List</span></a></li> : <a href="/accesspermission"></a>}
-            <li>
-              <a href="/requestMail"><i className="fa fa-envelope"></i><span className="nav-label">Request Mail</span></a>
-            </li>
+            {superAdminPermissiom ?
+              <li><a href="/requestMail"><i className="fa fa-envelope"></i><span className="nav-label">Request Mail</span></a></li>
+              : <a href="/accesspermission"></a>}
           </ul>
 
         </div>

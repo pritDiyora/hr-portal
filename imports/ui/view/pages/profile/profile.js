@@ -465,7 +465,7 @@ class Profile extends Component {
                         <div className="profile">
                          <Avatar src={firstname} style={{marginTop:"5px"}} className="img-circle" size="150" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
                             /> 
-                          <div class="overlay">
+                          <div className="overlay">
                             <i className="fa fa-plus fa-3x" style={{ marginTop: "30px", color: "#1ab394" }} />
                             <div className="textprofile">
                               Your Profile Photo come here

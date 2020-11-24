@@ -119,6 +119,10 @@ if (Meteor.isServer) {
 
         },
 
+        'searchAdminAttendance': (pipeline) => {
+            return Promise.await(AdminAttendance.rawCollection().aggregate(pipeline).toArray());
+        },
+
         'updateGeneraleSetting': (generaleSetting, id) => {
             return GeneralSetting.update({ _id: id }, {
                 $set: generaleSetting
@@ -135,8 +139,8 @@ if (Meteor.isServer) {
         'countLeaveData': () => {
             return Leave.find({}).count();
         },
-        'getleavedate': () => {
-            return Leave.find({}).fetch();
+        'getleavedata': () => {
+            return Leave.find({});
         },
         'updateLeaveApprove': (lid, approvebyname) => {
             return Leave.update({ _id: lid }, { $set: { isApprove: true, approveBy: approvebyname } })
@@ -156,23 +160,17 @@ if (Meteor.isServer) {
         'AllNotificationData': (nid) => {
             return Notification.find({ receiverId: nid }).fetch();
         },
-        'statusReadableFalse':(nid,notificationisRead)=>{
-            if(notificationisRead == true){
-                return  Notification.update({ _id: nid }, { $set: { isRead: false } });
-            }else{
-                return  Notification.update({ _id: nid }, { $set: { isRead: true } });
+        'statusReadableFalse': (nid, notificationisRead) => {
+            if (notificationisRead == true) {
+                return Notification.update({ _id: nid }, { $set: { isRead: false } });
+            } else {
+                return Notification.update({ _id: nid }, { $set: { isRead: true } });
             }
         },
-        'notificationDelete':(nid)=>{
-            return Notification.remove({_id:nid})
+        'notificationDelete': (nid) => {
+            return Notification.remove({ _id: nid })
         },
-        'isChecked':(checked,nid)=>{
-            if(checked == true){
-                return  Notification.update({ _id: nid }, { $set: { isChecked: false } });
-            }else{
-                return  Notification.update({ _id: nid }, { $set: { isChecked: true } });
-            }
-        },
+
         //holiday 
         'addholiday': (holidayname, holidaydate) => {
             return Holiday.insert({ holidayname: holidayname, holidaydate: holidaydate });
@@ -219,6 +217,12 @@ if (Meteor.isServer) {
         },
         'updateStatusOfTasks': (id, draggedOverCol) => {
             return TaskAssign.update({ _id: id }, { $set: { status: draggedOverCol } });
+        },
+        'searchTask': (pipeline) => {
+            return Promise.await(TaskAssign.rawCollection().aggregate(pipeline).toArray());
+        },
+        'countTaskdata': () => {
+            return TaskAssign.find({}).count();
         },
 
     })

@@ -277,14 +277,14 @@ class Salary extends Component {
                           leave.map((le) => {
                             let month = moment().subtract(1, "month").format('MM');
                             const previousMonth = moment().subtract(1-3, 'month').startOf('month').format('MM');
-                            console.log('previousMonth :: ' ,previousMonth);
+                            // console.log('previousMonth :: ' ,previousMonth);
                             let getmonths = Array.apply(0, Array(12)).map(function (_, i) { return parseInt(moment().month(i).format('MM')) })
-                            // console.log('getmonths :: ', getmonths);
+                            console.log('getmonths :: ', getmonths);
                             let monthleave = moment(le.startDate).format("MM")
                             months.push(parseInt(monthleave))
-                            // console.log('months :: ', months);
+                            console.log('months :: ', months);
                             let filterMonth = getmonths.filter((month) => !months.includes(month))
-                            // console.log('filterMonth :: ', filterMonth);
+                            console.log('filterMonth :: ', filterMonth);
 
                             if (month == moment(le.startDate).format("MM") && month == moment(le.endDate).format("MM") && le.isApprove == true && le.userId == salary.userId) {
                               let diffDay = moment(le.endDate, "YYYY/MM/DD").diff(moment(le.startDate, "YYYY/MM/DD"), "days")

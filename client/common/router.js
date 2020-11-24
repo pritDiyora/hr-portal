@@ -44,6 +44,7 @@ const accessRoute = [
   { routeName: 'leaveType', roles: ['superadmin', 'admin'] },
   { routeName: 'leaveApproveList', roles: ['superadmin', 'admin'] },
   { routeName: 'employeetasklist', roles: ['superadmin', 'admin'] },
+  { routeName: 'dashboard', roles: ['superadmin', 'admin'] },
 ]
 
 // Accounts
@@ -67,7 +68,15 @@ FlowRouter.route('/', {
         }
       })
     } else {
-      FlowRouter.go('/dashboard')
+      
+      let user = JSON.parse(localStorage.getItem('user')) || {};
+      var usertype = user && user.profile && user.profile.userType;
+      if(usertype == 'employee'){
+        FlowRouter.go('/profile')
+      }else{
+
+        FlowRouter.go('/dashboard')
+      }
     }
   }
 })
@@ -137,7 +146,7 @@ FlowRouter.route('/profile', {
   },
 })
 FlowRouter.route('/dashboard', {
-  name: 'Dashboard1',
+  name: 'dashboard',
   action: function () {
     if (!Meteor.userId()) {
       FlowRouter.go('/')

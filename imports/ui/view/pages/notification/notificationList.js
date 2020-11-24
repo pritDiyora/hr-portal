@@ -12,8 +12,8 @@ class NotificationList extends Component {
     this.state = {
       notificationlist: [],
       count: undefined,
-      isChecked: null,
       markRead: [],
+      isSelectAll: false
       // checkedItems: new Map(),
       // isAllSelected: false,
     }
@@ -30,7 +30,7 @@ class NotificationList extends Component {
       }
     });
   }
- 
+
   handleLeaveItem(event, notificationId, notificationType) {
     event.preventDefault();
     const self = this;
@@ -50,6 +50,30 @@ class NotificationList extends Component {
       }
     })
   }
+
+  markAllUnRead(event) {
+    event.preventDefault();
+    const self = this;
+    self.state.notificationlist.map((noti) => {
+      let notificationisRead = noti.isRead
+      self.state.markRead.map((unRead) => {
+        if (notificationisRead == true) {
+          Meteor.call('statusReadableFalse', unRead, notificationisRead, function (err, res) {
+            if (!err) {
+              self.getNotificationData();
+            }
+          })
+        } else {
+          Meteor.call('statusReadableFalse', unRead, notificationisRead, function (err, res) {
+            if (!err) {
+              self.getNotificationData();
+            }
+          })
+        }
+      })
+    })
+  }
+
   isReadNotification(event, notificationId, notificationisRead) {
     event.preventDefault();
     const self = this;
@@ -67,6 +91,7 @@ class NotificationList extends Component {
       })
     }
   }
+  
   deleteNotification(event, notificationId) {
     event.preventDefault();
     const self = this;
@@ -77,25 +102,52 @@ class NotificationList extends Component {
       }
     })
   }
-  checkBoxChangeHandlar(event, checked, id) {
+
+  deleteAllNotification(event) {
     event.preventDefault();
     const self = this;
-    if (checked == true) {
-      this.state.markRead.pop(id);
-      Meteor.call('isChecked', checked, id, function (err, res) {
+    self.state.markRead.map((del) => {
+      Meteor.call('notificationDelete', del, function (err, res) {
         if (!err) {
+          // toast.success('Notification Deleted Sucessfully..', res);
           self.getNotificationData();
         }
+      })
+      console.log('d :: ', d);
+    })
+  }
+
+  selectAllChnageHandlar(e) {
+    let { markRead } = this.state;
+    const { checked } = e.target;
+    if (checked) {
+      this.state.notificationlist.map((notification) => {
+        markRead.push(notification._id);
       })
     } else {
-      this.state.markRead.push(id);
-      Meteor.call('isChecked', checked, id, function (err, res) {
-        if (!err) {
-          self.getNotificationData();
-        }
+      this.state.notificationlist.map((notification) => {
+        markRead.pop(notification._id);
       })
     }
+    this.setState({
+      markRead
+    }, () => console.log('selectAllChnageHandlar :: ', markRead))
   }
+
+  
+  checkBoxChangeHandlar(e, id) {
+    let { markRead } = this.state;
+    const { checked } = e.target;
+    if (checked) {
+      markRead = [...markRead, id]
+    } else {
+      markRead = markRead.filter(e1 => e1 !== id)
+    }
+    this.setState({
+      markRead
+    }, () => console.log('markRead :: ', markRead))
+  }
+
   getUserName(userid) {
     let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
     return `${userInfo && userInfo.profile && userInfo.profile.firstName}  ${userInfo && userInfo.profile && userInfo.profile.lastName}`;
@@ -104,37 +156,34 @@ class NotificationList extends Component {
     let userInfo = this.props.userName && this.props.userName.find(user => user._id == userid);
     return `${userInfo && userInfo.profile && userInfo.profile.profilePic}`;
   }
-  markAsUsRead(event){
-    event.preventDefault();
-    console.log(this.state.markRead);
-    
-  }
+
   render() {
     let { notificationlist } = this.state;
+
     return (
       <div className="wrapper wrapper-content animated fadeInRight" >
         <div className="container-fluid">
           <div className="col-md-2"></div>
           <div className="col-md-8">
             <div className="ibox ">
-              <div className="ibox-content">
+              <div className="ibox-content notificationlist" style={{paddingBottom: 35}}>
                 <div className="col-md-12">
                   <div className="col-md-6">
                     <ul className="list-unstyled">
                       <li className="col-md-12" style={{ paddingLeft: "7px" }}>
                         <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
-                          <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value="false" />
+                          <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value={this.state.isSelectAll} onChange={(e) => this.selectAllChnageHandlar(e)} />
                           <label className="form-check-label" htmlFor="inlineCheckbox2" style={{ paddingLeft: "15px" }}> Select All  </label>
                         </div>
                       </li>
                     </ul>
                   </div>
-                  <div className="col-md-5" style={{ textAlign: "right" }}>
+                  <div className="col-md-4 rightside">
                     <ul className="list-unstyled">
                       <li>
-                        <i className="fa fa-envelope" onClick={(e) => this.markAsUsRead(e)}> Mark as Unread</i>&nbsp;&nbsp;&nbsp;
-                          <i className="fa fa-envelope-open"> Mark as Read</i>&nbsp;&nbsp;&nbsp;
-                          <i className="fa fa-trash-o"> Delete</i>
+                        <i className="fa fa-envelope" style={{ cursor: "pointer" }} onClick={(e) => this.markAllUnRead(e)}> Mark as Unread</i>&nbsp;&nbsp;&nbsp;
+                          <i className="fa fa-envelope-open" style={{ cursor: "pointer" }} onClick={(e) => this.markAllUnRead(e)}> Mark as Read</i>&nbsp;&nbsp;&nbsp;
+                          <i className="fa fa-trash-o" style={{ cursor: "pointer" }} onClick={(e) => this.deleteAllNotification(e)}> Delete</i>
                       </li>
                     </ul>
                   </div>
@@ -143,34 +192,27 @@ class NotificationList extends Component {
             </div>
             {
               notificationlist.map((notification) => {
+                let notificationIds = notification._id
                 let bgcolor = notification.isRead ? "#FFFFFF" : "#EFFBFF";
                 let firstname = this.getUserName(notification.sendId);
                 let profilepic = this.getUserProfileImage(notification.sendId);
                 let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
-                if(notification.isChecked == true){
-                  this.state.markRead.push(notification._id)
-                }else{
-                  this.state.markRead.pop(notification._id)
-                } 
+                let check = this.state.markRead.find(chk => chk == notificationIds)
                 return (
                   <div key={notification._id} className="ibox notificationlist">
                     <div className="ibox-content-notification" style={{ height: "70px", backgroundColor: bgcolor }}  >
                       <div className="col-md-12" style={{ paddingTop: "0px" }}>
                         <div className="col-md-2">
-                          <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline" style={{ marginLeft: "10px",verticalAlign:'center' }}>
-                            <input className="form-check-input"
-                              type="checkbox"
-                              name="markRead"
-                              id={`${notification._id}`}
-                              value={`${notification._id}`}
-                              checked={notification.isChecked === true}
-                              onChange={(e) => this.checkBoxChangeHandlar(e, notification.isChecked, notification._id)}
+                          <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
+                            <input type="checkbox"
+                              checked={!!check}
+                              onChange={(e) => this.checkBoxChangeHandlar(e, notificationIds)}
                             />
                             <label className="form-check-label" htmlFor={`${notification._id}`} style={{ paddingLeft: "15px" }}></label>
                           </div>
                           <a href="profile.html" style={{ marginLeft: "10px" }} >
                             {profilepic == "undefined" ? <Avatar src={firstname} className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
-                            /> : <img src={profilephoto} style={{marginBottom:"10px"}}
+                            /> : <img src={profilephoto} style={{ marginBottom: "10px" }}
                               className="img-circle" height="40" width="40"
                               />}
                           </a>
@@ -179,7 +221,7 @@ class NotificationList extends Component {
                           <div className="media-body" style={{ paddingTop: "0px" }}>
                             <span className="text-muted desc">{notification.description}</span><br />
                             <small className="text-muted">{moment(notification.createdAtDate).fromNow()} at {moment(notification.createdAtDate).format('hh:mm')}
-                                   - {moment(notification.createdAtDate).format('DD.MM.YYYY')}</small>
+                               - {moment(notification.createdAtDate).format('DD.MM.YYYY')}</small>
                           </div>
                         </div>
                         <div className="col-md-4">
