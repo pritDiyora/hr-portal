@@ -13,14 +13,17 @@ class Dashboard1 extends Component {
 		this.state = {
 			displayedAdminAttendance: [],
 			displayedTask: [],
+			displayedLeave: [],
 			pageLength: 10,
 			currentPage: 1,
-			totalpage: 0
+			totalpage: 0,
+			startDate: moment(new Date())
 		}
 	}
 	componentDidMount() {
 		this.getAdminAttendance()
 		this.getTaskData()
+		this.getLeaveData()
 	}
 
 	showhandle(event) {
@@ -39,6 +42,30 @@ class Dashboard1 extends Component {
 		}, () => {
 			this.getTaskData();
 		});
+	}
+
+	getLeaveData() {
+		const self = this;
+		let pipeline = [
+			{
+				"$lookup": {
+					from: "users",
+					localField: "userId",
+					foreignField: "_id",
+					as: "username"
+				}
+			},
+			{ "$unwind": "$username" },
+
+		];
+		Meteor.call("searchLeave", pipeline, function (err, res) {
+			if (!err) {
+				self.setState({ displayedLeave: res });
+			} else {
+				toast.error(err.message);
+			}
+		});
+
 	}
 
 	getTaskData() {
@@ -99,8 +126,8 @@ class Dashboard1 extends Component {
 	}
 
 	render() {
-		let { displayedTask, displayedAdminAttendance } = this.state;
-		// console.log('displayedTask :: ', displayedTask);
+		let { displayedTask, displayedAdminAttendance, displayedLeave } = this.state;
+
 		return (
 			<div className="wrapper wrapper-content ">
 				<div className="row">
@@ -142,34 +169,44 @@ class Dashboard1 extends Component {
 									<IboxTools />
 								</div>
 								<div className="ibox-content scrollbar">
-									{this.props.users.map((user, i) => {
-										let userid = displayedAdminAttendance.map((admin) => admin.userIds)
-										let users = user._id
-										let absent = userid.filter((id) => !users.includes(id));
-										console.log('absent :: ', absent);
-										
-										let firstname = user.profile.firstName + ' ' + user.profile.lastName
-										let profilepic = user.profile.profilePic;
-										let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
-										return (
-											<div className="ibox dashboard" key={i}>
-												<div className="ibox-content-notification" style={{ height: "75px" }}  >
-													<div className="col-md-12">
-														<a className="pull-left">
-															{profilepic == "undefined"
-																? <Avatar src={firstname} className="img-circle" size="45" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2} />
-																: <img src={profilephoto} className="img-circle" height="50" width="50" />
-															}&nbsp;&nbsp;
-														<label>{firstname}</label>
-														</a>
-														<div className="rightside">
-															<span><b>Leave Date</b></span>
-															<h5>{moment().format("DD MMM YYYY")}</h5>
+									{displayedLeave.map((le, i) => {
+										let dayOfDate = []
+										let startdate = moment(le.startDate);
+										let edate = moment(le.endDate);
+										let enddate = moment(edate - 1)
+										console.log('dayOfDate :: ', enddate);
+										while (enddate > startdate || startdate.format('YYYY-MM-DD') === enddate.format('YYYY-MM-DD')) {
+											dayOfDate.push(startdate.format('YYYY-MM-DD'));
+											startdate.add(1, 'day');
+										}
+										console.log('dayOfDate :: ', dayOfDate);
+
+
+										if (le.startDate == moment().format('YYYY-MM-DDT00:00:00')) {
+											let firstname = le.username.profile.firstName + ' ' + le.username.profile.lastName
+											let profilepic = le.username.profile.profilePic;
+											let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
+											return (
+												<div className="ibox dashboard" key={i}>
+													<div className="ibox-content-notification" style={{ height: "75px" }}>
+														<div className="col-md-12">
+															<a className="pull-left">
+																{profilepic == "undefined"
+																	? <Avatar src={firstname} className="img-circle" size="45" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2} />
+																	: <img src={profilephoto} className="img-circle" height="50" width="50" />
+																}&nbsp;&nbsp;
+																<label>{firstname}</label>
+															</a>
+															<div className="rightside">
+																<span><b>Leave Date</b></span>
+																<h5>{moment().format("DD MMM YYYY")}</h5>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										)
+											)
+										}
+
 									})}
 								</div>
 							</div>

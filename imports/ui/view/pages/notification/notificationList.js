@@ -120,6 +120,7 @@ class NotificationList extends Component {
   selectAllChnageHandlar(e) {
     let { markRead } = this.state;
     const { checked } = e.target;
+    console.log('checked :: ', checked);
     if (checked) {
       this.state.notificationlist.map((notification) => {
         markRead.push(notification._id);
@@ -127,11 +128,12 @@ class NotificationList extends Component {
     } else {
       this.state.notificationlist.map((notification) => {
         markRead.pop(notification._id);
+        
       })
     }
     this.setState({
       markRead
-    }, () => console.log('selectAllChnageHandlar :: ', markRead))
+    })
   }
 
   

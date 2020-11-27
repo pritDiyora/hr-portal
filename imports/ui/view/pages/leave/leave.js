@@ -48,7 +48,7 @@ class ApplyLeave extends Component {
         let leaveEvents = [];
         this.props.leaves && this.props.leaves.map((leave, pos) => {
             let leavename = this.props.leavetype && this.props.leavetype.find(leavetype => leavetype._id == leave.leaveType) || "";
-            let leavetitle="Reason :" + leave.reason + '(' + leavename.leaveTypeName + ')';            
+            let leavetitle = "Reason : " + leave.reason + ' (' + leavename.leaveTypeName + ')';
             let leaveList = {
                 id: pos.toString(),
                 title: leavetitle,
@@ -215,7 +215,7 @@ class ApplyLeave extends Component {
                         </div>
                     </div>
                 </div>
-            
+
             </div>
         )
     }
@@ -309,7 +309,7 @@ export default withTracker(() => {
     Meteor.subscribe('getUserType');
     return {
         leavetype: LeaveType.find({}).fetch(),
-        leaves: Leave.find({userId:Meteor.userId()}).fetch(),
+        leaves: Leave.find({ userId: Meteor.userId() }).fetch(),
         userType: User.find({}).fetch()
     }
 })(ApplyLeave);
