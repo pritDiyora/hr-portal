@@ -182,7 +182,7 @@ class Dashboard1 extends Component {
 										console.log('dayOfDate :: ', dayOfDate);
 
 
-										if (le.startDate == moment().format('YYYY-MM-DDT00:00:00')) {
+										if (le.startDate == moment().format('YYYY-MM-DDT00:00:00') && le.isApprove == true) {
 											let firstname = le.username.profile.firstName + ' ' + le.username.profile.lastName
 											let profilepic = le.username.profile.profilePic;
 											let profilephoto = `${Meteor.absoluteUrl()}cfs/files/images/${profilepic}`;
