@@ -274,19 +274,22 @@ class Salary extends Component {
                           let fullName = salary.name.profile.firstName + " " + salary.name.profile.lastName
                           leave.map((le) => {
                             let month = moment().subtract(1, "month").format('MM');
-                            const previousMonth = moment().subtract(1-3, 'month').startOf('month').format('MM');
-                            console.log('previousMonth :: ' ,previousMonth);
+                            const previousMonth = moment().subtract(1 - 3, 'month').startOf('month').format('MM');
+                            // console.log('previousMonth :: ' ,previousMonth);
                             let getmonths = Array.apply(0, Array(12)).map(function (_, i) { return parseInt(moment().month(i).format('MM')) })
+                            console.log('getmonths :: ', getmonths);
                             let monthleave = moment(le.startDate).format("MM")
                             months.push(parseInt(monthleave))
+                            console.log('months :: ', months);
                             let filterMonth = getmonths.filter((month) => !months.includes(month))
+                            console.log('filterMonth :: ', filterMonth);
 
                             if (month == moment(le.startDate).format("MM") && month == moment(le.endDate).format("MM") && le.isApprove == true && le.userId == salary.userId) {
                               let diffDay = moment(le.endDate, "YYYY/MM/DD").diff(moment(le.startDate, "YYYY/MM/DD"), "days")
                               let monthlyLeave = gsetting[0] && gsetting[0].monthlyLeave
                               let diffDays = ((diffDay + 1) - monthlyLeave)
                               let curryForwordLeave = gsetting[0] && gsetting[0].carryForwardLeave
-                              console.log("curryForwordLeave ::=>",curryForwordLeave);
+                              console.log("curryForwordLeave ::=>", curryForwordLeave);
                               noofDays.push(diffDays)
                               noofDay = Sugar.Array.sum(noofDays)
                             }

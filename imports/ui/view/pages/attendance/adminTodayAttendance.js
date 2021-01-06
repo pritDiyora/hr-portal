@@ -52,6 +52,7 @@ class AdminTodayAttendance extends Component {
     const { checked } = e.target
     if (checked) {
       userAttendanceIds = [...userAttendanceIds, id];
+      console.log("userAttendanceIds :: ", userAttendanceIds);
     } else {
       userAttendanceIds = userAttendanceIds.filter(e1 => e1 !== id)
     }
@@ -88,6 +89,7 @@ class AdminTodayAttendance extends Component {
                       let userId = user._id
                       let name = user.profile.lastName + " " + user.profile.firstName + " " + user.profile.fatherName;
                       let isCheck = userAttendanceIds.find(d => d == userId);
+                      console.log('isCheck :: ', isCheck);
                       return (
                         <tr key={userId}>
                           <td>{name}</td>

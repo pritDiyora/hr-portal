@@ -12,10 +12,10 @@ Schemas.Leave = new SimpleSchema({
         type: String
     },
     startDate: {
-        type: Date
+        type: String
     },
     endDate: {
-        type: Date
+        type: String
     },
     reason: {
         type: String

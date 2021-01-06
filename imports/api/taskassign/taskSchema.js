@@ -8,8 +8,11 @@ schema.TaskAssign = new SimpleSchema({
     userId: {
         type: String
     },
-    taskDate: {
+    taskDateTime: {
         type: Date
+    },
+    taskDate: {
+        type: String
     },
     status: {
         type: String,

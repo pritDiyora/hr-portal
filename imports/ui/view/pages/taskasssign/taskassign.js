@@ -40,7 +40,8 @@ class Taskassign extends Component {
     let { description } = this.state, self = this;
     let task = {
       userId: FlowRouter._current.queryParams.id,
-      taskDate: new Date(),
+      taskDateTime: new Date(),
+      taskDate: moment().format("YYYY/MM/DD"),
       description: description
     };
     if (this.state.button == true) {

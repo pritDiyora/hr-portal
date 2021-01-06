@@ -8731,6 +8731,13 @@ body.md-skin {
   text-align: left;
 }
 
+/* dashborad scrrolbar */
+.scrollbar{
+  max-height: 370px;
+  overflow: auto;
+  white-space: nowrap;
+}
+
 .mailbox{
   float: right;
   text-align: right;
@@ -9424,6 +9431,13 @@ margin-top: 10px;
   border-bottom: 1px solid #C7D7E6;
   margin-top: 0px;
   margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.dashboard{
+  
+  border: 1px solid #C7D7E6;
+  margin: 10px;
   cursor: pointer;
 }
 

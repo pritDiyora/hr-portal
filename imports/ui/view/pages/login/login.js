@@ -19,9 +19,13 @@ export default class Login extends Component {
       if (!err) {
         let user = Meteor.user();
         localStorage.setItem('user', JSON.stringify(user));
-        FlowRouter.go('/dashboard');
+        if (user.profile.userType == 'employee') {
+          FlowRouter.go('/profile');
+        }else{
+          FlowRouter.go('/dashboard');
+        }
         console.log(Images.find({}).fetch());
-        
+
         // $('#btnModal').click();
       } else {
         alert('Incorrect password and email');
@@ -64,7 +68,7 @@ export default class Login extends Component {
                 </div>
               </div>
               <div className="ibox-footer1" >
-                <p className="text-center" style={{marginTop:"8px"}}>© scaleteam. All rights reserved.</p>
+                <p className="text-center" style={{ marginTop: "8px" }}>© scaleteam. All rights reserved.</p>
                 <p className="text-center"><a href="#" >Privacy Policy</a></p>
               </div>
             </div>
