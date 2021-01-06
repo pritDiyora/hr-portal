@@ -42,7 +42,7 @@ class AddressComponent extends Component {
                     <div className="col-md-12">
                         <div className="col-md-6">
                             <label>Country</label>
-                            <Select defaultValue="select" value={this.props.CountryOption} options={this.props.countrie} onChange={this.props.myCountryHandlar} />
+                            <Select  defaultValue="select" value={this.props.CountryOption} options={this.props.countrie} onChange={this.props.myCountryHandlar} />
                         </div>
                         <div className="col-md-6 ">
                             <label>State</label>

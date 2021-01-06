@@ -74,7 +74,7 @@ if (Meteor.isServer) {
 
 
 
-  var job = new CronJob(`0 45 ${officetime} * * 1-6`, function () {
+  var job = new CronJob(`0 30 ${officetime} * * 1-6`, function () {
     autometicallyClockout();
     console.log('You will see this message every minutes', new Date());
   });
