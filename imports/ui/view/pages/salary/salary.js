@@ -150,7 +150,6 @@ class Salary extends Component {
           self.getSalaryData();
         } else {
           toast.error(err.message);
-
         }
       })
     }
@@ -203,7 +202,6 @@ class Salary extends Component {
     event.preventDefault();
     const self = this;
     let userFullname = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName
-    console.log('userFullname :: ', userFullname);
     let sendSalarySlipNotification = {
       title: userFullname,
       description: 'Show the Salary Slip..',
@@ -276,7 +274,7 @@ class Salary extends Component {
                           let fullName = salary.name.profile.firstName + " " + salary.name.profile.lastName
                           leave.map((le) => {
                             let month = moment().subtract(1, "month").format('MM');
-                            const previousMonth = moment().subtract(1-3, 'month').startOf('month').format('MM');
+                            const previousMonth = moment().subtract(1 - 3, 'month').startOf('month').format('MM');
                             // console.log('previousMonth :: ' ,previousMonth);
                             let getmonths = Array.apply(0, Array(12)).map(function (_, i) { return parseInt(moment().month(i).format('MM')) })
                             console.log('getmonths :: ', getmonths);
@@ -291,7 +289,7 @@ class Salary extends Component {
                               let monthlyLeave = gsetting[0] && gsetting[0].monthlyLeave
                               let diffDays = ((diffDay + 1) - monthlyLeave)
                               let curryForwordLeave = gsetting[0] && gsetting[0].carryForwardLeave
-
+                              console.log("curryForwordLeave ::=>", curryForwordLeave);
                               noofDays.push(diffDays)
                               noofDay = Sugar.Array.sum(noofDays)
                             }
@@ -299,7 +297,6 @@ class Salary extends Component {
                             diffWorkDay = workDay - noofDay
                             workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
                           });
-
                           return (
                             <tr key={i}>
                               <td>{fullName}</td>

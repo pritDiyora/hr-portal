@@ -13,7 +13,8 @@ class NotificationList extends Component {
       notificationlist: [],
       count: undefined,
       markRead: [],
-      isSelectAll: false
+      isSelectAll: false,
+      allCheckboxLength: 0
       // checkedItems: new Map(),
       // isAllSelected: false,
     }
@@ -91,7 +92,7 @@ class NotificationList extends Component {
       })
     }
   }
-  
+
   deleteNotification(event, notificationId) {
     event.preventDefault();
     const self = this;
@@ -127,18 +128,27 @@ class NotificationList extends Component {
       })
     } else {
       this.state.notificationlist.map((notification) => {
-        markRead.pop(notification._id);
-        
+        markRead.map((read) => {
+          if (read == notification._id) {
+            markRead.pop(notification._id);
+          } else {
+            markRead.pop(notification._id);
+          }
+        })
+
       })
     }
     this.setState({
-      markRead
+      markRead, allCheckboxLength: markRead.length,
+      isSelectAll: checked
+    }, () => {
+      console.log('markRead ========> ', markRead)
     })
   }
 
-  
+
   checkBoxChangeHandlar(e, id) {
-    let { markRead } = this.state;
+    let { markRead, allCheckboxLength } = this.state;
     const { checked } = e.target;
     console.log('checked :: ', checked);
     if (checked) {
@@ -146,9 +156,15 @@ class NotificationList extends Component {
     } else {
       markRead = markRead.filter(e1 => e1 !== id)
     }
+
     this.setState({
       markRead
-    }, () => console.log('markRead :: ', markRead))
+    }, () => {
+      if (allCheckboxLength !== markRead.length) {
+        this.setState({ isSelectAll: false })
+      }
+      console.log("markRead :: =====>", markRead);
+    })
   }
 
   getUserName(userid) {
@@ -169,13 +185,13 @@ class NotificationList extends Component {
           <div className="col-md-2"></div>
           <div className="col-md-8">
             <div className="ibox ">
-              <div className="ibox-content notificationlist" style={{paddingBottom: 35}}>
+              <div className="ibox-content notificationlist" style={{ paddingBottom: 35 }}>
                 <div className="col-md-12">
                   <div className="col-md-6">
                     <ul className="list-unstyled">
                       <li className="col-md-12" style={{ paddingLeft: "7px" }}>
                         <div className="checkbox-inline form-check abc-checkbox abc-checkbox-success form-check-inline">
-                          <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value={this.state.isSelectAll} onChange={(e) => this.selectAllChnageHandlar(e)} />
+                          <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value={this.state.isSelectAll} checked={this.state.isSelectAll} onChange={(e) => this.selectAllChnageHandlar(e)} />
                           <label className="form-check-label" htmlFor="inlineCheckbox2" style={{ paddingLeft: "15px" }}> Select All  </label>
                         </div>
                       </li>
@@ -213,7 +229,7 @@ class NotificationList extends Component {
                             />
                             <label className="form-check-label" htmlFor={`${notification._id}`} style={{ paddingLeft: "15px" }}></label>
                           </div>
-                          <a href="profile.html" style={{ marginLeft: "10px" }} >
+                          <a href="/profile" style={{ marginLeft: "10px" }} >
                             {profilepic == "undefined" ? <Avatar src={firstname} className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
                             /> : <img src={profilephoto} style={{ marginBottom: "10px" }}
                               className="img-circle" height="40" width="40"
