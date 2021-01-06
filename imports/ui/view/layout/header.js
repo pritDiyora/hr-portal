@@ -24,6 +24,7 @@ class Header extends Component {
       this.setTiming();
     }
     this.setState({ notificationlist: nextProps.notifiationList });
+    this.notificationCount();
   }
   componentDidMount() {
     this.notificationCount();
@@ -37,7 +38,6 @@ class Header extends Component {
     })
   }
   setTiming() {
-    // debugger
     let chkInStatus = Meteor.user() && Meteor.user().profile.clockStatus;
     console.log('chkInStatus :: ', chkInStatus);
     if (chkInStatus == true) {

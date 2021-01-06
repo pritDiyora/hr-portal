@@ -140,6 +140,7 @@ class NotificationList extends Component {
   checkBoxChangeHandlar(e, id) {
     let { markRead } = this.state;
     const { checked } = e.target;
+    console.log('checked :: ', checked);
     if (checked) {
       markRead = [...markRead, id]
     } else {

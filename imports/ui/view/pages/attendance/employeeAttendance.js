@@ -42,6 +42,7 @@ class EmployeeAttendance extends Component {
     }, 1000);
   }
   componentWillReceiveProps(nextProps) {
+    this.getDateList()
     this.setTodayProgress()
     this.setWeekProgress()
     this.setMonthProgress()
@@ -69,9 +70,9 @@ class EmployeeAttendance extends Component {
         diffs.push(getDiff);
       })
       let value = {
-        // CountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
-        CountHrs: (Math.floor(Sugar.Array.sum(diffs) / 60)),
-        CountMin: (Math.floor(Sugar.Array.sum(diffs) % 60)),
+        CountHrs: moment.utc().hours(Math.floor(Sugar.Array.sum(diffs) / 60)).minutes(Math.floor(Sugar.Array.sum(diffs) % 60)).format("HH:mm"),
+        // CountHrs: (Math.floor(Sugar.Array.sum(diffs) / 60)),
+        // CountMin: (Math.floor(Sugar.Array.sum(diffs) % 60)),
         Progress: ((Sugar.Array.sum(diffs) / 60) * 100 / hours).toFixed(2),
       }
       return value;
@@ -84,7 +85,7 @@ class EmployeeAttendance extends Component {
     if (data) {
       this.setState({
         toDayCountHrs: data.CountHrs,
-        toDayCountMin: data.CountMin,
+        // toDayCountMin: data.CountMin,
         toDayProgress: data.Progress
       })
     }
@@ -94,7 +95,7 @@ class EmployeeAttendance extends Component {
     if (data) {
       this.setState({
         weekCountHrs: data.CountHrs,
-        weekCountMin: data.CountMin,
+        // weekCountMin: data.CountMin,
         weekProgress: data.Progress
       })
     }
@@ -104,7 +105,7 @@ class EmployeeAttendance extends Component {
     if (data) {
       this.setState({
         monthCountHrs: data.CountHrs,
-        monthCountMin: data.CountMin,
+        // monthCountMin: data.CountMin,
         monthProgress: data.Progress
       })
     }
@@ -137,7 +138,7 @@ class EmployeeAttendance extends Component {
       let first = getPunchInTime[0];
       let last = moment(getPunchOutTime[getPunchOutTime.length - 1])
       getPunchInTime.shift();
-      getPunchOutTime.splice(-1, 1)
+      // getPunchOutTime.splice(-1, 1)
       getPunchOutTime.map((t, index) => {
         let getInTime = moment(getPunchInTime[index]);
         let getOutTime = moment(t);
@@ -281,7 +282,7 @@ class EmployeeAttendance extends Component {
               <div className="ibox-content no-padding">
                 <ul className="list-group">
                   <li className="list-group-item">
-                    <p>Today: <strong>{this.state.toDayCountHrs}:{this.state.toDayCountMin} hrs / {hoursData && hoursData.todayHrs} hrs</strong></p>
+                    <p>Today: <strong>{this.state.toDayCountHrs} hrs / {hoursData && hoursData.todayHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-primary"
                         style={{ width: this.state.toDayProgress + "%" }}
@@ -293,7 +294,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>This Week: <strong>{this.state.weekCountHrs}:{this.state.weekCountMin} hrs / {hoursData && hoursData.weekHrs} hrs</strong></p>
+                    <p>This Week: <strong>{this.state.weekCountHrs} hrs / {hoursData && hoursData.weekHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-warning"
                         style={{ width: this.state.weekProgress + "%" }}
@@ -305,7 +306,7 @@ class EmployeeAttendance extends Component {
                   </li>
 
                   <li className="list-group-item">
-                    <p>This Month: <strong>{this.state.monthCountHrs}:{this.state.monthCountMin} hrs / {hoursData && hoursData.monthHrs} hrs</strong></p>
+                    <p>This Month: <strong>{this.state.monthCountHrs} hrs / {hoursData && hoursData.monthHrs} hrs</strong></p>
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped progress-bar-success"
                         style={{ width: this.state.monthProgress + "%" }}
