@@ -401,7 +401,7 @@ class EmployeeAttendance extends Component {
                           <th>Punch In</th>
                           <th>Punch Out</th>
                           <th>Working Hours</th>
-                          <th>Break</th>
+                          {/* <th>Break</th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -420,7 +420,7 @@ class EmployeeAttendance extends Component {
                                 <td>{firstTime}</td>
                                 <td>{lastTime}</td>
                                 <td>{workHrs}</td>
-                                <td>{breakTime}</td>
+                                {/* <td>{breakTime}</td> */}
                               </tr>
                             )
                           }
@@ -453,9 +453,9 @@ export default withTracker(() => {
   Meteor.subscribe('generaleSetting');
   //today
   var start = new Date();
-  start.setHours(0, 0, 0, 0);
+  start.setHours(0, 0);
   var end = new Date();
-  end.setHours(23, 59, 59, 999);
+  end.setHours(23, 59);
 
   //week
   let curr = new Date()

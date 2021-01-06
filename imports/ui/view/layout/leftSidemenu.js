@@ -135,8 +135,8 @@ class LeftSidemenu extends Component {
             }
             {permission ? <li><a href="/holiday"><i className="fa fa-diamond"></i> <span className="nav-label">Holiday</span></a> </li> : <a href="/accesspermission"></a>
             }
-            {permission ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
-            }
+            {/* {permission ? <li><a href="/salary"><i className="fa fa-money"></i> <span className="nav-label">Salary</span></a> </li> : <a href="/accesspermission"></a>
+            } */}
             {superAdminPermissiom ?
               <li><a href={`/task?id=${Meteor.userId()}`}><i className="fa fa-tasks"></i> <span className="nav-label">Task</span></a> </li>
               : <a href="/accesspermission"></a>}

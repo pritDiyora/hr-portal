@@ -37,7 +37,9 @@ class Header extends Component {
     })
   }
   setTiming() {
+    // debugger
     let chkInStatus = Meteor.user() && Meteor.user().profile.clockStatus;
+    console.log('chkInStatus :: ', chkInStatus);
     if (chkInStatus == true) {
       this.countdown = setInterval(() => {
         let { checkInOutList } = this.props;
@@ -52,6 +54,7 @@ class Header extends Component {
         secondsElapsed: '00:00:00'
       }, () => {
         clearInterval(this.countdown);
+        console.log('secondsElapsed ::: ', this.state.secondsElapsed);
       });
     }
   }
