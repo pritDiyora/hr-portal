@@ -150,7 +150,6 @@ class Salary extends Component {
           self.getSalaryData();
         } else {
           toast.error(err.message);
-
         }
       })
     }
@@ -203,7 +202,6 @@ class Salary extends Component {
     event.preventDefault();
     const self = this;
     let userFullname = Meteor.user() && Meteor.user().profile && Meteor.user().profile.firstName + ' ' + Meteor.user().profile.lastName
-    console.log('userFullname :: ', userFullname);
     let sendSalarySlipNotification = {
       title: userFullname,
       description: 'Show the Salary Slip..',
@@ -279,19 +277,16 @@ class Salary extends Component {
                             const previousMonth = moment().subtract(1-3, 'month').startOf('month').format('MM');
                             console.log('previousMonth :: ' ,previousMonth);
                             let getmonths = Array.apply(0, Array(12)).map(function (_, i) { return parseInt(moment().month(i).format('MM')) })
-                            // console.log('getmonths :: ', getmonths);
                             let monthleave = moment(le.startDate).format("MM")
                             months.push(parseInt(monthleave))
-                            // console.log('months :: ', months);
                             let filterMonth = getmonths.filter((month) => !months.includes(month))
-                            // console.log('filterMonth :: ', filterMonth);
 
                             if (month == moment(le.startDate).format("MM") && month == moment(le.endDate).format("MM") && le.isApprove == true && le.userId == salary.userId) {
                               let diffDay = moment(le.endDate, "YYYY/MM/DD").diff(moment(le.startDate, "YYYY/MM/DD"), "days")
                               let monthlyLeave = gsetting[0] && gsetting[0].monthlyLeave
                               let diffDays = ((diffDay + 1) - monthlyLeave)
                               let curryForwordLeave = gsetting[0] && gsetting[0].carryForwardLeave
-
+                              console.log("curryForwordLeave ::=>",curryForwordLeave);
                               noofDays.push(diffDays)
                               noofDay = Sugar.Array.sum(noofDays)
                             }
@@ -299,7 +294,6 @@ class Salary extends Component {
                             diffWorkDay = workDay - noofDay
                             workSalary = Math.floor(salary.totalSalary - ((salary.totalSalary / workDay) * noofDay))
                           });
-
                           return (
                             <tr key={i}>
                               <td>{fullName}</td>

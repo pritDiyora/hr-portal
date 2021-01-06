@@ -168,7 +168,7 @@ class NotificationList extends Component {
                             />
                             <label className="form-check-label" htmlFor={`${notification._id}`} style={{ paddingLeft: "15px" }}></label>
                           </div>
-                          <a href="profile.html" style={{ marginLeft: "10px" }} >
+                          <a href="/profile" style={{ marginLeft: "10px" }} >
                             {profilepic == "undefined" ? <Avatar src={firstname} className="img-circle" size="40" color="#ffcccc" fgColor="#990000" name={firstname} maxInitials={2}
                             /> : <img src={profilephoto} style={{marginBottom:"10px"}}
                               className="img-circle" height="40" width="40"

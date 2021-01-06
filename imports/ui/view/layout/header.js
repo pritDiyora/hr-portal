@@ -47,6 +47,7 @@ class Header extends Component {
           secondsElapsed: moment.utc(moment(currentTime, "HH:mm:ss").diff(moment(dateTime, "HH:mm:ss"))).format("HH:mm:ss")
         })
       }, 1000);
+      
     } else {
       this.setState({
         secondsElapsed: '00:00:00'
@@ -133,7 +134,7 @@ class Header extends Component {
             </form>
           </div>
           <ul className="nav navbar-top-links navbar-right">
-            {Meteor.userId() && <li>
+            {Meteor.user() && Meteor.user().profile && Meteor.user().profile.userType == 'superadmin'? <p></p> : Meteor.userId() && <li>
               <span type="button" className="btn btn-primary" id="btnModal" onClick={this.clockInOut} disabled={this.state.isLoading} style={{ fontSize: "12px" }}>
                 {this.state.isLoading
                   ? <i className="fa fa-spinner fa-spin"></i>
@@ -144,17 +145,13 @@ class Header extends Component {
             <li id="dropdownNoti" className="dropdown">
               <a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.showMailNoti(e)}>
                 <i className="fa fa-envelope"></i>
-
               </a>
-
-
             </li>
             <li id="dropdownMsgNoti" className="dropdown">
               <a className="dropdown-toggle count-info" data-toggle="dropdown" href="#" onClick={(e) => this.MsgNoti(e)}>
                 <i className="fa fa-bell"></i>
                 {this.state.count == 0 ? " " : <span className="label label-warning">{this.state.count}</span>}
               </a>
-
               <ul className="dropdown-menu dropdown-alerts">
                 {
                   notificationlist.map((notification) => {
