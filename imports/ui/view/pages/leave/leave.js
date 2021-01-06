@@ -247,8 +247,8 @@ class ApplyLeave extends Component {
     let leaveObject = {
       userId: Meteor.userId(),
       leaveType: self.state.leaveType,
-      startDate: moment(self.state.start).format('YYYY-MM-DDTHH:mm:ss'),
-      endDate: moment(self.state.end).format('YYYY-MM-DDTHH:mm:ss'),
+      startDate: moment(self.state.start).format('YYYY/MM/DD hh:mm'),
+      endDate: moment(self.state.end).format('YYYY/MM/DD hh:mm'),
       idHalf: self.state.idHalf,
       reason: self.state.leaveReason,
     };

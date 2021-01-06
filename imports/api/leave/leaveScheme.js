@@ -26,7 +26,8 @@ Schemas.Leave = new SimpleSchema({
     },
     isApprove: {
         type: Boolean,
-        defaultValue: false
+        defaultValue: null,
+        optional: true
     },
     declineReason: {
         type: String,
