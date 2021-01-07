@@ -110,12 +110,13 @@ class NotificationList extends Component {
     self.state.markRead.map((del) => {
       Meteor.call('notificationDelete', del, function (err, res) {
         if (!err) {
-          // toast.success('Notification Deleted Sucessfully..', res);
+          // toast.success('All Notification Deleted Sucessfully..', res);
           self.getNotificationData();
         }
       })
-      console.log('d :: ', d);
+      console.log('d :: ', del);
     })
+    toast.success('All Notification Deleted Sucessfully..', res);
   }
 
   selectAllChnageHandlar(e) {
